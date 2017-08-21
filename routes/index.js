@@ -8,6 +8,7 @@ exports.index = function(req, res){
 };
 
 exports.partial = function (req, res) {
+    var type = req.params.type;
   var name = req.params.name;
-  res.render('views/partials/'+ name);
+  res.render('views/partials/'+type + "/" + name);
 };

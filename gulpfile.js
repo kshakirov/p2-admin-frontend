@@ -30,7 +30,7 @@ gulp.task('scripts', function() {
         'bower_components/angular-route/angular-route.js',
         'bower_components/jquery/dist/jquery.js',
         'bower_components/bootstrap/dist/js/bootstrap.js',
-        'app/js/*.js'])
+        'app/js/**/*.js'])
         .pipe(concat('all.js'))
         .pipe(gulp.dest('app/dist'))
         .pipe(rename('all.min.js'))

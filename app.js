@@ -51,7 +51,7 @@ app.use(function timeLog (req, res, next) {
 app.get('/', routes.index);
 
 // router.get('/', routes.index);
-app.get('/partial/:name', routes.partial);
+app.get('/partial/:type/:name', routes.partial);
 
 
 
