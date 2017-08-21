@@ -1,4 +1,4 @@
-pimsApp.controller('AttributeCtrl', function ($scope, $route, $routeParams,
+pimsApp.controller('AttributeListCtrl', function ($scope, $route, $routeParams,
                                               $location,
                                               $http,
                                               $rootScope,
@@ -6,9 +6,9 @@ pimsApp.controller('AttributeCtrl', function ($scope, $route, $routeParams,
                                               NgTableParams) {
     console.log("PimsApp AttributeCtrl");
     $scope.init = function () {
-        AttributeModel.findOne($routeParams.uuid).then(function (attribute) {
-            console.log(attribute);
-            $scope.attribute = attribute;
+
+        AttributeModel.all().then(function (attributes) {
+            $scope.tableParams = new NgTableParams({}, {dataset: attributes});
         })
     }
 

@@ -37,8 +37,8 @@ var pimsApp = angular.module('PimsApp', ['ngRoute','PimsApp.services',
                 controller: 'AttributeCtrl'
             })
             .when('/attributes', {
-                templateUrl: 'partial/attribute/attribute',
-                controller: 'AttributeCtrl'
+                templateUrl: 'partial/attribute/attributes',
+                controller: 'AttributeListCtrl'
             })
             .when('/attribute_set', {
                 templateUrl: 'partial/attribute_set/attribute_set',
