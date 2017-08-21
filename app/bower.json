@@ -1,0 +1,24 @@
+{
+  "name": "pims-frontend",
+  "homepage": "https://github.com/jimakker/angular-express-bootstrap-seed",
+  "authors": [
+    "kshakirov <kshakirov@zoral.com.ua>"
+  ],
+  "description": "pims frontend",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-route": "^1.6.6",
+    "angular": "angularjs#^1.6.6",
+    "bootstrap": "^3.3.7",
+    "bootstrap-sass": "^3.3.7",
+    "jquery": "^3.2.1"
+  }
+}
