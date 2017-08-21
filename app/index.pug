@@ -8,18 +8,26 @@ block body
         span.icon-bar
         span.icon-bar
         span.icon-bar
-      a.navbar-brand(href="#") Brand
+      a.navbar-brand(href="#") PIMS
     
     .collapse.navbar-collapse.navbar-ex1-collapse
       ul.nav.navbar-nav
-        li
-          a(href="view1") View1
-        li  
-          a(href="view2") View2 
+        li.dropdown
+          a.dropdown-toggle(data-toggle="dropdown") Administration
+              ul.dropdown-menu(role="menu")
+                  li
+                    a(href="view1") Attributes
+                  li
+                    a(href="view2") Attribute Sets
+        li.dropdown
+          a.dropdown-toggle(data-toggle="dropdown") Entities
+              ul.dropdown-menu(role="menu")
+                  li
+                    a(href="view2") Products
   .container      
     div(ng-controller='AppCtrl')
       .jumbotron  
-        h1 Hello {{name}}
+        h1 Under Development
       div(ng-view)
     hr  
     div

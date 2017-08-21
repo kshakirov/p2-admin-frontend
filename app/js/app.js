@@ -12,7 +12,7 @@ angular.module('myApp', ['ngRoute'])
 
     .controller('MyCtrl2', function($scope, $routeParams) {
         $scope.hello = "test";
-        console.log("AppCtrl fdf  2")
+        console.log("AppCtrl fd     f  2")
     })
 
     .config(function($routeProvider, $locationProvider) {
