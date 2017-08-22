@@ -1,5 +1,11 @@
+br
+br
+br
+.row
+    .col-lg-6.col-lg-offset-3
+        ul.breadcrumb
+            li Attributes
 .row(ng-init="init()")
-    .col-lg-2
     .col-lg-10
         table.table(ng-table="tableParams", show-filter="true")
             tr(ng-repeat="attr in $data")
