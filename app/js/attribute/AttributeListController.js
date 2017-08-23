@@ -1,4 +1,5 @@
-pimsApp.controller('AttributeListController', function ($scope, $route, $routeParams,
+pimsApp.controller('AttributeListController', [ '$scope', '$route', '$routeParams',
+    '$location',  '$http','$rootScope', 'AttributeModel', 'NgTableParams',function ($scope, $route, $routeParams,
                                                   $location,
                                                   $http,
                                                   $rootScope,
@@ -16,4 +17,4 @@ pimsApp.controller('AttributeListController', function ($scope, $route, $routePa
     }
 
 
-});
+}]);

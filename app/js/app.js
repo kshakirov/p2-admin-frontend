@@ -1,12 +1,8 @@
 'use strict';
 
-var pimsApp = angular.module('PimsApp', ['ngRoute', 'PimsApp.services',
-    'ngTable']);
+var pimsApp = angular.module('PimsApp', ['ngRoute',  'PimsApp.services',  'ngTable']);
 
-pimsApp.controller('SystemConfigController', function ($scope, $route,
-                                                       $routeParams,
-                                                       $location, $http,
-                                                       $rootScope) {
+pimsApp.controller('SystemConfigController',["$scope", "$rootScope","$http", function ($scope,  $rootScope, $http ) {
 
     function choose_product(entities) {
         var entity = entities.filter(function (entity) {
@@ -26,10 +22,12 @@ pimsApp.controller('SystemConfigController', function ($scope, $route,
                 }
             }
         })
+        //$http.get("pims");
+        console.log("dfdf")
     }
-});
+}]);
 
-pimsApp.config(function ($routeProvider, $locationProvider) {
+pimsApp.config(["$routeProvider","$locationProvider", function ($routeProvider, $locationProvider) {
     $routeProvider
 
         .when('/attributes/:uuid', {
@@ -47,4 +45,4 @@ pimsApp.config(function ($routeProvider, $locationProvider) {
 
     // configure html5 to get links working on jsfiddle
     $locationProvider.html5Mode(true);
-});
+}]);

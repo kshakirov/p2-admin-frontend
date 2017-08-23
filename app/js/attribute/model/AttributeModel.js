@@ -1,4 +1,4 @@
-pimsServices.service('AttributeModel', function ($http, $rootScope) {
+pimsServices.service('AttributeModel', ['$http', '$rootScope', function ($http, $rootScope) {
     this.findAll = function (et_uuid) {
         return $http.get("/pims/rest/entity-types/" + et_uuid
             + "/attributes").then(function (attributes) {
@@ -28,4 +28,4 @@ pimsServices.service('AttributeModel', function ($http, $rootScope) {
     }
 
 
-});
+}]);

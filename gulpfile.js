@@ -27,10 +27,14 @@ gulp.task('sass', function() {
 gulp.task('scripts', function() {
     return gulp.src([
         'app/bower_components/angular/angular.js',
-        'bower_components/angular-route/angular-route.js',
-        'bower_components/jquery/dist/jquery.js',
-        'bower_components/bootstrap/dist/js/bootstrap.js',
-        'app/js/**/*.js'])
+        'app/bower_components/angular-route/angular-route.js',
+        'app/bower_components/jquery/dist/jquery.js',
+        'app/bower_components/bootstrap/dist/js/bootstrap.js',
+        'app/bower_components/ng-table-bundle/ng-table.js',
+         'app/js/app.js',
+        'app/js/services.js',
+        'app/js/**/*.js'
+    ])
         .pipe(concat('all.js'))
         .pipe(gulp.dest('app/dist'))
         .pipe(rename('all.min.js'))

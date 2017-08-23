@@ -1,4 +1,5 @@
-pimsApp.controller('AttributeController', function ($scope, $route, $routeParams,
+pimsApp.controller('AttributeController' ,[ '$scope', '$route', '$routeParams',
+    '$location',  '$http','$rootScope', 'AttributeModel',  function ($scope, $route, $routeParams,
                                               $location,
                                               $http,
                                               $rootScope,
@@ -31,4 +32,4 @@ pimsApp.controller('AttributeController', function ($scope, $route, $routeParams
         $location.path("/attributes");
     }
 
-});
+}]);
