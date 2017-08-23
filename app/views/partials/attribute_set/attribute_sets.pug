@@ -1,0 +1,16 @@
+br
+br
+br
+.row
+	.col-lg-6.col-lg-offset-3
+		ul.breadcrumb
+			li Attribute Sets
+.row(ng-init="init()")
+	.col-lg-2
+		button.btn.btn-info(type="submit",ng-click="createAttributeSet()") ADD ATTRIBUTE SET
+	.col-lg-10
+		table.table(ng-table="attrSetTableParams", show-filter="true")
+			tr(ng-repeat="attr_set in $data")
+				td(title="name", filter="{ name: 'text'}",sortable="'name'")
+					a(ng-href="attribute-sets/{{attr_set.uuid}}") {{attr_set.name}}
+				td(title="valueType") {{attr_set.valueType}}

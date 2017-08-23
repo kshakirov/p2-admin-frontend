@@ -1,4 +1,31 @@
+br
+br
+br
 .row
-	.col-lg-12
-		p This is the partial for view 2.
-		p {{hello}}
+    .col-lg-6.col-lg-offset-3
+        ul.breadcrumb
+            li Attribute Sets
+.row(ng-init="init()")
+    .col-lg-6
+        form(name="AttributeSetForm", role="form", id="AttributeSetForm")
+            div.form-group
+                label(for="attributeSetName") Name
+                input.form-control(type="text",id="attributeSetName", data-ng-model="attribute_set.name")
+            div.form-group
+                label(for="attributeValueType") Value Type
+                select.form-control(id="attributeValueType",
+                ng-model="attribute_set.valueType",
+                ng-options="valueType as valueType for valueType in valueTypes")
+            div.btn-group
+                button.btn.btn-default(type="submit", ng-click="updateAttribute(attribute)") APPLY
+                button.btn.btn-danger(type="submit", ng-click="deleteAttribute(attribute.uuid)", ng-disabled="!attribute.uuid") DELETE
+                button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL
+    .col-lg-6
+        table.table
+            thead
+                tr
+                    th Attributes
+            tbody(ui-sortable, ng-model="attribute_set.attributes")
+                tr.item(ng-repeat="item in attribute_set.attributes", style="cursor: move")
+                    td
+                        a(href="") {{item.name}}

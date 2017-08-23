@@ -9,6 +9,16 @@ var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var server = require('gulp-express');
 
+var cleanCSS = require('gulp-clean-css');
+
+gulp.task('minify-css', function () {
+    return gulp.src(['app/bower_components/bootstrap/dist/css/bootstrap.css',
+        'app/bower_components/ng-table-bundle/ng-table.css'])
+        .pipe(cleanCSS({compatibility: 'ie8'}))
+        .pipe(concat('style.min.css'))
+        .pipe(gulp.dest('app/dist/css'));
+});
+
 // Lint Task
 gulp.task('lint', function() {
     return gulp.src('app/js/*.js')
@@ -26,11 +36,14 @@ gulp.task('sass', function() {
 // Concatenate & Minify JS
 gulp.task('scripts', function() {
     return gulp.src([
+        'app/bower_components/jquery/dist/jquery.js',
+        'app/bower_components/jquery-ui/jquery-ui.js',
         'app/bower_components/angular/angular.js',
         'app/bower_components/angular-route/angular-route.js',
         'app/bower_components/jquery/dist/jquery.js',
         'app/bower_components/bootstrap/dist/js/bootstrap.js',
         'app/bower_components/ng-table-bundle/ng-table.js',
+        'app/bower_components/angular-ui-sortable/sortable.js',
          'app/js/app.js',
         'app/js/services.js',
         'app/js/**/*.js'
@@ -66,6 +79,11 @@ gulp.task('server', function () {
     gulp.watch(['app.js', 'routes/**/*.js'], [server.run]);
 });
 
+gulp.task('connect', function () {
+    // Start the server at the beginning of the task
+    server.run(['app.js']);
+    });
+
 // Default Task
 gulp.task('default', ['lint',  'watch', 'connect']);
-gulp.task('dist', ['lint', 'sass', 'scripts', 'watch']);
+gulp.task('dist', ['lint', 'sass', 'minify-css',  'scripts', 'watch', 'connect']);

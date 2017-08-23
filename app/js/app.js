@@ -1,6 +1,6 @@
 'use strict';
 
-var pimsApp = angular.module('PimsApp', ['ngRoute',  'PimsApp.services',  'ngTable']);
+var pimsApp = angular.module('PimsApp', ['ngRoute', 'ui.sortable', 'PimsApp.services',  'ngTable']);
 
 pimsApp.controller('SystemConfigController',["$scope", "$rootScope","$http", function ($scope,  $rootScope, $http ) {
 
@@ -38,10 +38,15 @@ pimsApp.config(["$routeProvider","$locationProvider", function ($routeProvider, 
             templateUrl: 'partial/attribute/attributes',
             controller: 'AttributeListController'
         })
-        .when('/attribute_set', {
+        .when('/attribute-sets/:uuid', {
             templateUrl: 'partial/attribute_set/attribute_set',
-            controller: 'AttributeSetCtrl'
+            controller: 'AttributeSetController'
+        })
+        .when('/attribute-sets', {
+            templateUrl: 'partial/attribute_set/attribute_sets',
+            controller: 'AttributeSetListController'
         });
+
 
     // configure html5 to get links working on jsfiddle
     $locationProvider.html5Mode(true);
