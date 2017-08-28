@@ -8,7 +8,6 @@ var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var server = require('gulp-express');
-
 var cleanCSS = require('gulp-clean-css');
 
 gulp.task('minify-css', function () {
@@ -44,7 +43,7 @@ gulp.task('scripts', function() {
         'app/bower_components/bootstrap/dist/js/bootstrap.js',
         'app/bower_components/ng-table-bundle/ng-table.js',
         'app/bower_components/angular-ui-sortable/sortable.js',
-         'app/js/app.js',
+        'app/js/app.js',
         'app/js/services.js',
         'app/js/**/*.js'
     ])
@@ -86,4 +85,4 @@ gulp.task('connect', function () {
 
 // Default Task
 gulp.task('default', ['lint',  'watch', 'connect']);
-gulp.task('dist', ['lint', 'sass', 'minify-css',  'scripts', 'watch', 'connect']);
+gulp.task('dist', ['lint', 'sass', 'minify-css',  'scripts', 'connect']);
