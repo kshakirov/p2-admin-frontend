@@ -8,22 +8,29 @@ block body
                 span.icon-bar
                 span.icon-bar
                 span.icon-bar
-            a.navbar-brand(href="/") PIMS
+            a.navbar-brand(href="/")
+                b PIMS
 
         .collapse.navbar-collapse.navbar-ex1-collapse
             ul.nav.navbar-nav
                 li.dropdown
-                    a.dropdown-toggle(data-toggle="dropdown") Administration
+                    a.dropdown-toggle(data-toggle="dropdown")
+                        b Attributes
                         ul.dropdown-menu(role="menu")
                             li
                                 a(href="attributes") Attributes
                             li
                                 a(href="attribute-sets") Attribute Sets
                 li.dropdown
-                    a.dropdown-toggle(data-toggle="dropdown") Entities
+                    a.dropdown-toggle(data-toggle="dropdown")
+                        b Actions
                         ul.dropdown-menu(role="menu")
                             li
-                                a(href="view2") Products
+                                a(href="/entities") List
+                li.dropdown
+                    a.dropdown-toggle(data-toggle="dropdown")
+                        b Administration
+                        ul.dropdown-menu(role="menu")
     .container
         div(ng-controller="SystemConfigController" ng-init="init()")
             br
@@ -38,6 +45,8 @@ block body
     //script(src='bower_components/bootstrap/dist/js/bootstrap.js')
     //script(src='bower_components/ng-table-bundle/ng-table.js')
     //script(src='bower_components/angular-ui-sortable/sortable.js')
+    //script(src='bower_components/chart.js/dist/Chart.js')
+    //script(src='bower_components/angular-chart.js/angular-chart.js')
     //script(src='js/app.js')
     //script(src='js/services.js')
     //script(src='js/filters.js')
@@ -48,4 +57,7 @@ block body
     //script(src='js/attribute_set/AttributeSetController.js')
     //script(src='js/attribute_set/AttributeSetListController.js')
     //script(src='js/attribute_set/model/AttributeSetModel.js')
+    //script(src='js/entity/EntityListController.js')
+    //script(src='js/entity/EntityController.js')
+    //script(src='js/entity/model/EntityModel.js')
     script(src='dist/js/all.min.js')

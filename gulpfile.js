@@ -43,6 +43,8 @@ gulp.task('scripts', function() {
         'app/bower_components/bootstrap/dist/js/bootstrap.js',
         'app/bower_components/ng-table-bundle/ng-table.js',
         'app/bower_components/angular-ui-sortable/sortable.js',
+        'app/bower_components/chart.js/dist/Chart.js',
+        'app/bower_components/angular-chart.js/angular-chart.js',
         'app/js/app.js',
         'app/js/services.js',
         'app/js/**/*.js'

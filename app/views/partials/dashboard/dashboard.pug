@@ -1,0 +1,21 @@
+br
+br
+br
+div
+    .row
+        .col-lg-8.col-lg-offset-4
+            h1.text-info DASHBOARD
+    .row
+        .col-lg-4
+            canvas.chart.chart-radar(id="radar",chart-data="data_radar",
+            chart-options="options", chart-labels="labels")
+        .col-lg-4.col-lg-offset-2
+            canvas.chart.chart-radar(id="doughnut",chart-data="data_doughnut",
+            chart-options="options", chart-labels="labels_doughnut")
+    .row
+        .col-lg-4
+            canvas.chart.chart-pie(id="chart-pie",chart-data="data_radar",
+            chart-options="options", chart-labels="labels")
+        .col-lg-4.col-lg-offset-2
+            canvas.chart.chart-horizontal-bar(id="chart-horizontal-bar",chart-data="data_doughnut",
+            chart-options="options", chart-labels="labels_doughnut")
