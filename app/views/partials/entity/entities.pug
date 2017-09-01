@@ -9,8 +9,27 @@ br
     .col-lg-2
         button.btn.btn-info(type="submit",ng-click="createEntity()") ADD ENTITY
     .col-lg-10
-        table.table(ng-table="entitiesTableParams", show-filter="true")
-            tr(ng-repeat="entity in $data")
-                td(title="name", filter="{ name: 'text'}",sortable="'name'")
-                    a(ng-href="entities/{{entity.uuid}}") {{entity.name}}
-                td(title="valueType") {{entity.valueType}}
+        table.table
+            thead
+                tr
+                    th NAME
+                    th VERSION
+            tbody
+                tr(ng-repeat="entity in entities")
+                    td
+                        a(ng-href="entities/{{entity.uuid}}") {{entity.name}}
+                    td {{entity.version}}
+.row
+    .col-lg-6.col-lg-offset-2
+        nav(aria-label="Page navigation example")
+            ul.pagination
+                li.page-item(ng-class = "{'active': !pagination.first, 'disabled': pagination.first }")
+                    a.page-link(ng-class="", ng-click="getPage(pagination.currentPage - 1)", href="") Previous
+                li.page-item
+                    a.page-link(href="#", ng-click="getPage(0)") 1
+                li.page-item
+                    a.page-link(href="#") Page: {{pagination.currentPage + 1}}
+                li.page-item
+                    a.page-link(href="#", ng-click="getPage(pagination.totalPages - 1)") {{pagination.totalPages}}
+                li.page-item(ng-class = "{'active': !pagination.last, 'disabled': pagination.last }")
+                    a.page-link(ng-click="getPage(pagination.currentPage + 1)",href="") Next

@@ -9,7 +9,7 @@ pimsApp.controller('AttributeListController', [ '$scope', '$route', '$routeParam
         var entity_type_uuid = $rootScope.pims.entities.current.uuid;
         AttributeModel.findAll(entity_type_uuid).then(function (attributes) {
             $scope.tableParams = new NgTableParams({}, {dataset: attributes});
-        })
+        });
     };
 
     $scope.createAttribute = function () {

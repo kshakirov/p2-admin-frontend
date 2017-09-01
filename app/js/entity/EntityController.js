@@ -1,24 +1,30 @@
-pimsApp.controller('EntityController' ,[ '$scope', '$route', '$routeParams',
-    '$location',  '$http','$rootScope', 'EntityModel',  function ($scope, $route, $routeParams,
-                                                                     $location,
-                                                                     $http,
-                                                                     $rootScope,
-                                                                  EntityModel) {
+pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
+    '$location', '$http', '$rootScope', 'EntityModel', 'EntityService',
+    function ($scope, $route, $routeParams,
+              $location,
+              $http,
+              $rootScope,
+              EntityModel,
+              EntityService) {
 
         var entity_type_uuid = $rootScope.pims.entities.current.uuid;
         $scope.init = function () {
             var uuid = $routeParams.uuid;
-            if(uuid === "new"){
+            if (uuid === "new") {
 
-            }else {
+            } else {
                 EntityModel.findOne(entity_type_uuid, uuid).then(function (entity) {
                     $scope.entity = entity;
+                    $scope.entity.attributes = EntityService.filterSimpleAttributes(entity.attributes);
                 })
             }
         };
 
         $scope.updateEntity = function (entity) {
-            EntityModel.save(entity_type_uuid, entity).then(function (response) {
+            var entity_copy = {};
+            angular.copy(entity, entity_copy);
+            entity_copy.attributes = EntityService.prepAttributesDto(entity.attributes);
+            EntityModel.save(entity_type_uuid, entity_copy).then(function (response) {
             })
         };
 

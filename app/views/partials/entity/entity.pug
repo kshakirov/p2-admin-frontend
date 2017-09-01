@@ -15,9 +15,9 @@ br
                 label(for="entityVersion") Versions
                 input.form-control(type="number",id="entityVersion", data-ng-model="entity.version")
             div.form-group(ng-repeat="f in entity.attributes")
-                    label {{f.key.name}}
-                    input.form-control(data-ng-model="f.value")
+                    label {{f.name}}
+                    input.form-control(type="{{f.type}}",data-ng-model="f.value")
             div.btn-group
-                button.btn.btn-default(type="submit", ng-click="updateAttribute(attribute)") APPLY
-                button.btn.btn-danger(type="submit", ng-click="deleteAttribute(attribute.uuid)", ng-disabled="!attribute.uuid") DELETE
+                button.btn.btn-default(type="submit", ng-click="updateEntity(entity)") APPLY
+                button.btn.btn-danger(type="submit", ng-click="deleteEntity(entity.uuid)", ng-disabled="!entity.uuid") DELETE
                 button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL

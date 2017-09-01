@@ -14,7 +14,7 @@ pimsApp.controller('SystemConfigController',["$scope", "$rootScope","$http", fun
     }
 
     $scope.init = function () {
-        $http.get("/pims/rest/entity-types/").then(function (entities) {
+        $http.get("/rest/entity-types/").then(function (entities) {
             $rootScope.pims = {
                 entities: {
                     current: choose_product(entities.data),
@@ -63,6 +63,10 @@ pimsApp.config(["$routeProvider","$locationProvider", "ChartJsProvider",
         .when('/entities', {
             templateUrl: 'partial/entity/entities',
             controller: 'EntityListController'
+        })
+        .when('/external-operations', {
+            templateUrl: 'partial/external_operation/external_operations',
+            controller: 'ExternalOperationController'
         })
         .when('/',{
             templateUrl: 'partial/dashboard/dashboard',
