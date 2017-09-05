@@ -1,0 +1,17 @@
+br
+br
+br
+.row
+    .col-lg-6.col-lg-offset-3
+        ul.breadcrumb
+            li External Operations
+.row(ng-init="init()")
+    .col-lg-6
+        form(name="ExternalOperationForm", role="form", id="ExternalOperationForm")
+            div.form-group
+                label(for="externalOperationName") Name
+                input.form-control(type="text",id="externalOperationName", data-ng-model="external_operation.name")
+            div.btn-group
+                button.btn.btn-default(type="submit", ng-click="updateExternalOperation(external_operation)") APPLY
+                button.btn.btn-danger(type="submit", ng-click="deleteExternalOperation(external_operation.id)", ng-disabled="!external_operation.id") DELETE
+                button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL

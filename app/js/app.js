@@ -66,6 +66,10 @@ pimsApp.config(["$routeProvider","$locationProvider", "ChartJsProvider",
         })
         .when('/external-operations', {
             templateUrl: 'partial/external_operation/external_operations',
+            controller: 'ExternalOperationListController'
+        })
+        .when('/external-operations/:id', {
+            templateUrl: 'partial/external_operation/external_operation',
             controller: 'ExternalOperationController'
         })
         .when('/',{
