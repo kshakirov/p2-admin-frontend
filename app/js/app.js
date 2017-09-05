@@ -71,7 +71,7 @@ pimsApp.config(["$routeProvider","$locationProvider", "ChartJsProvider",
         .when('/',{
             templateUrl: 'partial/dashboard/dashboard',
             controller: 'DashboardController'
-        })
+        });
 
 
 

@@ -5,10 +5,11 @@ let express = require('express'),
     path = require('path'),
     bodyParser = require('body-parser'),
     methodOverride = require('express-method-override'),
-   // router = express.Router(),
     errorhandler = require('errorhandler'),
-    proxy = require('http-proxy-middleware');
-    pug = require('pug');
+    proxy = require('http-proxy-middleware'),
+    pug = require('pug'),
+    metadataProxy = require('./pims_app/proxy/metadata'),
+    syncModuleProxy = require('./pims_app/proxy/sync_module'),
     logger = require('express-logger');
 
 
@@ -35,25 +36,13 @@ app.use(methodOverride());
 let options = {
     target: 'http://10.1.1.71:8080', // target host
     changeOrigin: true,
-    onProxyReq: function onProxyReq(proxyReq, req, res) {
-        // add custom header to request
-        proxyReq.setHeader('x-added', 'foobar');
-        console.log('PimsReq: ', Date.now());
-        // or log the req
-    }
+    onProxyReq: metadataProxy.onProxyReq
 };
-
-// create the proxy (without context)
 
 let options_sync_module = {
     target: 'http://10.1.1.135:4567', // target host
     changeOrigin: true,
-    onProxyReq: function onProxyReq(proxyReq, req, res) {
-        // add custom header to request
-        proxyReq.setHeader('x-added', 'foobar');
-        console.log('SyncModuleReq: ', Date.now());
-        // or log the req
-    }
+    onProxyReq:syncModuleProxy.onProxyReq
 };
 
 // create the proxy (without context)
