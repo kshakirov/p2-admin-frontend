@@ -4,10 +4,10 @@ br
 .row
     .col-lg-6.col-lg-offset-3
         ul.breadcrumb
-            li Attributes
+            li Pipelines
 .row(ng-init="init()")
     .col-lg-2
-        button.btn.btn-info(type="submit",ng-click="createExternalOperation()") ADD OPERATION
+        button.btn.btn-info(type="submit",ng-click="createExternalOperation()") ADD PIPELINE
     .col-lg-10
         table.table(ng-table="externalOperationsTableParams", show-filter="true")
             tr(ng-repeat="opr in $data")

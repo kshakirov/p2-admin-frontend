@@ -21,7 +21,7 @@ pimsServices.service('AttributeSetModel', ['$http', '$rootScope', function ($htt
     };
 
     this.save = function (et_uuid, attribute) {
-        return $http.post("/rest/entity-types/" + et_uuid
+        return $http.put("/rest/entity-types/" + et_uuid
             + "/attribute-sets", attribute).then(function (attribute_sets) {
             return attribute_sets.data
         })

@@ -27,9 +27,6 @@ app.set('view engine', 'pug');
 app.use(express.static(path.join(__dirname, 'app')));
 app.use(logger({path: "logs/logfile.txt"}));
 //app.use(bodyParser());
-app.use(bodyParser.urlencoded({'extended':'true'}));            // parse application/x-www-form-urlencoded
-app.use(bodyParser.json());                                     // parse application/json
-app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
 app.use(methodOverride());
 
 //TODO move it to separate module
@@ -42,7 +39,8 @@ let options = {
 let options_sync_module = {
     target: 'http://10.1.1.135:4567', // target host
     changeOrigin: true,
-    onProxyReq:syncModuleProxy.onProxyReq
+    onProxyReq:syncModuleProxy.onProxyReq,
+    onProxyRes: syncModuleProxy.onProxyRes,
 };
 
 // create the proxy (without context)
@@ -60,6 +58,10 @@ app.use(function timeLog (req, res, next) {
 
 app.use('/rest',pims_proxy);
 app.use('/sync-module',sync_module_proxy);
+
+app.use(bodyParser.urlencoded({'extended':'true'}));            // parse application/x-www-form-urlencoded
+app.use(bodyParser.json());                                     // parse application/json
+app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
 function onProxyReq(proxyReq, req, res) {
     // add custom header to request
     proxyReq.setHeader('x-added', 'foobar');

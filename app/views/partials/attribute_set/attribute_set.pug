@@ -15,6 +15,9 @@ div(ng-init="init()")
                 div.form-group
                     label(for="version") Version
                     input.form-control(type="number",id="version", data-ng-model="attribute_set.version")
+                div.form-group
+                    label(for="role") Role
+                    input.form-control(type="text",id="role", data-ng-model="attribute_set.properties.role")
                 div.btn-group
                     button.btn.btn-default(type="submit", ng-click="updateAttributeSet(attribute_set)") APPLY
                     button.btn.btn-danger(type="submit", ng-click="deleteAttribute(attribute_set.uuid)", ng-disabled="!attribute_set.uuid") DELETE

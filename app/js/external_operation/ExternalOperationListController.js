@@ -13,6 +13,10 @@ pimsApp.controller('ExternalOperationListController', ['$scope', '$route', '$rou
                 console.log(externalOperations);
                 $scope.externalOperationsTableParams = new NgTableParams({}, {dataset: externalOperations});
             })
+        };
+
+        $scope.createExternalOperation = function () {
+            $location.path("/external-operations/new");
         }
 
     }])

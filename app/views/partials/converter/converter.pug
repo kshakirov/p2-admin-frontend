@@ -1,0 +1,23 @@
+br
+br
+br
+.row
+    .col-lg-6.col-lg-offset-3
+        ul.breadcrumb
+            li Converters
+.row(ng-init="init()")
+    .col-lg-6
+        form(name="ConverterForm", role="form", id="ConverterForm")
+            div.form-group
+                label(for="converterName") Name
+                input.form-control(type="text",id="converterName", data-ng-model="converter.name")
+            div.form-group
+                label(for="converterLang") Language
+                input.form-control(type="text",id="converterLang", data-ng-model="converter.language")
+            div.form-group
+                label(for="code") Code
+                textarea.form-control(rows="10", id="code", ng-model="converter.code")
+            div.btn-group
+                button.btn.btn-default(type="submit", ng-click="updateConverter(converter)") APPLY
+                button.btn.btn-danger(type="submit", ng-click="deleteConverter(converter.id)", ng-disabled="!converter.id") DELETE
+                button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL

@@ -5,7 +5,8 @@ pimsApp.controller('AttributeController' ,[ '$scope', '$route', '$routeParams',
                                               $rootScope,
                                               AttributeModel) {
 
-    $scope.valueTypes = ["STRING", "ARRAY", "DECIMAL"];
+    $scope.valueTypes = ["STRING", "ARRAY", "DECIMAL", "INTEGER"];
+    $scope.frontendTypes = ["text", "number", "email", "password", "date", "select", "multiselect"];
     var entity_type_uuid = $rootScope.pims.entities.current.uuid;
     $scope.init = function () {
         var uuid = $routeParams.uuid;

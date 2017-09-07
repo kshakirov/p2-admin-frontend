@@ -16,6 +16,11 @@ br
                 select.form-control(id="attributeValueType",
                 ng-model="attribute.valueType",
                 ng-options="valueType as valueType for valueType in valueTypes")
+            div.form-group
+                label(for="frontendType") FrontEnd Type
+                select.form-control(id="frontendType",
+                ng-model="attribute.properties.frontendType",
+                ng-options="valueType as valueType for valueType in frontendTypes")
             div.btn-group
                 button.btn.btn-default(type="submit", ng-click="updateAttribute(attribute)") APPLY
                 button.btn.btn-danger(type="submit", ng-click="deleteAttribute(attribute.uuid)", ng-disabled="!attribute.uuid") DELETE

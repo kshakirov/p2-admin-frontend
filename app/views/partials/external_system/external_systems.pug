@@ -1,0 +1,16 @@
+br
+br
+br
+.row
+    .col-lg-6.col-lg-offset-3
+        ul.breadcrumb
+            li Attributes
+.row(ng-init="init()")
+    .col-lg-2
+        button.btn.btn-info(type="submit",ng-click="createExternalSystem()") ADD SYSTEM
+    .col-lg-10
+        table.table(ng-table="externalSystemsTableParams", show-filter="true")
+            tr(ng-repeat="sys in $data")
+                td(title="'Name'", filter="{ name: 'text'}",sortable="'name'")
+                    a(ng-href="external-systems/{{sys.id}}") {{sys.name}}
+                td(title="'Id'") {{sys.id}}

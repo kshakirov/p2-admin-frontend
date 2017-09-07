@@ -1,0 +1,16 @@
+br
+br
+br
+.row
+    .col-lg-6.col-lg-offset-3
+        ul.breadcrumb
+            li Converters
+.row(ng-init="init()")
+    .col-lg-2
+        button.btn.btn-info(type="submit",ng-click="createConverter()") ADD CONVERTER
+    .col-lg-10
+        table.table(ng-table="converterTableParams", show-filter="true")
+            tr(ng-repeat="converter in $data")
+                td(title="'Name'", filter="{ name: 'text'}",sortable="'name'")
+                    a(ng-href="converters/{{converter.id}}") {{converter.name}}
+                td(title="'Language'",filter="{ language: 'text'}",sortable="'language'") {{converter.language}}

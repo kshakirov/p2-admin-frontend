@@ -1,40 +1,7 @@
 'use strict';
 
-var pimsApp = angular.module('PimsApp', ['ngRoute', 'ui.sortable', 'PimsApp.services',  'ngTable','chart.js']);
+var pimsApp = angular.module('PimsApp', ['ngRoute', 'ui.sortable', 'PimsApp.services',  'ngTable','chart.js', 'ui.bootstrap']);
 
-pimsApp.controller('SystemConfigController',["$scope", "$rootScope","$http", function ($scope,  $rootScope, $http ) {
-
-    function choose_product(entities) {
-        var entity = entities.filter(function (entity) {
-            if (entity.name === 'Product') {
-                return entity;
-            }
-        });
-        return entity[0]
-    }
-
-    $scope.init = function () {
-        $http.get("/rest/entity-types/").then(function (entities) {
-            $rootScope.pims = {
-                entities: {
-                    current: choose_product(entities.data),
-                    list: entities.data
-                }
-            }
-        })
-    }
-}]);
-
-pimsApp.controller('DashboardController',["$scope", "$rootScope","$http", function ($scope,  $rootScope, $http ) {
-    $scope.labels =["Eating", "Drinking", "Sleeping", "Designing", "Coding", "Cycling", "Running"];
-
-    $scope.data_radar = [
-        [65, 59, 90, 81, 56, 55, 40],
-        [28, 48, 40, 19, 96, 27, 100]
-    ];
-    $scope.labels_doughnut = ["Download Sales", "In-Store Sales", "Mail-Order Sales"];
-    $scope.data_doughnut = [300, 500, 100];
-}]);
 
 pimsApp.config(["$routeProvider","$locationProvider", "ChartJsProvider",
     function ($routeProvider, $locationProvider, ChartJsProvider) {
@@ -71,6 +38,22 @@ pimsApp.config(["$routeProvider","$locationProvider", "ChartJsProvider",
         .when('/external-operations/:id', {
             templateUrl: 'partial/external_operation/external_operation',
             controller: 'ExternalOperationController'
+        })
+        .when('/external-systems', {
+            templateUrl: 'partial/external_system/external_systems',
+            controller: 'ExternalSystemListController'
+        })
+        .when('/external-systems/:id', {
+            templateUrl: 'partial/external_system/external_system',
+            controller: 'ExternalSystemController'
+        })
+        .when('/converters', {
+            templateUrl: 'partial/converter/converters',
+            controller: 'ConverterListController'
+        })
+        .when('/converters/:id', {
+            templateUrl: 'partial/converter/converter',
+            controller: 'ConverterController'
         })
         .when('/',{
             templateUrl: 'partial/dashboard/dashboard',
