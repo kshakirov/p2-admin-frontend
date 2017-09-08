@@ -5,6 +5,7 @@ pimsApp.controller('ConverterController' ,[ '$scope', '$route', '$routeParams',
                                                                      $rootScope,
                                                                      ConverterModel) {
 
+        $scope.types = ['Converter', 'Validator'];
         $scope.init = function () {
             var id = $routeParams.id;
             if(id === "new"){

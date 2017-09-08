@@ -11,9 +11,11 @@ var server = require('gulp-express');
 var cleanCSS = require('gulp-clean-css');
 
 gulp.task('minify-css', function () {
-    return gulp.src(['app/bower_components/bootstrap/dist/css/bootstrap.css',
+    return gulp.src(
+        ['app/bower_components/bootstrap/dist/css/bootstrap.css',
         'app/bower_components/ng-table-bundle/ng-table.css',
-        '/app/css/navbar_custom.css'])
+        'app/css/navbar_custom.css']
+    )
         .pipe(cleanCSS({compatibility: 'ie8'}))
         .pipe(concat('style.min.css'))
         .pipe(gulp.dest('app/dist/css'));

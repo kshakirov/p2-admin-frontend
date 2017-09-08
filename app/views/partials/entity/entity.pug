@@ -5,19 +5,15 @@ br
     .col-lg-6.col-lg-offset-3
         ul.breadcrumb
             li Entities
-.row(ng-init="init()")
-    .col-lg-6
-        form(name="EntityForm", role="form", id="EntityForm")
-            div.form-group
-                label(for="entityName") Name
-                input.form-control(type="text",id="entityName", data-ng-model="entity.name")
-            div.form-group
-                label(for="entityVersion") Versions
-                input.form-control(type="number",id="entityVersion", data-ng-model="entity.version")
-            div.form-group(ng-repeat="f in entity.attributes")
-                    label {{f.name}}
-                    input.form-control(type="{{f.type}}",data-ng-model="f.value")
-            div.btn-group
-                button.btn.btn-default(type="submit", ng-click="updateEntity(entity)") APPLY
-                button.btn.btn-danger(type="submit", ng-click="deleteEntity(entity.uuid)", ng-disabled="!entity.uuid") DELETE
-                button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL
+    .col-lg-4
+        p
+uib-tabset(active="active", ng-init="init()")
+    uib-tab(ng-repeat="tab in tabs",heading="{{tab.name}}" )
+        .row
+            .col-lg-6.col-lg
+                form(name="{{tab.name}}", role="form")
+                    div.form-group(ng-repeat="attr in tab.attributes")
+                        div
+                            label {{attr.name}}
+                            input.form-control(type="{{attr.properties.frontendType}}", data-ng-model="entity.attributes[attr.uuid].value")
+

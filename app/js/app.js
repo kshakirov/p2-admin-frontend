@@ -55,6 +55,15 @@ pimsApp.config(["$routeProvider","$locationProvider", "ChartJsProvider",
             templateUrl: 'partial/converter/converter',
             controller: 'ConverterController'
         })
+        .when('/transformation-schemata', {
+            templateUrl: 'partial/transformation_schema/transformation_schemata',
+            controller: 'TransformationSchemaListController'
+        })
+        .when('/transformation-schemata/:id', {
+            templateUrl: 'partial/transformation_schema/transformation_schema',
+            controller: 'TransformationSchemaController'
+        })
+
         .when('/',{
             templateUrl: 'partial/dashboard/dashboard',
             controller: 'DashboardController'

@@ -3,3 +3,5 @@
     color:#ffffff;
     border-radius:0;
 }
+.top-buffer { margin-top:20px; }
+.top-small-buffer { margin-top:10px; }

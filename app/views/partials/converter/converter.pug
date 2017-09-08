@@ -15,6 +15,11 @@ br
                 label(for="converterLang") Language
                 input.form-control(type="text",id="converterLang", data-ng-model="converter.language")
             div.form-group
+                label(for="type") Type
+                select.form-control(id="type",
+                ng-model="converter.customAttributes.type",
+                ng-options="type as type for type in types")
+            div.form-group
                 label(for="code") Code
                 textarea.form-control(rows="10", id="code", ng-model="converter.code")
             div.btn-group

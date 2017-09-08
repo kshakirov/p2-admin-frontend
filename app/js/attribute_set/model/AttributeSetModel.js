@@ -6,6 +6,13 @@ pimsServices.service('AttributeSetModel', ['$http', '$rootScope', function ($htt
         })
     };
 
+    this.search = function (et_uuid, params_string) {
+        return $http.get("/rest/entity-types/" + et_uuid
+            + "/attribute-sets/filter/dto?" + params_string).then(function (attribute_sets) {
+            return attribute_sets.data
+        })
+    };
+
     this.findOne = function (et_uuid, uuid) {
         return $http.get("/rest/entity-types/" + et_uuid
             + "/attribute-sets/" + uuid + '/dto').then(function (attribute_sets) {

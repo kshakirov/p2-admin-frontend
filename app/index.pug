@@ -37,6 +37,8 @@ block body
                                 a(href="/external-systems") External Systems
                             li
                                 a(href="/converters") Converters
+                            li
+                                a(href="/transformation-schemata") Transformation Schemata
     .container
         div(ng-controller="EntityTypeController" ng-init="init()")
             div(ng-view)
@@ -81,4 +83,8 @@ block body
     //script(src='js/converter/model/ConverterModel.js')
     //script(src='js/converter/ConverterController.js')
     //script(src='js/converter/ConverterListController.js')
+    //script(src='js/transformation_schema/model/TransformationSchemaModel.js')
+    //script(src='js/transformation_schema/service/TransformationSchemaService.js')
+    //script(src='js/transformation_schema/TransformationSchemaController.js')
+    //script(src='js/transformation_schema/TransformationSchemaListController.js')
     script(src='dist/js/all.min.js')

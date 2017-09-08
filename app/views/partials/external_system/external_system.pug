@@ -25,15 +25,19 @@ br
                 select.form-control(id="entity_types", ng-model="selected_entity_type",
                 ng-options="entity_type.name for entity_type in entity_types",
                 ng-change="createEntityTypeEntry(selected_entity_type)")
+br
+br
+br
 .row
     .col-lg-6
-        h4 Entity Types
+        h5.text-info Allowed  Entity Types
         .list-group
             a.list-group-item(href="#",ng-repeat="(key,value) in external_system.customAttributes.entities") {{value.name}}
                 span.glyphicon.glyphicon-remove.pull-right(ng-click="removeEntity(key)")
                 span
                 span.glyphicon.glyphicon-edit.pull-right(ng-click="editEntity(key)")
     .col-lg-6
+        h5.text-info Edit  Entity Type
         form(role="form",name="helpForm")
             div.form-group
                 label(for="itemName") Entity Type Name
@@ -50,6 +54,10 @@ br
             div.form-group
                 label(for="read.method") Read HTTP METHOD
                 input.form-control(type="text",id="read.method", data-ng-model="item[item_key].read.method")
+            div.form-group
+                label(for="entity_types") Trigger Type
+                select.form-control(id="trigger", ng-model="item[item_key].trigger",
+                ng-options="trigger for trigger in triggers")
             div.btn-group
                 button.btn.btn-default(type="submit", ng-click="saveEntityTypeEntry(item)") SAVE
-                button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL
+                button.btn.btn-default(type="submit", ng-click="emptyEntityTypeEntry()") Empty

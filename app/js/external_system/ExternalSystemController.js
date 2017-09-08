@@ -1,12 +1,13 @@
 pimsApp.controller('ExternalSystemController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'ExternalSystemModel',
-    'EntityTypeResolver' ,'EntityTypeModel', function ($scope, $route, $routeParams,
-                                       $location,
-                                       $http,
-                                       $rootScope,
-                                       ExternalSystemModel,
-                                    EntityTypeResolver, EntityTypeModel) {
+    'EntityTypeResolver', 'EntityTypeModel', function ($scope, $route, $routeParams,
+                                                       $location,
+                                                       $http,
+                                                       $rootScope,
+                                                       ExternalSystemModel,
+                                                       EntityTypeResolver, EntityTypeModel) {
 
+        $scope.triggers = ["ON_DEMAND", "CRON", "AUTOMATIC", "NEVER"];
         $scope.init = function () {
             var id = $routeParams.id;
             if (id === "new") {
@@ -17,7 +18,7 @@ pimsApp.controller('ExternalSystemController', ['$scope', '$route', '$routeParam
                 ExternalSystemModel.findOne(id).then(function (external_system) {
                     $scope.external_system = external_system;
                 })
-            };
+            }
             EntityTypeModel.findAll().then(function (entity_types) {
                 $scope.entity_types = entity_types;
             })
@@ -36,21 +37,23 @@ pimsApp.controller('ExternalSystemController', ['$scope', '$route', '$routeParam
         };
 
         $scope.createEntityTypeEntry = function (entityType) {
-           $scope.item  = EntityTypeResolver.initItem(entityType);
-           $scope.item_key = entityType.uuid;
+            $scope.item = EntityTypeResolver.initItem(entityType);
+            $scope.item_key = entityType.uuid;
 
         };
 
         $scope.removeEntity = function (key) {
-            console.log("Deleted" + key);
+            delete $scope.external_system.customAttributes.entities[key];
         };
 
         $scope.editEntity = function (key) {
-            console.log("Edited " +key);
+            $scope.item = {};
+            $scope.item[key] = $scope.external_system.customAttributes.entities[key];
+            $scope.item_key = key;
         };
 
         $scope.saveEntityTypeEntry = function (item) {
-            if(!$scope.external_system.customAttributes.entities) {
+            if (!$scope.external_system.customAttributes.entities) {
                 $scope.external_system.customAttributes.entities = {};
             }
             $scope.external_system.customAttributes.entities[$scope.item_key]
