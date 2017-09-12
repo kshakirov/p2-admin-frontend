@@ -1,7 +1,7 @@
 pimsApp.controller('ExternalOperationController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'ExternalOperationModel',
     'ExternalOperationService', 'EntityTypeModel', 'ConverterModel',
-    'NgTableParams',
+    'NgTableParams', 'TransformationSchemaModel',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -10,12 +10,11 @@ pimsApp.controller('ExternalOperationController', ['$scope', '$route', '$routePa
               ExternalOperationService,
               EntityTypeModel,
               ConverterModel,
-              NgTableParams) {
+              NgTableParams,
+              TransformationSchemaModel) {
 
-        $scope.reloaded = true;
         $scope.init = function () {
             var id = $routeParams.id;
-            $scope.triplesArray = [];
             if (id === "new") {
                 ExternalOperationModel.createPipeline().then(function (external_operation) {
                     $scope.external_operation = external_operation;
@@ -23,30 +22,33 @@ pimsApp.controller('ExternalOperationController', ['$scope', '$route', '$routePa
             } else {
                 ExternalOperationModel.findOne(id).then(function (external_operation) {
                     $scope.external_operation = external_operation;
+                    TransformationSchemaModel.findAll().then(function (schemata) {
+                        $scope.transformation_schemata = schemata;
+                        EntityTypeModel.findAll().then(function (entity_types) {
+                            $scope.entity_types = entity_types;
+                            ExternalOperationService.dto_transformation_schemata(external_operation, schemata,
+                                entity_types)
+                        });
+                    });
                 });
-                EntityTypeModel.findAll().then(function (entity_types) {
-                    $scope.entity_types = entity_types;
-                });
-                ConverterModel.findAll().then(function (converters) {
-                    $scope.converters = converters;
-                })
-            };
-            $scope.converterAttributeTableParams = new NgTableParams({}, {dataset: $scope.triplesArray});
+            }
         };
 
         $scope.changedEntityType = function (entity_type) {
-            ExternalOperationService.initAttributes(entity_type.uuid).then(function (attributes) {
-                $scope.attributes = attributes;
-            })
-        }
+            if (!$scope.external_operation.hasOwnProperty('transformationSchemata')) {
+                $scope.external_operation.transformationSchemata = {}
+            }
+            $scope.external_operation
+                .transformationSchemata[entity_type.uuid] = entity_type;
+        };
 
         $scope.updateExternalOperation = function (external_operation) {
-            ExternalOperationService.update_external_system(external_operation);
+            var eo = ExternalOperationService.update_transformation_schemata(external_operation);
             if (external_operation.hasOwnProperty("id")) {
-                ExternalOperationModel.save(external_operation.id, external_operation).then(function (response) {
+                ExternalOperationModel.save(eo.id, eo).then(function (response) {
                 })
             } else {
-                ExternalOperationModel.create(external_operation).then(function (response) {
+                ExternalOperationModel.create(eo).then(function (response) {
                 })
             }
         };
@@ -56,13 +58,5 @@ pimsApp.controller('ExternalOperationController', ['$scope', '$route', '$routePa
         };
         $scope.cancel = function () {
             $location.path("/external-operations");
-        }
-
-        $scope.addConverterTriple = function (entity, attribute, converter) {
-            $scope.reloaded = false;
-            $scope.triplesArray.push(ExternalOperationService
-                .createTripleArrayEntry(entity, attribute, converter));
-            $scope.converterAttributeTableParams = new NgTableParams({}, {dataset: $scope.triplesArray});
-            $scope.reloaded = true;
         }
     }]);

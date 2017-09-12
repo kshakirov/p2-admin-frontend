@@ -1,0 +1,27 @@
+.row.top-buffer
+    .col-lg-6.col-lg-offset-3
+        ul.breadcrumb
+            li Advanced Search
+.row(ng-init="init()")
+    .col-lg-10.col-lg-offset-2
+        table.table
+            thead
+                tr
+                    th(ng-repeat="attr in layout") {{attr.name}}
+            tbody
+                tr(ng-repeat="entity in entities")
+                    td(ng-repeat="attr in layout") {{entity[attr.uuid]}}
+.row
+    .col-lg-6.col-lg-offset-2
+        nav(aria-label="Page navigation example")
+            ul.pagination
+                li.page-item(ng-class = "{'active': !pagination.first, 'disabled': pagination.first }")
+                    a.page-link(ng-class="", ng-click="getPage(pagination.currentPage - 1)", href="") Previous
+                li.page-item
+                    a.page-link(href="#", ng-click="getPage(0)") 1
+                li.page-item
+                    a.page-link(href="#") Page: {{pagination.currentPage + 1}}
+                li.page-item
+                    a.page-link(href="#", ng-click="getPage(pagination.totalPages - 1)") {{pagination.totalPages}}
+                li.page-item(ng-class = "{'active': !pagination.last, 'disabled': pagination.last }")
+                    a.page-link(ng-click="getPage(pagination.currentPage + 1)",href="") Next

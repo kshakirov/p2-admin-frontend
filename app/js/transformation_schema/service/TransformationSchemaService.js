@@ -26,8 +26,7 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
             var inn = schema.in.map(function (i) {
                 return {
                     uuid: i.uuid,
-                    name: i.name,
-                    path: i.name
+                    path: i.uuid
                 }
             });
             var converters = schema.converters.map(function (c) {

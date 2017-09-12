@@ -1,6 +1,7 @@
 let express = require('express'),
     routes = require('./routes'),
     api = require('./routes/api'),
+    pims_routes= require('./routes/pims2_router'),
     http = require('http'),
     path = require('path'),
     bodyParser = require('body-parser'),
@@ -62,14 +63,11 @@ app.use('/sync-module',sync_module_proxy);
 app.use(bodyParser.urlencoded({'extended':'true'}));            // parse application/x-www-form-urlencoded
 app.use(bodyParser.json());                                     // parse application/json
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
-function onProxyReq(proxyReq, req, res) {
-    // add custom header to request
-    proxyReq.setHeader('x-added', 'foobar');
-    // or log the req
-}
 
-let  pims2_routers = require('./routes/pims2_router');
-app.use('/pims2', pims2_routers);
+
+//let elastic_controller = require("./pims_app/controller/pims_elastic");
+app.use('/search/', pims_routes);
+//app.post('/search', elastic_controller.findAll);
 app.get('/', routes.index);
 app.get('/partial/:type/:name', routes.partial);
 // redirect all others to the index (HTML5 history)

@@ -21,7 +21,7 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
             } else {
                 TransformationSchemaModel.findOne(id).then(function (schema) {
                     $scope.schema = schema;
-                    $scope.transformation_schema = schema.value.schema || [];
+                    $scope.transformation_schema = schema.schema.schema || [];
                     var entity_type_id = schema.customAttributes.entity.uuid;
                     AttributeModel.findAll(entity_type_id).then(function (attributes) {
                         $scope.attributes = attributes;
@@ -37,7 +37,7 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
         };
         
         $scope.updateTransformationSchema = function (schema) {
-            schema.value ={
+            schema.schema ={
                 schema: TransformationSchemaService
                 .prepTransformationSchema($scope.transformation_schema)
             }

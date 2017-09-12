@@ -31,6 +31,10 @@ pimsApp.config(["$routeProvider","$locationProvider", "ChartJsProvider",
             templateUrl: 'partial/entity/entities',
             controller: 'EntityListController'
         })
+        .when('/search', {
+            templateUrl: 'partial/search/search',
+            controller: 'AdvancedSearchController'
+        })
         .when('/external-operations', {
             templateUrl: 'partial/external_operation/external_operations',
             controller: 'ExternalOperationListController'

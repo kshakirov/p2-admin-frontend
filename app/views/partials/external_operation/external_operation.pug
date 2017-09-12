@@ -25,7 +25,7 @@ uib-tabset(active="active", ng-init="init()")
                 button.btn.btn-default(type="submit", ng-click="updateExternalOperation(external_operation)") APPLY
                 button.btn.btn-danger(type="submit", ng-click="deleteExternalOperation(external_operation.id)", ng-disabled="!external_operation.id") DELETE
                 button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL
-    uib-tab(index="1", heading="Converters")
+    uib-tab(index="1", heading="Transformation Schemata")
         .row
            .col-lg-4
                 form(role="form",name="helpForm")
@@ -35,25 +35,18 @@ uib-tabset(active="active", ng-init="init()")
                         ng-options="entity.name for entity in entity_types",
                         ng-change="changedEntityType(selected_entity)")
            .col-lg-4
-                form(role="form",name="helpForm")
-                    div.form-group
-                        label(for="attributes") Attributes
-                        select.form-control(id="attributes", ng-model="selected_attribute",
-                        ng-options="attribute.name for attribute in attributes",
-                        ng-change="addAttribute(selected_attribute)")
+
            .col-lg-4
-                form(role="form",name="helpForm")
-                    div.form-group
-                        label(for="converters") Converters
-                        select.form-control(id="converters", ng-model="selected_converter",
-                        ng-options="converter.name for converter in converters",
-                        ng-change="addConverterTriple(selected_entity, selected_attribute, selected_converter)")
-           .col-lg-10(ng-if="reloaded")
-                table.table(ng-table="converterAttributeTableParams", show-filter="true")
-                    tr(ng-repeat="item in $data")
-                        td(title="'Entity Type'", filter="{ entityName: 'text'}",sortable="'entityName'")
-                            a(ng-href="attributes/{{attr.uuid}}") {{item.entityName}}
-                        td(title="'Attribute Name'",filter="{ attributeName: 'text'}",sortable="'attributeName'") {{item.attributeName}}
-                        td(title="'Converter Name'",filter="{ converterName: 'text'}",sortable="'converterName'") {{item.converterName}}
-    uib-tab(index="2", heading="Mappings")
-        p Mappings
+
+           .col-lg-6-col-lg-offset-2
+                table.table()
+                    tr(ng-repeat="(key, item) in external_operation.transformationSchemata")
+                        td        {{item.name}}
+                        td
+                            form( role="form", id="{{item.uuid}}")
+                                div.form-group
+                                    select.form-control(id="mapping{{item}})",
+                                    ng-model="item.mapping.id",
+                                    ng-options="mapping.id as mapping.name  for mapping in transformation_schemata")
+
+

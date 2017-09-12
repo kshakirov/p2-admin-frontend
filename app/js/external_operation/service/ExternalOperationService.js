@@ -1,37 +1,40 @@
 pimsServices.service('ExternalOperationService', ['AttributeModel',
     function (AttributeModel) {
-        this.update_external_system = function (external_operation) {
-            external_operation.sourceSystem.id =
-                external_operation.sourceSystem.frontendInfo.selected.id;
-            external_operation.targetSystem.id =
-                external_operation.targetSystem.frontendInfo.selected.id;
-        };
+        this.update_transformation_schemata = function (external_operation) {
 
-        this.initAttributes = function (entity_type_uuid) {
-            return AttributeModel.findAll(entity_type_uuid).then(function (attributes) {
-                return attributes;
-            });
-        };
+            var keys = Object.keys(external_operation.transformationSchemata),
+                ts = {},
+                eo = {};
+            angular.copy(external_operation,eo);
+            var old_ts = eo.transformationSchemata;
 
-        this.createTripleArrayEntry = function (entity, attribute, converter) {
-            return {
-                entityName: entity.name,
-                entityUUID: entity.uuid,
-                attributeName: attribute.name,
-                attributeUUID: attribute.uuid,
-                converterName: converter.name,
-                converterId: converter.id
-            }
-        };
-        this.updateConverters = function (tripleArray) {
-            var tripleHash = {};
-            tripleArray.map(function (tirple) {
-                if (tripleHash[triple.entityUUID]) {
-                    tripleHash[triple.entityUUID] = {};
-                }
-                tripleHash[triple.entityUUID][tirple.attributeUUID] =
-                    tirple[tripleHash.converterId];
+            keys.map(function (key) {
+                ts[key] = old_ts[key].mapping.id;
             })
+            eo.transformationSchemata = ts;
+            return eo;
+        };
+
+        this.dto_transformation_schemata = function (external_operation, transformation_schemata, entities) {
+            var eo = external_operation,
+                ts = transformation_schemata,
+                nts = {},
+                keys;
+            keys = Object.keys(eo.transformationSchemata);
+            keys.map(function (key) {
+                nts[key] = entities.find(function (e) {
+                    if(e.uuid==key){
+                        return e
+                    }
+                });
+                nts[key].mapping = transformation_schemata.find(function (s) {
+                    if(s.id==eo.transformationSchemata[key]){
+                        return s;
+                    }
+                })
+
+            });
+            eo.transformationSchemata = nts;
         }
 
     }]);
