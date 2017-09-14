@@ -1,12 +1,15 @@
-var amqp = require('amqplib/callback_api');
+let amqp = require('amqplib/callback_api'),
+    config = require('config'),
+    pimsConfig = config.get('config');
 
-amqp.connect('amqp://localhost', function(err, conn) {
-    conn.createChannel(function(err, ch) {
-        var q = 'hello';
+let msg = "{\"name\":\"PERFORM_EXTERNAL_OPERATION\", \"exteral_operation_id\":5}";
 
-        ch.assertQueue(q, {durable: false});
-        // Note: on Node 6 Buffer.from(msg) should be used
-        ch.sendToQueue(q, new Buffer('Hello World!'));
-        //console.log(`Message [${dd}]`);
+
+amqp.connect(`amqp://${pimsConfig.rabbitMq.url}`, function (err, conn) {
+    conn.createChannel(function (err, ch) {
+        let ex = pimsConfig.rabbitMq.pimsExchange,
+            routingKey = pimsConfig.rabbitMq.decisionRoutingKey;
+        ch.publish(ex, routingKey, new Buffer(msg));
+        console.log(" [x] Sent %s", msg);
     });
 });

@@ -1,7 +1,7 @@
 let elasticsearch = require('elasticsearch'),
-    elastic_index = "pims_sync_demo",
     config = require('config'),
-    pimsConfig = config.get('config');
+    pimsConfig = config.get('config'),
+    elastic_index = pimsConfig.elasticSearch.indexName;
 
 let client = new elasticsearch.Client({
     host: pimsConfig.elasticSearch.url,

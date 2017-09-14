@@ -20,10 +20,8 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
 
         $scope.runCustomSyncOperation = function (custom_sync_operation) {
             var data = {
-                customSyncOperation: custom_sync_operation.id,
-                entityTypeId: custom_sync_operation.entityTypeId,
-                code: custom_sync_operation.code,
-                pipeline: custom_sync_operation.pipeline
+                "name": "PERFORM_EXTERNAL_OPERATION",
+                "exteral_operation_id": 5
             };
             console.log(data);
             NotificationModel.notify(data).then(function (response) {
