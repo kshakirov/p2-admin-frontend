@@ -19,5 +19,9 @@ pimsApp.controller('EntityTypeController',["$scope", "$rootScope","$http",
                 }
             }
         })
+    };
+
+    $scope.selectEntity = function () {
+        console.log("selectEntity")
     }
 }]);

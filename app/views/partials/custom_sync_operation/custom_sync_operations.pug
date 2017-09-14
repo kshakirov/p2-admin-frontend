@@ -1,0 +1,13 @@
+.row.top-buffer
+    .col-lg-6.col-lg-offset-3
+        ul.breadcrumb
+            li Custom Sync Operations
+.row(ng-init="init()")
+    .col-lg-2
+        button.btn.btn-info(type="submit",ng-click="createExternalSystem()") ADD OPERATION
+    .col-lg-10
+        table.table(ng-table="customSyncOperationsTableParams", show-filter="true")
+            tr(ng-repeat="cso in $data")
+                td(title="'Name'", filter="{ name: 'text'}",sortable="'name'")
+                    a(ng-href="custom-sync-operations/{{cso.id}}") {{cso.name}}
+                td(title="'CODE'",filter="{ code: 'text'}",sortable="'code'") {{cso.code}}

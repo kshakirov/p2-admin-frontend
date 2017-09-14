@@ -42,14 +42,18 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
                 .prepTransformationSchema($scope.transformation_schema)
             }
             TransformationSchemaModel.update(schema).then(function () {
-
-            }) 
+            })
         };
 
         $scope.addSchemaItem = function (out_attribute_name) {
             $scope.transformation_schema.push(
                 TransformationSchemaService.addSchemaItem(out_attribute_name)
             )
+        };
+
+        $scope.removeSchemaItem = function (index) {
+            console.log(index);
+            $scope.transformation_schema.splice(index,1);
         };
 
         $scope.addItemConverter = function (item) {
@@ -62,6 +66,11 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
 
         $scope.addItemAttribute = function (item) {
             TransformationSchemaService.addItemAttribute(item)
+        };
+
+        $scope.copyUUID = function (item) {
+            console.log(item.in[0].uuid)
+            item.out = item.in[0].uuid;
         }
 
     }]);

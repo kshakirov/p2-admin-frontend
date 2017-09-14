@@ -56,6 +56,12 @@ pimsApp.controller('ExternalOperationController', ['$scope', '$route', '$routePa
             ExternalOperationModel.delete(id).then(function (response) {
             })
         };
+
+        $scope.removeSchemaItem = function (key) {
+            console.log(key);
+            delete $scope.external_operation.transformationSchemata[key]
+        };
+
         $scope.cancel = function () {
             $location.path("/external-operations");
         }

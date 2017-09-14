@@ -38,6 +38,7 @@ uib-tabset(active="active", ng-init="init()")
 
            .col-lg-4
 
+        .row
            .col-lg-6-col-lg-offset-2
                 table.table()
                     tr(ng-repeat="(key, item) in external_operation.transformationSchemata")
@@ -48,5 +49,10 @@ uib-tabset(active="active", ng-init="init()")
                                     select.form-control(id="mapping{{item}})",
                                     ng-model="item.mapping.id",
                                     ng-options="mapping.id as mapping.name  for mapping in transformation_schemata")
+                        td(align="right")
+                           form(role="form")
+                               .form-group
+                                   a.btn.btn-danger.btn-xs(ng-click="removeSchemaItem(key)")
+                                       span.glyphicon.glyphicon-remove
 
 

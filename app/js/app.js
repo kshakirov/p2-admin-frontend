@@ -43,6 +43,14 @@ pimsApp.config(["$routeProvider","$locationProvider", "ChartJsProvider",
             templateUrl: 'partial/external_operation/external_operation',
             controller: 'ExternalOperationController'
         })
+        .when('/custom-sync-operations', {
+            templateUrl: 'partial/custom_sync_operation/custom_sync_operations',
+            controller: 'CustomSyncOperationListController'
+        })
+        .when('/custom-sync-operations/:id', {
+            templateUrl: 'partial/custom_sync_operation/custom_sync_operation',
+            controller: 'CustomSyncOperationController'
+        })
         .when('/external-systems', {
             templateUrl: 'partial/external_system/external_systems',
             controller: 'ExternalSystemListController'
@@ -78,3 +86,4 @@ pimsApp.config(["$routeProvider","$locationProvider", "ChartJsProvider",
     // configure html5 to get links working on jsfiddle
     $locationProvider.html5Mode(true);
 ChartJsProvider.setOptions({ colors : [ '#803690', '#00ADF9', '#DCDCDC', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'] })}]);
+

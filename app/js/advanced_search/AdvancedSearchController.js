@@ -11,6 +11,7 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
         var entity_type_uuid = 'fd5b36e3-90a3-493b-a37d-c4f4262aec22',
             query = 'properties.role=search';
         $scope.page_size = 10;
+        $scope.search_params = {};
         $scope.search_query = {
             size: $scope.page_size,
             from: 0,
@@ -56,6 +57,22 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
             }, function (error) {
                 console.log(error);
             })
+        };
+
+        $scope.search = function () {
+            console.log($scope.search_params);
+            $scope.search_query.from = 0;
+            $scope.search_query.query = $scope.search_params;
+            return paginate_entites($scope.search_query).then(function (response) {
+                $scope.entities = response.content;
+                $scope.pagination = new PaginationObject(response)
+
+            })
+        };
+
+        $scope.redirectToEntity = function (id) {
+            console.log(id);
+            $location.url('/entities/' + id)
         }
     }]);
 

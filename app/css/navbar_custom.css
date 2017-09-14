@@ -5,3 +5,8 @@
 }
 .top-buffer { margin-top:20px; }
 .top-small-buffer { margin-top:10px; }
+
+.navbar-right-custom {
+    float: right !important;
+    margin-right: 60px;
+}

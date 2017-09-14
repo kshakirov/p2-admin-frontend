@@ -9,5 +9,5 @@ html(ng-app="PimsApp")
     link(rel='stylesheet', href='/bower_components/ng-table-bundle/ng-table.css')
     link(rel='stylesheet', href='/css/navbar_custom.css')
     //link(rel='stylesheet', href='/dist/css/style.min.css')
-  body
+  body(ng-controller="EntityTypeController" ng-init="init()")
     block body

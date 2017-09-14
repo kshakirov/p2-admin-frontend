@@ -9,7 +9,7 @@ pimsServices.service('ExternalOperationService', ['AttributeModel',
             var old_ts = eo.transformationSchemata;
 
             keys.map(function (key) {
-                ts[key] = old_ts[key].mapping.id;
+                ts[key] = {id: old_ts[key].mapping.id};
             })
             eo.transformationSchemata = ts;
             return eo;
@@ -28,7 +28,7 @@ pimsServices.service('ExternalOperationService', ['AttributeModel',
                     }
                 });
                 nts[key].mapping = transformation_schemata.find(function (s) {
-                    if(s.id==eo.transformationSchemata[key]){
+                    if(s.id==eo.transformationSchemata[key].id){
                         return s;
                     }
                 })

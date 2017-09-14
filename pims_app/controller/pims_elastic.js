@@ -14,6 +14,21 @@ function prep_response(response, from, size) {
     r.first = from==0;
     r.last = r.totalPages == from;
     return r;
+};
+
+
+function build_query(query) {
+    let bl = {bool: {}},
+        keys = Object.keys(query);
+     bl.bool.must = keys.map(function (k) {
+        let q = {
+
+        };
+        q.match = {  };
+        q.match[k] = query[k];
+        return q
+    })
+    return bl;
 }
 
 function findAll(req, res) {
@@ -22,10 +37,12 @@ function findAll(req, res) {
         from = req.body.from,
         size = req.body.size;
     if (req.body.query != null) {
-        query = req.body.query
+        query = build_query(req.body.query);
     }
     return elastic_model.findAll(type, query, from * size, size).then((response) => {
         res.json(prep_response(response, from, size));
+    }, function (error) {
+        res.send(error)
     })
 }
 

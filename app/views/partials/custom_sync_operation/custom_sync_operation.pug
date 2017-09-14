@@ -1,0 +1,18 @@
+.row.top-buffer
+    .col-lg-6.col-lg-offset-3
+        ul.breadcrumb
+            li Custom Sync Operation
+.row(ng-init="init()")
+    .col-lg-6
+        form(name="CustomSyncOperationForm", role="form", id="CustomSyncOperationForm")
+            div.form-group
+                label Name
+                input.form-control(type="text", data-ng-model="custom_sync_operation.name")
+            div.form-group
+                label Code
+                input.form-control(type="text", data-ng-model="custom_sync_operation.code")
+            div.btn-group
+                button.btn.btn-default(type="submit", ng-click="updateCustomSyncOperation(custom_sync_operation)") APPLY
+                button.btn.btn-default(type="submit", ng-click="runCustomSyncOperation(custom_sync_operation)") RUN
+                button.btn.btn-danger(type="submit", ng-click="deleteCustomSyncOperation(custom_sync_operation.id)", ng-disabled="!external_system.id") DELETE
+                button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL
