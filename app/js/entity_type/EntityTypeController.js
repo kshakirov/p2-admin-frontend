@@ -10,6 +10,8 @@ pimsApp.controller('EntityTypeController',["$scope", "$rootScope","$http",
         return entity[0]
     }
 
+    $rootScope.message = {};
+
     $scope.init = function () {
         EntityTypeModel.findAll().then(function (entities) {
             $rootScope.pims = {

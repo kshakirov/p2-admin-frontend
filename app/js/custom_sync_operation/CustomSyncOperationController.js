@@ -25,7 +25,7 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
             };
             console.log(data);
             NotificationModel.notify(data).then(function (response) {
-
+                $rootScope.message.success = true;
             })
 
         }

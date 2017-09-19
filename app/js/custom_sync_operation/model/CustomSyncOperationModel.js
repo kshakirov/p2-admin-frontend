@@ -3,10 +3,12 @@ pimsServices.service('CustomSyncOperationModel', ['$http', '$rootScope', '$timeo
 
     var operations = [
         {
-            name: "Sync All Products",
+            name: "Sync All Products 2 Elastic",
             code: "All",
-            pipeline: 5,
-            entityTypeId: "fd5b36e3-90a3-493b-a37d-c4f4262aec22",
+            pipe: "Pims 2 Elastic Pipe",
+            schema: "Default",
+            entityTypeId: "Product",
+            filter: "price > 100",
             id: 1
         }
     ];

@@ -11,6 +11,7 @@ function notifyModification(req, res) {
                 routingKey = pimsConfig.rabbitMq.decisionRoutingKey;
             ch.publish(ex, routingKey, new Buffer(msg));
             console.log(" [x] Sent %s",msg);
+            res.json({success: true})
         });
     });
 }

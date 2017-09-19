@@ -3,7 +3,8 @@
     color:#ffffff;
     border-radius:0;
 }
-.top-buffer { margin-top:20px; }
+.top-buffer { margin-top:30px; }
+.top-message-buffer { margin-top:80px; }
 .top-small-buffer { margin-top:10px; }
 
 .navbar-right-custom {
