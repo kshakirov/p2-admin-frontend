@@ -7,6 +7,7 @@
 		"body-parser": "^1.17.2",
 		"bower": "^1.8.2",
 		"config": "^1.26.2",
+		"csv-write-stream": "^2.0.0",
 		"datetime": "0.0.3",
 		"elasticsearch": "^13.3.1",
 		"errorhandler": "^1.5.0",
@@ -22,9 +23,12 @@
 		"gulp-watch-pug": "^1.0.0",
 		"http-proxy-middleware": "^0.17.4",
 		"jade": "^1.11.0",
+		"json-2-csv": "^2.1.1",
 		"ldapjs": "^1.0.1",
 		"logger": "0.0.1",
 		"mkdir": "0.0.2",
+		"node-rest-client": "^3.1.0",
+		"node-rest-client-promise": "^3.0.0",
 		"pug": "^2.0.0-rc.3"
 	},
 	"devDependencies": {
