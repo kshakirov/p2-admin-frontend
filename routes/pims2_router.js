@@ -13,7 +13,7 @@ router.post('/notify', function (req, res) {
 });
 
 
-router.post('/csv/write', function (req, res) {
+router.post('/csv/write/:filename', function (req, res) {
     csv_controller.writeCsv(req, res);
 });
 

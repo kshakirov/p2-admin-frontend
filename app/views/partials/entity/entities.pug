@@ -9,6 +9,8 @@ br
     .col-lg-2
         button.btn.btn-info(type="submit",ng-click="createEntity()") ADD ENTITY
     .col-lg-10
+        span
+            us-spinner(spinner-key="spinner-1", spinner-start-active="true")
         table.table
             thead
                 tr
@@ -22,7 +24,7 @@ br
 .row
     .col-lg-6.col-lg-offset-2
         nav(aria-label="Page navigation example")
-            ul.pagination
+            ul.pagination(ng-if="pagination.totalPages")
                 li.page-item(ng-class = "{'active': !pagination.first, 'disabled': pagination.first }")
                     a.page-link(ng-class="", ng-click="getPage(pagination.currentPage - 1)", href="") Previous
                 li.page-item

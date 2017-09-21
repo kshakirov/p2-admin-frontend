@@ -5,7 +5,7 @@ let fs = require('fs'),
 
 
 function writeCsv(req, res) {
-    let fileName = req.body.filename,
+    let fileName = req.params.filename,
         data = req.body.data;
 
     if (!fs.existsSync(fileName))

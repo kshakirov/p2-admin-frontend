@@ -20,14 +20,14 @@ pimsServices.service('ExternalOperationModel', ['$http', '$rootScope', function 
     };
 
     this.create = function (external_operation) {
-        return $http.post("/sync-module/external-operations/create", external_operation)
+        return $http.post("/sync-module/external-operations/new", external_operation)
             .then(function (response) {
                 return response.data.externalOperation;
             })
     };
 
     this.createPipeline = function () {
-        return $http.get("/sync-module/external-operations/create")
+        return $http.get("/sync-module/external-operations/new")
             .then(function (response) {
                 return response.data.externalOperation;
             })

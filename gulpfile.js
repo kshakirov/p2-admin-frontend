@@ -49,6 +49,7 @@ gulp.task('scripts', function() {
         'app/bower_components/chart.js/dist/Chart.js',
         'app/bower_components/angular-chart.js/angular-chart.js',
         'app/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
+        'app/bower_components/angular-spinner/dist/angular-spinner.js',
         'app/js/app.js',
         'app/js/services.js',
         'app/js/**/*.js'

@@ -13,7 +13,7 @@ pimsServices.service('ExternalSystemModel', ['$http', '$rootScope', function ($h
     };
 
     this.save = function (external_system) {
-        return $http.post("/sync-module/external-systems", external_system)
+        return $http.post("/sync-module/external-systems/new", external_system)
             .then(function (response) {
                 return response.data
             })

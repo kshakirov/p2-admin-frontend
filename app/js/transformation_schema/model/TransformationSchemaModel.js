@@ -14,7 +14,7 @@ pimsServices.service('TransformationSchemaModel', ['$http', '$rootScope',
         };
 
         this.save = function (mapping) {
-            return $http.post("/sync-module/mappings", mapping)
+            return $http.post("/sync-module/mappings/new", mapping)
                 .then(function (response) {
                     return response.data
                 })

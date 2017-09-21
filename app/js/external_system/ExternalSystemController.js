@@ -25,10 +25,15 @@ pimsApp.controller('ExternalSystemController', ['$scope', '$route', '$routeParam
         };
 
         $scope.updateExternalSystem = function (external_system) {
-            return ExternalSystemModel.update(external_system).then(function (response) {
-                console.log(external_system);
-                return response
-            })
+            if (external_system.id) {
+                return ExternalSystemModel.update(external_system).then(function (response) {
+                    return response
+                })
+            } else {
+                return ExternalSystemModel.save(external_system).then(function (response) {
+                    return response
+                })
+            }
         };
 
         $scope.deleteExternalSystem = function (id) {

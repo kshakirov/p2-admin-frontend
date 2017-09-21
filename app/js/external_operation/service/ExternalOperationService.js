@@ -35,6 +35,11 @@ pimsServices.service('ExternalOperationService', ['AttributeModel',
 
             });
             eo.transformationSchemata = nts;
+        };
+
+        this.dto_external_systems = function (external_operation) {
+            external_operation.sourceSystem.id = external_operation.sourceSystem.frontendInfo.selected.id;
+            external_operation.targetSystem.id = external_operation.targetSystem.frontendInfo.selected.id;
         }
 
     }]);

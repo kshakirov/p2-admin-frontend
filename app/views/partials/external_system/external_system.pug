@@ -1,7 +1,4 @@
-br
-br
-br
-.row
+.row.top-buffer
     .col-lg-6.col-lg-offset-3
         ul.breadcrumb
             li External Systems
@@ -25,10 +22,7 @@ br
                 select.form-control(id="entity_types", ng-model="selected_entity_type",
                 ng-options="entity_type.name for entity_type in entity_types",
                 ng-change="createEntityTypeEntry(selected_entity_type)")
-br
-br
-br
-.row
+.row.top-buffer
     .col-lg-6
         h5.text-info Allowed  Entity Types
         .list-group

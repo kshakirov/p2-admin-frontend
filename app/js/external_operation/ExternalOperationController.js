@@ -18,7 +18,15 @@ pimsApp.controller('ExternalOperationController', ['$scope', '$route', '$routePa
             if (id === "new") {
                 ExternalOperationModel.createPipeline().then(function (external_operation) {
                     $scope.external_operation = external_operation;
-                })
+                });
+                TransformationSchemaModel.findAll().then(function (schemata) {
+                    $scope.transformation_schemata = schemata;
+                    EntityTypeModel.findAll().then(function (entity_types) {
+                        $scope.entity_types = entity_types;
+                        ExternalOperationService.dto_transformation_schemata(external_operation, schemata,
+                            entity_types)
+                    });
+                });
             } else {
                 ExternalOperationModel.findOne(id).then(function (external_operation) {
                     $scope.external_operation = external_operation;
@@ -44,6 +52,7 @@ pimsApp.controller('ExternalOperationController', ['$scope', '$route', '$routePa
 
         $scope.updateExternalOperation = function (external_operation) {
             var eo = ExternalOperationService.update_transformation_schemata(external_operation);
+            ExternalOperationService.dto_external_systems(eo);
             if (external_operation.hasOwnProperty("id")) {
                 ExternalOperationModel.save(eo.id, eo).then(function (response) {
                 })

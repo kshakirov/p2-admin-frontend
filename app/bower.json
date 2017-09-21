@@ -24,6 +24,7 @@
     "angular-chart.js": "^1.1.1",
     "chart.js": "^2.6.0",
     "angular-bootstrap": "^2.5.0",
-    "ng-table-bundle": "^4.0.0"
+    "ng-table-bundle": "^4.0.0",
+    "angular-ui-view-spinner": "^1.0.0"
   }
 }

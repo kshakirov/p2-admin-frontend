@@ -1,13 +1,14 @@
 pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'AdvancedSearchModel', 'AttributeSetModel',
-    'AttributeModel',
+    'AttributeModel', 'usSpinnerService',
     function ($scope, $route, $routeParams,
               $location,
               $http,
               $rootScope,
               AdvancedSearchModel,
               AttributeSetModel,
-              AttributeModel) {
+              AttributeModel,
+              usSpinnerService) {
         var entity_type_uuid = 'fd5b36e3-90a3-493b-a37d-c4f4262aec22',
             query = 'properties.role=search';
         $scope.page_size = 10;
@@ -37,11 +38,13 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
         }
 
         $scope.init = function () {
+            usSpinnerService.spin('spinner-2');
             AttributeSetModel.search(entity_type_uuid, query).then(function (attribute_set) {
                 $scope.layout = attribute_set[0].attributes;
                 return paginate_entites($scope.search_query).then(function (response) {
                     $scope.entities = response.content;
-                    $scope.pagination = new PaginationObject(response)
+                    $scope.pagination = new PaginationObject(response);
+                    usSpinnerService.stop('spinner-2');
 
                 })
             })
@@ -49,24 +52,25 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
         };
 
         $scope.getPage = function (page) {
+            usSpinnerService.spin('spinner-2');
             $scope.search_query.from = page;
             return paginate_entites($scope.search_query).then(function (response) {
                 $scope.entities = response.content;
-                $scope.pagination = new PaginationObject(response)
-
+                $scope.pagination = new PaginationObject(response);
+                usSpinnerService.stop('spinner-2');
             }, function (error) {
                 console.log(error);
             })
         };
 
         $scope.search = function () {
-            console.log($scope.search_params);
+            usSpinnerService.spin('spinner-2');
             $scope.search_query.from = 0;
             $scope.search_query.query = $scope.search_params;
             return paginate_entites($scope.search_query).then(function (response) {
                 $scope.entities = response.content;
-                $scope.pagination = new PaginationObject(response)
-
+                $scope.pagination = new PaginationObject(response);
+                usSpinnerService.stop('spinner-2');
             })
         };
 

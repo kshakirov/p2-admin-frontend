@@ -17,7 +17,8 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
             if (id === "new") {
                 $scope.schema = {
                     customAttributes: {}
-                }
+                };
+                $scope.transformation_schema =  [];
             } else {
                 TransformationSchemaModel.findOne(id).then(function (schema) {
                     $scope.schema = schema;
@@ -40,9 +41,13 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
             schema.schema ={
                 schema: TransformationSchemaService
                 .prepTransformationSchema($scope.transformation_schema)
-            }
-            TransformationSchemaModel.update(schema).then(function () {
-            })
+            };
+            if(schema.id)
+                TransformationSchemaModel.update(schema).then(function () {
+            });
+            else
+                TransformationSchemaModel.save(schema).then(function () {
+                });
         };
 
         $scope.addSchemaItem = function (out_attribute_name) {
@@ -52,7 +57,6 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
         };
 
         $scope.removeSchemaItem = function (index) {
-            console.log(index);
             $scope.transformation_schema.splice(index,1);
         };
 
@@ -69,7 +73,6 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
         };
 
         $scope.copyUUID = function (item) {
-            console.log(item.in[0].uuid)
             item.out = item.in[0].uuid;
         }
 
