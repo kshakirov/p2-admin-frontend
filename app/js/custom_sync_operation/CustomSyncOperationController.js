@@ -20,11 +20,11 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
 
         $scope.runCustomSyncOperation = function (custom_sync_operation) {
             var data = {
-                "name": "PERFORM_EXTERNAL_OPERATION",
-                "exteral_operation_id": 5
+                "name": "PERFORM_BATCH_SYNCHRONIZATION",
+                "exteral_operation_id": 19
             };
             console.log(data);
-            NotificationModel.notify(data).then(function (response) {
+            NotificationModel.notifyBatch(data).then(function (response) {
                 $rootScope.message.success = true;
             })
 

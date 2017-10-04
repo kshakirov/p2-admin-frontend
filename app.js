@@ -54,10 +54,10 @@ let pims_proxy = proxy(options),
     sync_module_proxy = proxy(options_sync_module);
 
 
-app.use(function timeLog(req, res, next) {
-    console.log('Time: ', Date.now())
-    next()
-});
+// app.use(function timeLog(req, res, next) {
+//     console.log('Time: ', Date.now())
+//     next()
+// });
 
 app.use('/rest', pims_proxy);
 app.use('/sync-module', sync_module_proxy);

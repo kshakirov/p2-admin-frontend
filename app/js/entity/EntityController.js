@@ -1,21 +1,29 @@
 pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'EntityModel', 'EntityService',
-    'AttributeSetModel',
+    'AttributeSetModel', 'NotificationModel',
     function ($scope, $route, $routeParams,
               $location,
               $http,
               $rootScope,
               EntityModel,
               EntityService,
-              AttributeSetModel) {
+              AttributeSetModel,
+              NotificationModel) {
 
-        var entity_type_uuid = $rootScope.pims.entities.current.uuid;
+        var entity_type_uuid = $rootScope.pims.entities.current.uuid,
+            msg = {
+                "name": "PERFORM_ENTITY_SYNCHRONIZATION",
+                "pimsId": null,
+                "entity_type_id": null,
+                "syncOperationType": "UPDATE"
+            };
+
         $scope.init = function () {
             var uuid = $routeParams.uuid;
             if (uuid === "new") {
 
             } else {
-                var params_string = "properties.role=tab";
+                var params_string = "propertyName=role&propertyValues=tab";
                 EntityModel.findOne(entity_type_uuid, uuid).then(function (entity) {
                     AttributeSetModel.search(entity_type_uuid, params_string).then(function (tabs) {
                         $scope.tabs = tabs;
@@ -31,6 +39,10 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
             angular.copy(entity, entity_copy);
             entity_copy.attributes = EntityService.prepAttributesDto(entity.attributes);
             EntityModel.save(entity_type_uuid, entity_copy).then(function (response) {
+                EntityService.prepMsg(msg,entity, entity_type_uuid);
+                NotificationModel.notifyEntity(msg).then(function () {
+                })
+            }, function (error) {
             })
         };
 

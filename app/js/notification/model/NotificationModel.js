@@ -1,11 +1,20 @@
 pimsServices.service('NotificationModel', ['$http', '$rootScope', '$timeout',
     function ($http, $rootScope, $timeout) {
 
-        this.notify = function (data) {
+        this.notifyBatch = function (data) {
             var msg = {
                 message: data
             };
-            return $http.post('/control/notify', msg).then(function (response) {
+            return $http.post('/control/notify/batch', msg).then(function (response) {
+                return response;
+            })
+        };
+
+        this.notifyEntity = function (data) {
+            var msg = {
+                message: data
+            };
+            return $http.post('/control/notify/entity', msg).then(function (response) {
                 return response;
             })
         };

@@ -4,14 +4,28 @@ let fs = require('fs'),
     writer = csvWriter();
 
 
+function convert_body_2_data(body) {
+    let data = {},
+        keys = Object.keys(body);
+    keys.forEach((k)=>{
+        data[k] = body[k];
+    })
+    return data;
+}
+
+
 function writeCsv(req, res) {
     let fileName = req.params.filename,
-        data = req.body.data;
+        data = convert_body_2_data(req.body);
 
-    if (!fs.existsSync(fileName))
+    if (!fs.existsSync(fileName)) {
+        console.log( `Created Filename ${fileName}`);
         writer = csvWriter({headers: Object.keys(data)});
-    else
+    } else {
+        console.log( `Appended Filename ${fileName}`);
+        console.log(data);
         writer = csvWriter({sendHeaders: false});
+    }
 
     writer.pipe(fs.createWriteStream(fileName, {flags: 'a'}));
     writer.write(data);

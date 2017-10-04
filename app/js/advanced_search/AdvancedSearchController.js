@@ -10,7 +10,8 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
               AttributeModel,
               usSpinnerService) {
         var entity_type_uuid = 'fd5b36e3-90a3-493b-a37d-c4f4262aec22',
-            query = 'properties.role=search';
+            query = 'propertyName=role&propertyValues=search';
+        //var params_string = "propertyName=role&propertyValues=search";
         $scope.page_size = 10;
         $scope.search_params = {};
         $scope.search_query = {

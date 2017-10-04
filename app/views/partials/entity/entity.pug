@@ -16,4 +16,10 @@ uib-tabset(active="active", ng-init="init()")
                         div
                             label {{attr.name}}
                             input.form-control(type="{{attr.properties.frontendType}}", data-ng-model="entity.attributes[attr.uuid].value")
+form(role="form")
+    div.btn-group
+        button.btn.btn-default(type="submit", ng-click="updateEntity(entity)") APPLY
+        button.btn.btn-danger(type="submit", ng-click="deleteEntity(entity.uuid)", ng-disabled="!attribute_set.uuid") DELETE
+        button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL
+
 

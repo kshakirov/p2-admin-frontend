@@ -3,7 +3,9 @@ pimsApp.controller('EntityTypeController',["$scope", "$rootScope","$http",
 
     function choose_product(entities) {
         var entity = entities.filter(function (entity) {
-            if (entity.name === 'Product') {
+           if (entity.name.toLowerCase() === 'product') {
+            // if (entity.name.toLowerCase() === 'supplier') {
+            //if (entity.name.toLowerCase() === 'product uom') {
                 return entity;
             }
         });

@@ -22,9 +22,14 @@ pimsServices.service('EntityService', ['$http', '$rootScope', function ($http, $
     };
     this.prepAttributesDto = function (attriubtes) {
         var attributes_dto = {};
-        attriubtes.forEach(function (attr) {
-            attributes_dto[attr.key] = attr.value;
+        angular.forEach(attriubtes, function (attr, value) {
+            attributes_dto[attr.key.uuid] = attr.value;
         });
         return attributes_dto
+    };
+
+    this.prepMsg = function (msg, entity, entityTypeId) {
+        msg.pimsId = entity.uuid;
+        msg.entity_type_id = entityTypeId;
     }
 }]);

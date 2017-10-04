@@ -3,18 +3,26 @@ let amqp = require('amqplib/callback_api'),
     pimsConfig = config.get('config');
 
 
-function notifyModification(req, res) {
+function notify(req, res, queue_name) {
     amqp.connect(`amqp://${pimsConfig.rabbitMq.url}`, function (err, conn) {
         conn.createChannel(function (err, ch) {
             let ex = pimsConfig.rabbitMq.pimsExchange,
-                msg = JSON.stringify(req.body.message),
-                routingKey = pimsConfig.rabbitMq.decisionRoutingKey;
-            ch.publish(ex, routingKey, new Buffer(msg));
-            console.log(" [x] Sent %s",msg);
+                msg = JSON.stringify(req.body.message);
+            ch.publish(ex, queue_name, new Buffer(msg));
+            console.log(" [x] Sent %s", msg);
             res.json({success: true})
         });
     });
 }
 
+function notifyBatch(req, res) {
+    notify(req, res, pimsConfig.rabbitMq.batchRoutingKey)
+}
 
-exports.notifyModification = notifyModification;
+function notifyEntity(req, res) {
+    notify(req, res, pimsConfig.rabbitMq.entityRoutingKey)
+}
+
+
+exports.notifyBatch = notifyBatch;
+exports.notifyEntity = notifyEntity;

@@ -20,7 +20,8 @@ br
                 tr(ng-repeat="entity in entities")
                     td
                         a(ng-href="entities/{{entity.uuid}}") {{entity.name}}
-                    td {{entity.version}}
+                    td
+                        a(ng-href="entities/{{entity.uuid}}") {{entity.version}}
 .row
     .col-lg-6.col-lg-offset-2
         nav(aria-label="Page navigation example")
