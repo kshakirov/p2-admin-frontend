@@ -20,8 +20,14 @@ pimsServices.service('EntityModel', ['$http', '$rootScope', function ($http, $ro
         })
     };
 
-    this.save = function (et_uuid, entity) {
+    this.update = function (et_uuid, entity) {
         return $http.put("/rest/entity-types/" + et_uuid
+            + "/entities/import/" + entity.uuid, entity).then(function (entities) {
+            return entities.data
+        })
+    }
+    this.save = function (et_uuid, entity) {
+        return $http.post("/rest/entity-types/" + et_uuid
             + "/entities", entity).then(function (entities) {
             return entities.data
         })

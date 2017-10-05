@@ -55,7 +55,19 @@ pimsApp.controller('AttributeSetController', ['$scope', '$route', '$routeParams'
 
         };
 
-        $scope.updateAttributeSet = function (attribute_set) {
+        $scope.saveAttributeSet = function (attribute_set) {
+            if(attribute_set.uuid) {
+                AttributeSetModel.update(entity_type_uuid,
+                    _dto_2_entry(attribute_set)).then(function (response) {
+                })
+            }else{
+                AttributeSetModel.create(entity_type_uuid,
+                    _dto_2_entry(attribute_set)).then(function (response) {
+                })
+            }
+        };
+
+        $scope.createAttributeSet = function (attribute_set) {
             AttributeSetModel.save(entity_type_uuid,
                 _dto_2_entry(attribute_set)).then(function(response) {
             })

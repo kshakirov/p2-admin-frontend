@@ -1,5 +1,6 @@
 pimsApp.controller('EntityTypeController',["$scope", "$rootScope","$http",
     'EntityTypeModel', function ($scope,  $rootScope, $http, EntityTypeModel ) {
+    var selectedTypes = ['product', 'supplier', 'product uom'];
 
     function choose_product(entities) {
         var entity = entities.filter(function (entity) {

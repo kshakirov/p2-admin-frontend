@@ -14,7 +14,7 @@ pimsApp.controller('CustomSyncOperationListController', ['$scope', '$route', '$r
         };
 
         $scope.createCustomSyncOperation = function () {
-            $location.path("/external-systems/new");
+            $location.path("/custom-sync-operationss/new");
         }
 
     }])

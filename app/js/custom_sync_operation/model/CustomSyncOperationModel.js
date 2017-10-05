@@ -13,16 +13,32 @@ pimsServices.service('CustomSyncOperationModel', ['$http', '$rootScope', '$timeo
         }
     ];
 
-    this.findAll = function () {
-        return $timeout(function () {
-            return operations
-        }, 500);
-    };
-    this.findOne = function (id) {
-        return $timeout(function () {
-            return operations[0];
-        }, 500);
-    };
+        this.findAll = function () {
+            return $http.get("/sync-module/custom-sync-operations")
+                .then(function (response) {
+                    return response.data.externalSystems
+                })
+        };
+        this.findOne = function (id) {
+            return $http.get("/sync-module/custom-sync-operations/" + id)
+                .then(function (response) {
+                    return response.data
+                })
+        };
+
+        this.save = function (external_system) {
+            return $http.post("/sync-module/custom-sync-operations/new", external_system)
+                .then(function (response) {
+                    return response.data
+                })
+        };
+
+        this.update = function (external_system) {
+            return $http.put("/sync-module/custom-sync-operations/" + external_system.id, external_system)
+                .then(function (response) {
+                    return response.data
+                })
+        }
 
 
 }]);

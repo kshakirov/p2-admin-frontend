@@ -22,7 +22,7 @@ div(ng-init="init()")
                     label(for="order") Order
                     input.form-control(type="number",id="order", data-ng-model="attribute_set.properties.order")
                 div.btn-group
-                    button.btn.btn-default(type="submit", ng-click="updateAttributeSet(attribute_set)") APPLY
+                    button.btn.btn-default(type="submit", ng-click="saveAttributeSet(attribute_set)") APPLY
                     button.btn.btn-danger(type="submit", ng-click="deleteAttributeSet(attribute_set.uuid)", ng-disabled="!attribute_set.uuid") DELETE
                     button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL
         .col-lg-6(ng-init="initAttributes()")

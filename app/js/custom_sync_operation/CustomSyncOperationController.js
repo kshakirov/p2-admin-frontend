@@ -14,6 +14,7 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
             })
         };
 
+
         $scope.cancel = function () {
             $location.path("/custom-sync-operations");
         }

@@ -38,7 +38,9 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
             var entity_copy = {};
             angular.copy(entity, entity_copy);
             entity_copy.attributes = EntityService.prepAttributesDto(entity.attributes);
-            EntityModel.save(entity_type_uuid, entity_copy).then(function (response) {
+            entity_copy.entityTypeId = EntityService.prepEntityTypeId(entity);
+            delete entity_copy.entityType;
+            EntityModel.update(entity_type_uuid, entity_copy).then(function (response) {
                 EntityService.prepMsg(msg,entity, entity_type_uuid);
                 NotificationModel.notifyEntity(msg).then(function () {
                 })
