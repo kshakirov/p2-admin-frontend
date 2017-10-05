@@ -1,32 +1,49 @@
-pimsApp.controller('EntityTypeController',["$scope", "$rootScope","$http",
-    'EntityTypeModel', function ($scope,  $rootScope, $http, EntityTypeModel ) {
-    var selectedTypes = ['product', 'supplier', 'product uom'];
+pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
+    'EntityTypeModel', '$cookies', '$location', function ($scope, $rootScope, $http, EntityTypeModel,
+                                             $cookies, $location) {
+        var selectedTypes = ['product', 'supplier', 'product uom'];
 
-    function choose_product(entities) {
-        var entity = entities.filter(function (entity) {
-           if (entity.name.toLowerCase() === 'product') {
-            // if (entity.name.toLowerCase() === 'supplier') {
-            //if (entity.name.toLowerCase() === 'product uom') {
-                return entity;
-            }
-        });
-        return entity[0]
-    }
 
-    $rootScope.message = {};
+        function store_entity_types(entities) {
+            var entities = entities.filter(function (entity) {
+                if (selectedTypes.includes(entity.name.toLowerCase()))
+                    return entity;
+            });
+            $cookies.putObject("entityTypes", entities);
+        }
 
-    $scope.init = function () {
-        EntityTypeModel.findAll().then(function (entities) {
+        function set_current_entity_type(entities) {
             $rootScope.pims = {
                 entities: {
-                    current: choose_product(entities),
-                    list: entities.data
+                    current: entities[0],
+                    list: entities
                 }
-            }
-        })
-    };
+            };
+        }
 
-    $scope.selectEntity = function () {
-        console.log("selectEntity")
-    }
-}]);
+
+        function get_stored_entities() {
+            return $cookies.getObject("entityTypes")
+        }
+
+        $rootScope.message = {};
+
+        $scope.init = function () {
+            var entites = get_stored_entities();
+            if (!entites) {
+                EntityTypeModel.findAll().then(function (entities) {
+                    store_entity_types(entities);
+                    var entities = get_stored_entities();
+                    set_current_entity_type(entities);
+                })
+            }else{
+                set_current_entity_type(entites);
+
+            }
+        };
+
+        $scope.selectEntity = function (entityType) {
+            $rootScope.pims.entities.current = entityType;
+            $location.path("/");
+        }
+    }]);

@@ -21,9 +21,15 @@ pimsApp.controller('AttributeController' ,[ '$scope', '$route', '$routeParams',
     };
 
     $scope.updateAttribute = function (attribute) {
-        AttributeModel.save(entity_type_uuid, attribute).then(function (response) {
-            $rootScope.message.success = true;
-        })
+        if(attribute.uuid) {
+            AttributeModel.update(entity_type_uuid, attribute).then(function (response) {
+                $rootScope.message.success = true;
+            })
+        }else{
+            AttributeModel.create(entity_type_uuid, attribute).then(function (response) {
+                $rootScope.message.success = true;
+            })
+        }
     };
 
     $scope.deleteAttribute = function (uuid) {
