@@ -5,7 +5,6 @@ function onProxyReq(proxyReq, req, res) {
 }
 
 function onProxyRes(proxyRes, req, res) {
-    console.log("Respnse");
     proxyRes.headers['x-added'] = 'foobar';     // add new header to response
     delete proxyRes.headers['x-removed'];       // remove header from response
 }
