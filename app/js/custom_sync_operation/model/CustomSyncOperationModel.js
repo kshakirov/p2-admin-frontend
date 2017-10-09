@@ -1,22 +1,10 @@
 pimsServices.service('CustomSyncOperationModel', ['$http', '$rootScope', '$timeout',
     function ($http, $rootScope, $timeout) {
 
-    var operations = [
-        {
-            name: "Sync All Products 2 Elastic",
-            code: "All",
-            pipe: "Pims 2 Elastic Pipe",
-            schema: "Default",
-            entityTypeId: "Product",
-            filter: "price > 100",
-            id: 1
-        }
-    ];
-
         this.findAll = function () {
             return $http.get("/sync-module/custom-sync-operations")
                 .then(function (response) {
-                    return response.data.externalSystems
+                    return response.data.customOperations
                 })
         };
         this.findOne = function (id) {
@@ -26,15 +14,23 @@ pimsServices.service('CustomSyncOperationModel', ['$http', '$rootScope', '$timeo
                 })
         };
 
-        this.save = function (external_system) {
-            return $http.post("/sync-module/custom-sync-operations/new", external_system)
+
+        this.delete = function (id) {
+            return $http.delete("/sync-module/custom-sync-operations/" + id)
                 .then(function (response) {
                     return response.data
                 })
         };
 
-        this.update = function (external_system) {
-            return $http.put("/sync-module/custom-sync-operations/" + external_system.id, external_system)
+        this.create = function (custom_sync_operaton) {
+            return $http.post("/sync-module/custom-sync-operations/new", custom_sync_operaton)
+                .then(function (response) {
+                    return response.data
+                })
+        };
+
+        this.update = function (custom_sync_operaton) {
+            return $http.put("/sync-module/custom-sync-operations/" + custom_sync_operaton.id, custom_sync_operaton)
                 .then(function (response) {
                     return response.data
                 })

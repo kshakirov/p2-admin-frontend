@@ -42,4 +42,9 @@ pimsServices.service('ExternalOperationService', ['AttributeModel',
             external_operation.targetSystem.id = external_operation.targetSystem.frontendInfo.selected.id;
         }
 
+        this.dto_entityTypes = function (external_operation) {
+            external_operation.entityTypeId  =  Object.keys(external_operation.transformationSchemata)
+
+        }
+
     }]);

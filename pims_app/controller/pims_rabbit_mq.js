@@ -16,7 +16,8 @@ function notify(req, res, queue_name) {
 }
 
 function notifyBatch(req, res) {
-    notify(req, res, pimsConfig.rabbitMq.batchRoutingKey)
+    let queuePrefix =req.params.queuePrefix;
+    notify(req, res, queuePrefix)
 }
 
 function notifyEntity(req, res) {

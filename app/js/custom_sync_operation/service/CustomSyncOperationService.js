@@ -1,0 +1,4 @@
+pimsServices.service('CustomSyncOperationService', [
+    function () {
+
+    }]);

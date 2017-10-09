@@ -1,7 +1,7 @@
 pimsApp.controller('ExternalOperationController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'ExternalOperationModel',
     'ExternalOperationService', 'EntityTypeModel', 'ConverterModel',
-    'NgTableParams', 'TransformationSchemaModel',
+    'NgTableParams', 'TransformationSchemaModel', 'MessageService',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -11,8 +11,10 @@ pimsApp.controller('ExternalOperationController', ['$scope', '$route', '$routePa
               EntityTypeModel,
               ConverterModel,
               NgTableParams,
-              TransformationSchemaModel) {
+              TransformationSchemaModel,
+              MessageService) {
 
+        $rootScope.message = MessageService.prepareMessage();
         $scope.init = function () {
             var id = $routeParams.id;
             if (id === "new") {
@@ -53,16 +55,20 @@ pimsApp.controller('ExternalOperationController', ['$scope', '$route', '$routePa
         $scope.updateExternalOperation = function (external_operation) {
             var eo = ExternalOperationService.update_transformation_schemata(external_operation);
             ExternalOperationService.dto_external_systems(eo);
+            ExternalOperationService.dto_entityTypes(eo);
             if (external_operation.hasOwnProperty("id")) {
                 ExternalOperationModel.save(eo.id, eo).then(function (response) {
+                    MessageService.setSuccessMessage($rootScope.message, "Pipe Updated");
                 })
             } else {
                 ExternalOperationModel.create(eo).then(function (response) {
+                    MessageService.setSuccessMessage($rootScope.message, "Pipe Created");
                 })
             }
         };
         $scope.deleteExternalOperation = function (id) {
             ExternalOperationModel.delete(id).then(function (response) {
+                MessageService.setSuccessMessage($rootScope.message, "Pipe  Deleted");
             })
         };
 

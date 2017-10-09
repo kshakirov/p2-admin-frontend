@@ -17,6 +17,7 @@
       "url":"10.1.3.23",
       "pimsExchange": "",
       "batchRoutingKey":"batchQueue",
+      "importOpenerpRoutingKey":"openerpBatch",
       "entityRoutingKey":"entityQueue",
       "pipelineRoutingKey":"pipelineResponseQueue"
     }

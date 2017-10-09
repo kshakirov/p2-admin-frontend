@@ -8,7 +8,7 @@ router.post('/search', function (req, res) {
     elastic_controller.findAll(req, res);
 });
 
-router.post('/notify/batch', function (req, res) {
+router.post('/notify/batch/:queuePrefix', function (req, res) {
     rabbit_mq_controller.notifyBatch(req, res);
 });
 
@@ -17,7 +17,7 @@ router.post('/notify/entity', function (req, res) {
 });
 
 
-router.post('/csv/write/:filename/:uuid', function (req, res) {
+router.put('/csv/write/:filename/:uuid', function (req, res) {
     csv_controller.writeCsv(req, res);
 });
 

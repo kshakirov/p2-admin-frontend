@@ -1,7 +1,7 @@
 pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'TransformationSchemaModel',
     'TransformationSchemaService', 'EntityTypeModel', 'AttributeModel',
-    'ConverterModel',
+    'ConverterModel', 'MessageService',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -10,15 +10,17 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
               TransformationSchemaService,
               EntityTypeModel,
               AttributeModel,
-              ConverterModel) {
+              ConverterModel,
+              MessageService) {
 
+        $rootScope.message = MessageService.prepareMessage();
         $scope.init = function () {
             var id = $routeParams.id;
             if (id === "new") {
                 $scope.schema = {
                     customAttributes: {}
                 };
-                $scope.transformation_schema =  [];
+                $scope.transformation_schema = [];
             } else {
                 TransformationSchemaModel.findOne(id).then(function (schema) {
                     $scope.schema = schema;
@@ -36,18 +38,26 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
                 $scope.entity_types = entity_types;
             })
         };
-        
+
         $scope.updateTransformationSchema = function (schema) {
-            schema.schema ={
+            schema.schema = {
                 schema: TransformationSchemaService
-                .prepTransformationSchema($scope.transformation_schema)
+                    .prepTransformationSchema($scope.transformation_schema)
             };
-            if(schema.id)
+            if (schema.id)
                 TransformationSchemaModel.update(schema).then(function () {
-            });
+                    MessageService.setSuccessMessage($rootScope.message, "Schema Updated");
+                });
             else
                 TransformationSchemaModel.save(schema).then(function () {
+                    MessageService.setSuccessMessage($rootScope.message, "Schema  Created");
                 });
+        };
+
+        $scope.deleteTransformationSchema = function (id) {
+            TransformationSchemaModel.delete(id).then(function () {
+                MessageService.setWarningMessage($rootScope.message, "Schema  Deleted");
+            });
         };
 
         $scope.addSchemaItem = function (out_attribute_name) {
@@ -57,7 +67,7 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
         };
 
         $scope.removeSchemaItem = function (index) {
-            $scope.transformation_schema.splice(index,1);
+            $scope.transformation_schema.splice(index, 1);
         };
 
         $scope.addItemConverter = function (item) {

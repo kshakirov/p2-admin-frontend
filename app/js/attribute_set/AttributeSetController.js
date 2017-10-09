@@ -1,14 +1,16 @@
 pimsApp.controller('AttributeSetController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'AttributeSetModel', 'AttributeModel',
+    'MessageService',
     function ($scope, $route, $routeParams,
               $location,
               $http,
               $rootScope,
               AttributeSetModel,
-              AttributeModel) {
+              AttributeModel,
+              MessageService) {
 
         var entity_type_uuid = $rootScope.pims.entities.current.uuid;
-
+        $rootScope.message = MessageService.prepareMessage();
         function _map_attributes_to_ids(attribute_set_copy) {
             var attributes = attribute_set_copy.attributes.map(function(attribute){
                 return attribute.uuid
@@ -59,10 +61,12 @@ pimsApp.controller('AttributeSetController', ['$scope', '$route', '$routeParams'
             if(attribute_set.uuid) {
                 AttributeSetModel.update(entity_type_uuid,
                     _dto_2_entry(attribute_set)).then(function (response) {
+                    MessageService.setSuccessMessage($rootScope.message, "Attribute Set Updated");
                 })
             }else{
                 AttributeSetModel.create(entity_type_uuid,
                     _dto_2_entry(attribute_set)).then(function (response) {
+                    MessageService.setSuccessMessage($rootScope.message, "Attribute Set Created")
                 })
             }
         };

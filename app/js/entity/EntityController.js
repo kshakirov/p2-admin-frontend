@@ -1,6 +1,6 @@
 pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'EntityModel', 'EntityService',
-    'AttributeSetModel', 'NotificationModel',
+    'AttributeSetModel', 'NotificationModel', 'MessageService',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -8,7 +8,8 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
               EntityModel,
               EntityService,
               AttributeSetModel,
-              NotificationModel) {
+              NotificationModel,
+              MessageService) {
 
         var entity_type_uuid = $rootScope.pims.entities.current.uuid,
             msg = {
@@ -17,6 +18,8 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
                 "entity_type_id": null,
                 "syncOperationType": "UPDATE"
             };
+
+        $rootScope.message = MessageService.prepareMessage();
 
         $scope.init = function () {
             var uuid = $routeParams.uuid;
@@ -43,6 +46,8 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
             EntityModel.update(entity_type_uuid, entity_copy).then(function (response) {
                 EntityService.prepMsg(msg,entity, entity_type_uuid);
                 NotificationModel.notifyEntity(msg).then(function () {
+                    MessageService.setSuccessMessage($rootScope.message,
+                        "Entity Updated and Changed Synced to Other Systems")
                 })
             }, function (error) {
             })

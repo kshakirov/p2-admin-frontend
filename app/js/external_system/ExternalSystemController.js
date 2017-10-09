@@ -1,36 +1,42 @@
 pimsApp.controller('ExternalSystemController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'ExternalSystemModel',
-    'EntityTypeResolver', 'EntityTypeModel', function ($scope, $route, $routeParams,
-                                                       $location,
-                                                       $http,
-                                                       $rootScope,
-                                                       ExternalSystemModel,
-                                                       EntityTypeResolver, EntityTypeModel) {
+    'EntityTypeResolver', 'EntityTypeModel', 'MessageService',
+    function ($scope, $route, $routeParams,
+              $location,
+              $http,
+              $rootScope,
+              ExternalSystemModel,
+              EntityTypeResolver,
+              EntityTypeModel,
+              MessageService) {
 
         $scope.triggers = ["ON_DEMAND", "CRON", "AUTOMATIC", "NEVER"];
-        $scope.init = function () {
-            var id = $routeParams.id;
-            if (id === "new") {
-                $scope.external_system = {
-                    customAttributes: {}
+        $rootScope.message = MessageService.prepareMessage();
+            $scope.init = function () {
+                var id = $routeParams.id;
+                if (id === "new") {
+                    $scope.external_system = {
+                        customAttributes: {}
+                    }
+                } else {
+                    ExternalSystemModel.findOne(id).then(function (external_system) {
+                        $scope.external_system = external_system;
+                    })
                 }
-            } else {
-                ExternalSystemModel.findOne(id).then(function (external_system) {
-                    $scope.external_system = external_system;
+                EntityTypeModel.findAll().then(function (entity_types) {
+                    $scope.entity_types = entity_types;
                 })
-            }
-            EntityTypeModel.findAll().then(function (entity_types) {
-                $scope.entity_types = entity_types;
-            })
-        };
+            };
 
         $scope.updateExternalSystem = function (external_system) {
             if (external_system.id) {
                 return ExternalSystemModel.update(external_system).then(function (response) {
+                    MessageService.setSuccessMessage($rootScope.message, "External System Updated");
                     return response
                 })
             } else {
                 return ExternalSystemModel.save(external_system).then(function (response) {
+                    MessageService.setSuccessMessage($rootScope.message, "External System Created")
                     return response
                 })
             }

@@ -4,7 +4,7 @@
             li Custom Sync Operations
 .row(ng-init="init()")
     .col-lg-2
-        button.btn.btn-info(type="submit",ng-click="createExternalSystem()") ADD OPERATION
+        button.btn.btn-info(type="submit",ng-click="createCustomSyncOperation()") ADD OPERATION
     .col-lg-10
         table.table(ng-table="customSyncOperationsTableParams", show-filter="true")
             tr(ng-repeat="cso in $data")

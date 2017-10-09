@@ -14,7 +14,7 @@
                 ng-options="entity.uuid as entity.name for entity in entity_types")
             div.btn-group
                 button.btn.btn-default(type="submit", ng-click="updateTransformationSchema(schema)") APPLY
-                button.btn.btn-danger(type="submit", ng-click="deleteTransformationSchema(schema.id)", ng-disabled="!external_system.id") DELETE
+                button.btn.btn-danger(type="submit", ng-click="deleteTransformationSchema(schema.id)", ng-disabled="!schema.id") DELETE
                 button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL
     .col-lg-6
         form(role="form")
