@@ -13,6 +13,13 @@ pimsServices.service('EntityModel', ['$http', '$rootScope', function ($http, $ro
         })
     };
 
+    this.createTemplate = function (et_uuid) {
+        return $http.get("/rest/entity-types/" + et_uuid
+            + "/entities/template").then(function (template) {
+            return template.data
+        })
+    };
+
     this.delete = function (et_uuid, uuid) {
         return $http.delete("/rest/entity-types/" + et_uuid
             + "/entities/" + uuid).then(function (entities) {
@@ -26,7 +33,7 @@ pimsServices.service('EntityModel', ['$http', '$rootScope', function ($http, $ro
             return entities.data
         })
     }
-    this.save = function (et_uuid, entity) {
+    this.create = function (et_uuid, entity) {
         return $http.post("/rest/entity-types/" + et_uuid
             + "/entities", entity).then(function (entities) {
             return entities.data

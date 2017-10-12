@@ -7,9 +7,10 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
               AttributeModel,
               MessageService) {
 
-        $scope.valueTypes = ["STRING", "ARRAY", "DECIMAL", "INTEGER", "BOOLEAN"];
+        $scope.valueTypes = ["STRING", "ARRAY", "DECIMAL", "INTEGER", "BOOLEAN", "REFERENCE"];
         $scope.frontendTypes = ["text", "number", "email", "password",
             "date", "select", "multiselect", "checkbox", "radio"];
+
         var entity_type_uuid = $rootScope.pims.entities.current.uuid;
         $rootScope.message = MessageService.prepareMessage();
 

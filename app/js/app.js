@@ -17,6 +17,14 @@ pimsApp.config(["$routeProvider", "$locationProvider", "ChartJsProvider",
                 templateUrl: 'partial/attribute/attributes',
                 controller: 'AttributeListController'
             })
+            .when('/entity-types/:uuid', {
+                templateUrl: 'partial/entity_type/entity_type',
+                controller: 'EntityTypeController'
+            })
+            .when('/entity-types', {
+                templateUrl: 'partial/entity_type/entity_types',
+                controller: 'EntityTypeListController'
+            })
             .when('/attribute-sets/:uuid', {
                 templateUrl: 'partial/attribute_set/attribute_set',
                 controller: 'AttributeSetController'

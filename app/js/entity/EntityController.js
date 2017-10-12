@@ -21,17 +21,24 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
 
         $rootScope.message = MessageService.prepareMessage();
 
+
         $scope.init = function () {
             var uuid = $routeParams.uuid;
+            var params_string = "propertyName=role&propertyValues=tab";
             if (uuid === "new") {
+                EntityModel.createTemplate(entity_type_uuid).then(function (template) {
+                    AttributeSetModel.search(entity_type_uuid, params_string).then(function (tabs) {
+                        $scope.tabs = tabs;
+                        $scope.entity = template;
+                    })
+                })
 
             } else {
-                var params_string = "propertyName=role&propertyValues=tab";
+
                 EntityModel.findOne(entity_type_uuid, uuid).then(function (entity) {
                     AttributeSetModel.search(entity_type_uuid, params_string).then(function (tabs) {
                         $scope.tabs = tabs;
                         $scope.entity = entity;
-                        //$scope.entity.attributes = EntityService.filterSimpleAttributes(entity.attributes);
                     })
                 })
             }
@@ -43,14 +50,22 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
             entity_copy.attributes = EntityService.prepAttributesDto(entity.attributes);
             entity_copy.entityTypeId = EntityService.prepEntityTypeId(entity);
             delete entity_copy.entityType;
-            EntityModel.update(entity_type_uuid, entity_copy).then(function (response) {
-                EntityService.prepMsg(msg,entity, entity_type_uuid);
-                NotificationModel.notifyEntity(msg).then(function () {
+            if (entity.uuid) {
+                EntityModel.update(entity_type_uuid, entity_copy).then(function (response) {
+                    EntityService.prepMsg(msg, entity, entity_type_uuid);
+                    NotificationModel.notifyEntity(msg).then(function () {
+                        MessageService.setSuccessMessage($rootScope.message,
+                            "Entity Updated and Changed Synced to Other Systems")
+                    })
+                }, function (error) {
+                })
+            } else {
+                EntityModel.create(entity_type_uuid, entity_copy).then(function (response) {
+                    EntityService.prepMsg(msg, entity, entity_type_uuid);
                     MessageService.setSuccessMessage($rootScope.message,
                         "Entity Updated and Changed Synced to Other Systems")
-                })
-            }, function (error) {
-            })
+                });
+            }
         };
 
         $scope.deleteEntity = function (uuid) {

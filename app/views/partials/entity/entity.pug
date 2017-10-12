@@ -1,13 +1,17 @@
-br
-br
-br
-.row
+.row.top-buffer
     .col-lg-6.col-lg-offset-3
         ul.breadcrumb
             li Entities
     .col-lg-4
         p
 uib-tabset(active="active", ng-init="init()")
+    uib-tab(heading="Main")
+        .row
+            .col-lg-6.col-lg
+                form(name="Name", role="form")
+                    div.form-group
+                        label Entity Name
+                        input.form-control(type="text", data-ng-model="entity.name")
     uib-tab(ng-repeat="tab in tabs",heading="{{tab.name}}" )
         .row
             .col-lg-6.col-lg

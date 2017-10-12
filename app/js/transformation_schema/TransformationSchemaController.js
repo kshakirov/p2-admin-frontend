@@ -18,12 +18,15 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
             var id = $routeParams.id;
             if (id === "new") {
                 $scope.schema = {
-                    customAttributes: {}
+                    customAttributes: {},
+                    schema: {
+                        schema: {}
+                    }
                 };
                 $scope.transformation_schema = [];
             } else {
                 TransformationSchemaModel.findOne(id).then(function (schema) {
-                    $scope.schema = schema;
+                    $scope.schema = TransformationSchemaService.dtoExportTransformationSchema(schema);
                     $scope.transformation_schema = schema.schema.schema || [];
                     var entity_type_id = schema.customAttributes.entity.uuid;
                     AttributeModel.findAll(entity_type_id).then(function (attributes) {
@@ -66,6 +69,12 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
             )
         };
 
+        $scope.addSchemaItemExport = function (out_attribute_name) {
+            $scope.transformation_schema.push(
+                TransformationSchemaService.addSchemaItemExport(out_attribute_name)
+            )
+        };
+
         $scope.removeSchemaItem = function (index) {
             $scope.transformation_schema.splice(index, 1);
         };
@@ -84,6 +93,15 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
 
         $scope.copyUUID = function (item) {
             item.out = item.in[0].uuid;
+        }
+
+        $scope.getPath= function (out) {
+            var paths = out.split(".");
+            return paths[0];
+        }
+        $scope.getAttribute= function (out) {
+            var paths = out.split(".");
+            return paths[1];
         }
 
     }]);

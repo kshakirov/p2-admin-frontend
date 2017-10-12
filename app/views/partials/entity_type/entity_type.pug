@@ -1,0 +1,20 @@
+.row.top-buffer
+    .col-lg-6.col-lg-offset-3
+        ul.breadcrumb
+            li Entity Types
+.row(ng-init="initialize()")
+    .col-lg-6
+        form(name="EntityTypeForm", role="form", id="EntityTypeForm")
+            div.form-group
+                label(for="entityTypeName") Name
+                input.form-control(type="text",id="entityTypeName", data-ng-model="entityType.name")
+            div.form-group
+                label Deleted
+                input.form-control(type="checkbox", data-ng-model="entityType.deleted")
+            div.form-group
+                label Default Type
+                input.form-control(type="checkbox", data-ng-model="entityType.defaultType")
+            div.btn-group
+                button.btn.btn-default(type="submit", ng-click="updateEntityType(entityType)") APPLY
+                button.btn.btn-danger(type="submit", ng-click="deleteEntityType(entityType.uuid)", ng-disabled="!entityType.uuid") DELETE
+                button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL

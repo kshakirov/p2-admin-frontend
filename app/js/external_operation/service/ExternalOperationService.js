@@ -43,7 +43,7 @@ pimsServices.service('ExternalOperationService', ['AttributeModel',
         }
 
         this.dto_entityTypes = function (external_operation) {
-            external_operation.entityTypeId  =  Object.keys(external_operation.transformationSchemata)
+            external_operation.entityTypeIds  =  Object.keys(external_operation.transformationSchemata)
 
         }
 

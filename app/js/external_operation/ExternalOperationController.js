@@ -20,6 +20,8 @@ pimsApp.controller('ExternalOperationController', ['$scope', '$route', '$routePa
             if (id === "new") {
                 ExternalOperationModel.createPipeline().then(function (external_operation) {
                     $scope.external_operation = external_operation;
+                    $scope.external_operation.transformationSchemata = {};
+
                 });
                 TransformationSchemaModel.findAll().then(function (schemata) {
                     $scope.transformation_schemata = schemata;

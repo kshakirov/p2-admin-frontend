@@ -38,7 +38,7 @@ pimsApp.controller('EntityListController', ['$scope', '$route', '$routeParams',
             })
         };
 
-        $scope.createAttributeSet = function () {
+        $scope.createEntity = function () {
             $location.path("/entities/new");
         };
 

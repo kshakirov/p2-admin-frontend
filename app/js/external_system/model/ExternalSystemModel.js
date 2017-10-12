@@ -25,4 +25,12 @@ pimsServices.service('ExternalSystemModel', ['$http', '$rootScope', function ($h
                 return response.data
             })
     }
+
+
+    this.delete = function (id) {
+        return $http.delete("/sync-module/external-systems/" + id)
+            .then(function (response) {
+                return response.data
+            })
+    };
 }]);

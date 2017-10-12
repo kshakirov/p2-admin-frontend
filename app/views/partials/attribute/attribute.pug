@@ -16,6 +16,10 @@ br
                 select.form-control(id="attributeValueType",
                 ng-model="attribute.valueType",
                 ng-options="valueType as valueType for valueType in valueTypes")
+            div.form-group()
+                label Referenced Entity Type
+                select.form-control(id="entityType", ng-model="attribute.properties.referencedEntityTypeId",
+                ng-options="entitityType.uuid as entitityType.name  for entitityType in pims.entities.list")
             div.form-group
                 label(for="frontendType") FrontEnd Type
                 select.form-control(id="frontendType",
