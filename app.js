@@ -12,8 +12,8 @@ let express = require('express'),
     proxy = require('http-proxy-middleware'),
     pug = require('pug'),
     metadataProxy = require('./pims_app/proxy/metadata'),
-    syncModuleProxy = require('./pims_app/proxy/sync_module'),
-    logger = require('express-logger');
+    syncModuleProxy = require('./pims_app/proxy/sync_module');
+//    logger = require('express-logger');
 
 
 var app = module.exports = express();
@@ -30,7 +30,7 @@ app.set('views', __dirname + '/app');
 app.set('view engine', 'pug');
 //app.use(express.logger('dev'));
 app.use(express.static(path.join(__dirname, 'app')));
-app.use(logger({path: "logs/logfile.txt"}));
+//app.use(logger({path: "logs/logfile.txt"}));
 //app.use(bodyParser());
 app.use(methodOverride());
 

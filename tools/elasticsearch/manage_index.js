@@ -40,19 +40,19 @@ client.indices.exists(indexParams).then((r) => {
         client.indices.create(indexParams).then(() => {
             console.log("Index Successfully Created");
             console.log("");
-            client.indices.putMapping({index: indexParams.index,
-                type: type,
-                body: body}).then(()=>{
-                console.log(" Mapping Successfully Put");
-            },(error)=>{
-                console.log("Error Putting Mapping");
-                console.log(error);
-            })
+            // client.indices.putMapping({index: indexParams.index,
+            //     type: type,
+            //     body: body}).then(()=>{
+            //     console.log(" Mapping Successfully Put");
+            // },(error)=>{
+            //     console.log("Error Putting Mapping");
+            //     console.log(error);
+            // })
         })
     }
 }, (e) => {
     console.log(error)
-})
+});
 
 
 
