@@ -5,7 +5,7 @@ let elasticsearch = require('elasticsearch'),
     });
 
 let indexParams = {
-    index: "pims_staging",
+    index: "pims-staging",
 },
     type = "fd5b36e3-90a3-493b-a37d-c4f4262aec22";
 

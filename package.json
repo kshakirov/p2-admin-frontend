@@ -22,7 +22,7 @@
 		"gulp-watch-pug": "^1.0.0",
 		"http-proxy-middleware": "^0.17.4",
 		"jade": "^1.11.0",
-		"json-2-csv": "^2.1.1",
+		"json2csv": "^3.11.4",
 		"ldapjs": "^1.0.1",
 		"logger": "0.0.1",
 		"mkdir": "0.0.2",

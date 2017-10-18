@@ -62,9 +62,25 @@ let pims_proxy = proxy(options),
 app.use('/rest', pims_proxy);
 app.use('/sync-module', sync_module_proxy);
 
-app.use(bodyParser.urlencoded({'extended': 'true'}));            // parse application/x-www-form-urlencoded
-app.use(bodyParser.json());                                     // parse application/json
-app.use(bodyParser.json({type: 'application/vnd.api+json'})); // parse application/vnd.api+json as json
+app.use(bodyParser.urlencoded(
+    {
+        'extended': 'true',
+        parameterLimit: 100000,
+        limit: '50mb'
+    }
+    ));            // parse application/x-www-form-urlencoded
+app.use(bodyParser.json(
+    {
+        parameterLimit: 100000,
+        limit: '50mb'
+    }
+));                                     // parse application/json
+app.use(bodyParser.json(
+    {
+        type: 'application/vnd.api+json',
+        parameterLimit: 100000,
+        limit: '50mb'
+    })); // parse application/vnd.api+json as json
 
 
 //let elastic_controller = require("./pims_app/controller/pims_elastic");

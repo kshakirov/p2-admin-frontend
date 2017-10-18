@@ -1,34 +1,41 @@
 let fs = require('fs'),
     csvWriter = require('csv-write-stream'),
-    converter = require('json-2-csv'),
+    json2csv = require('json2csv'),
     writer = csvWriter();
 
 
 function convert_body_2_data(body) {
     let data = {},
         keys = Object.keys(body);
-    keys.forEach((k)=>{
+    keys.forEach((k) => {
         data[k] = body[k];
-    })
+    });
     return data;
+}
+
+
+function get_fields(body) {
+    return Object.keys(body[0])
 }
 
 
 function writeCsv(req, res) {
     let fileName = req.params.filename,
-        data = convert_body_2_data(req.body);
-
+        data = req.body;
+    let fields = get_fields(req.body);
     if (!fs.existsSync(fileName)) {
-        console.log( `Created Filename ${fileName}`);
-        writer = csvWriter({headers: Object.keys(data)});
+        console.log(`Created Filename ${fileName}`);
+        writer = csvWriter({headers: fields});
+        writer = csvWriter({sendHeaders: true});
     } else {
-        console.log( `Appended Filename ${fileName}`);
-        console.log(data);
+        console.log(`Appended Filename ${fileName}`);
         writer = csvWriter({sendHeaders: false});
     }
 
     writer.pipe(fs.createWriteStream(fileName, {flags: 'a'}));
-    writer.write(data);
+    data.map(function (d) {
+        writer.write(d);
+    })
     writer.end();
     res.json({result: true})
 }
