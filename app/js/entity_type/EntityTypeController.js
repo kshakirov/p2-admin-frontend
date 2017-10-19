@@ -15,7 +15,7 @@ pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
         function set_current_entity_type(entities) {
             $rootScope.pims = {
                 entities: {
-                    current: entities[0],
+                    current: entities[3],
                     list: entities
                 }
             };

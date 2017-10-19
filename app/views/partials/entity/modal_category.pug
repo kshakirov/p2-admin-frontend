@@ -1,0 +1,29 @@
+.modal-header(ng-init="init()")
+    h3.modal-title SELECT REFERENCE
+    .modal-body
+        table.table
+            thead
+                tr
+                    th NAME
+                    th VERSION
+            tbody
+                tr(ng-repeat="entity in entities")
+                    td
+                        a(ng-href="", ng-click="selectReference(entity.uuid)") {{entity.name}}
+                    td
+                        a(ng-href="entities/{{entity.uuid}}") {{entity.version}}
+        nav(aria-label="Page navigation example")
+            ul.pagination(ng-if="pagination.totalPages")
+                li.page-item(ng-class = "{'active': !pagination.first, 'disabled': pagination.first }")
+                    a.page-link(ng-class="", ng-click="getPage(pagination.currentPage - 1)", href="") Previous
+                li.page-item
+                    a.page-link(href="#", ng-click="getPage(0)") 1
+                li.page-item
+                    a.page-link(href="#") Page: {{pagination.currentPage + 1}}
+                li.page-item
+                    a.page-link(href="#", ng-click="getPage(pagination.totalPages - 1)") {{pagination.totalPages}}
+                li.page-item(ng-class = "{'active': !pagination.last, 'disabled': pagination.last }")
+                    a.page-link(ng-click="getPage(pagination.currentPage + 1)",href="") Next
+    .modal-footer
+        button.btn.btn-primary(ng-click="ok()") OK
+        button.btn.btn-warning(ng-click="cancel()") Cance

@@ -17,13 +17,23 @@ uib-tabset(active="active", ng-init="init()")
             .col-lg-6.col-lg
                 form(name="{{tab.name}}", role="form")
                     div.form-group(ng-repeat="attr in tab.attributes")
-                        div
+                        div(ng-if="attr.properties.frontendType !='multiselect'")
                             label {{attr.name}}
                             input.form-control(type="{{attr.properties.frontendType}}", data-ng-model="entity.attributes[attr.uuid].value")
+                        div(ng-if="attr.properties.frontendType =='multiselect'")
+                            label {{attr.name}}
+                            .input-group
+                                input.form-control(data-ng-model="entity.attributes[attr.uuid].value.name")
+                                span.input-group-addon.pointer-cursor(ng-click="clearStructureReference(attribute)")
+                                    span.glyphicon.glyphicon-remove-sign(aria-hidden="true")
+                                span.input-group-btn
+                                    button.btn.btn-default(type="submit", ng-click="open(attr)") SELECT
 form(role="form")
     div.btn-group
         button.btn.btn-default(type="submit", ng-click="updateEntity(entity)") APPLY
         button.btn.btn-danger(type="submit", ng-click="deleteEntity(entity.uuid)", ng-disabled="!attribute_set.uuid") DELETE
         button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL
+
+
 
 
