@@ -1,0 +1,25 @@
+{
+  "config": {
+    "metadataServer": {
+      "url": "http://localhost:8080"
+    },
+    "syncModule": {
+      "url": "http://localhost:4567"
+    },
+    "elasticSearch": {
+      "url": "localhost:9200",
+      "indexName": "pims-staging"
+    },
+    "ldap": {
+      "url": "ldap://localhost:8389"
+    },
+    "rabbitMq":{
+      "url":"localhost",
+      "pimsExchange": "",
+      "batchRoutingKey":"batchQueue",
+      "importOpenerpRoutingKey":"openerpBatch",
+      "entityRoutingKey":"entityQueue",
+      "pipelineRoutingKey":"pipelineResponseQueue"
+    }
+  }
+}
