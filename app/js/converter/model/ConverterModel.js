@@ -13,7 +13,7 @@ pimsServices.service('ConverterModel', ['$http', '$rootScope', function ($http, 
     };
 
     this.save = function (converter) {
-        return $http.post("/sync-module/converters", converter)
+        return $http.post("/sync-module/converters/new", converter)
             .then(function (response) {
                 return response.data
             })

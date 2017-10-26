@@ -25,6 +25,12 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
         }
     };
     this.addItemConverter = function (item) {
+        if (angular.isUndefined(item)) {
+            item = {};
+        }
+        if (angular.isUndefined(item.converters)) {
+            item.converters = [];
+        }
         item.converters.push({
             id: "",
             params: {}
@@ -107,8 +113,8 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
 
             var out = schema.out;
             if (angular.isObject(out)) {
-                if(isRootAttribute(out.uuid))
-                    out=out.path
+                if (isRootAttribute(out.uuid))
+                    out = out.path
                 else
                     out = out.path + "." + out.uuid;
             }

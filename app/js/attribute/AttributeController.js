@@ -7,7 +7,8 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
               AttributeModel,
               MessageService) {
 
-        $scope.valueTypes = ["STRING", "ARRAY", "DECIMAL", "INTEGER", "BOOLEAN", "REFERENCE"];
+        $scope.valueTypes = ["STRING", "ARRAY", "DECIMAL", "INTEGER", "BOOLEAN",
+            "REFERENCE", "ENUM"];
         $scope.frontendTypes = ["text", "number", "email", "password",
             "date", "select", "multiselect", "checkbox", "radio"];
 
