@@ -1,0 +1,39 @@
+doctype html
+html(ng-app="PimsAuth")
+    head
+        meta(charset='utf8')
+        meta(name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1")
+        base(href='/')
+        title LOGIN
+        link(rel='stylesheet', href='bower_components/bootstrap/dist/css/bootstrap.css')
+        //link(rel='stylesheet', href='/dist/css/style.min.css')
+    body(ng-controller="AuthController" ng-init="init()")
+        block body
+    .container
+        .row.top-buffer.top-buffer
+            .col-lg-6.col-lg-offset-3
+                h4 PRODUCT INFORMATION MANAGEMENT SYSTEM
+        .row
+            .col-lg-6.col-lg-offset-3
+                .alert.alert-danger.alert-dismissable(ng-if="auth.flag")
+                    a.close(data-dismiss="alert", href="", aria-label="close") &times;
+                    .strong {{auth.body}}
+        .row
+            .col-lg-6.col-lg-offset-3.form-signin-block
+                form(name="form",role="form")
+                    .form-group
+                        label(for="username") Username
+                        input.form-control(type="text",name="username", id="username", ng-model="username")
+                    .form-group
+                        label(for="password") Password
+                        input.form-control(type="password", id="password", ng-model="pass")
+                    .form-actions
+                        button.btn.btn-primary(type="submit", ng-click="authenticate(username, pass)") LOGIN
+        //script(src='bower_components/jquery/dist/jquery.js')
+        //script(src='bower_components/jquery-ui/jquery-ui.js')
+        //script(src='bower_components/angular/angular.js')
+        //script(src='bower_components/bootstrap/dist/js/bootstrap.js')
+        //script(src='bower_components/angular-bootstrap/ui-bootstrap-tpls.js')
+        //script(src='bower_components/angular-cookies/angular-cookies.js')
+        //script(src='js/auth.js')
+        script(src='dist/js/all.min.js')

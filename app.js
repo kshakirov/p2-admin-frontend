@@ -13,25 +13,14 @@ let express = require('express'),
     pug = require('pug'),
     metadataProxy = require('./pims_app/proxy/metadata'),
     syncModuleProxy = require('./pims_app/proxy/sync_module');
-//    logger = require('express-logger');
 
 
-var app = module.exports = express();
+let app = module.exports = express();
 
-/**
- * Configuration
- */
-
-
-
-// all environments
 app.set('port', process.env.PORT || 3004);
 app.set('views', __dirname + '/app');
 app.set('view engine', 'pug');
-//app.use(express.logger('dev'));
 app.use(express.static(path.join(__dirname, 'app')));
-//app.use(logger({path: "logs/logfile.txt"}));
-//app.use(bodyParser());
 app.use(methodOverride());
 
 
@@ -49,19 +38,11 @@ let options_sync_module = {
     onProxyRes: syncModuleProxy.onProxyRes,
 };
 
-// create the proxy (without context)
 let pims_proxy = proxy(options),
     sync_module_proxy = proxy(options_sync_module);
 
-
-// app.use(function timeLog(req, res, next) {
-//     console.log('Time: ', Date.now())
-//     next()
-// });
-
 app.use('/rest', pims_proxy);
 app.use('/sync-module', sync_module_proxy);
-
 app.use(bodyParser.urlencoded(
     {
         'extended': 'true',
@@ -83,12 +64,10 @@ app.use(bodyParser.json(
     })); // parse application/vnd.api+json as json
 
 
-//let elastic_controller = require("./pims_app/controller/pims_elastic");
 app.use('/control/', pims_routes);
-//app.post('/search', elastic_controller.findAll);
+app.use('/auth/', pims_routes);
 app.get('/', routes.index);
 app.get('/partial/:type/:name', routes.partial);
-// redirect all others to the index (HTML5 history)
 app.get('*', routes.index);
 
 http.createServer(app).listen(app.get('port'), function () {

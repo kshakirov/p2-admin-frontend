@@ -45,5 +45,7 @@ function check_user_password(dn) {
     userClient.bind(dn, "pims", function(err) {
         console.log("Error binding user");
         console.log(err);
+    }, function (error) {
+        console.log("Dfdfd")
     })
 }

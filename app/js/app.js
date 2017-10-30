@@ -101,3 +101,27 @@ pimsApp.config(["$routeProvider", "$locationProvider", "ChartJsProvider",
         ChartJsProvider.setOptions({colors: ['#803690', '#00ADF9', '#DCDCDC', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360']})
     }]);
 
+pimsApp.config(['$httpProvider', function($httpProvider) {
+    $httpProvider.interceptors.push('sessionInjector');
+}]);
+
+
+pimsApp.factory('sessionInjector', ['$cookies','$window', function($cookies,$window) {
+    var sessionInjector = {
+        request: function(config) {
+            var token = $cookies.getObject('token');
+            if(angular.isUndefined(token)){
+                console.log("You are not authorised");
+                $window.location.href = '/auth/login';
+                }
+            else
+                config.headers['Authorization'] = "Bearer " +  $cookies.getObject('token');
+
+            return config;
+        }
+    };
+    return sessionInjector;
+}]);
+pimsApp.config(['$httpProvider', function($httpProvider) {
+    $httpProvider.interceptors.push('sessionInjector');
+}]);

@@ -2,6 +2,7 @@ let express = require('express'),
     router = express.Router(),
     rabbit_mq_controller = require("../pims_app/controller/pims_rabbit_mq"),
     csv_controller = require('../pims_app/controller/csv_writer'),
+    ldap_controller = require('../pims_app/controller/ldap_auth'),
     elastic_controller = require("../pims_app/controller/pims_elastic");
 
 router.post('/search', function (req, res) {
@@ -19,6 +20,17 @@ router.post('/notify/entity', function (req, res) {
 
 router.put('/csv/write/:filename/:uuid', function (req, res) {
     csv_controller.writeCsv(req, res);
+});
+
+router.get('/login', function (req,res) {
+    res.render('auth');
+});
+
+router.post('/authenticate', function (req,res) {
+    let token_data = {
+        jwt: "dfdfd"
+    };
+    ldap_controller.authenticate(req, res);
 });
 
 module.exports = router;
