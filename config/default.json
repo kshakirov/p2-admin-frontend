@@ -16,7 +16,8 @@
         "path": "cn=admin,dc=PMD,dc=local",
         "pass": "gogol,111"
       },
-      "secret": "pims_resurrected"
+      "secret": "pims_resurrected",
+      "tokenExpiration": "7d"
     },
     "rabbitMq":{
       "url":"10.1.3.23",
