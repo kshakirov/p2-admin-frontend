@@ -2,22 +2,15 @@ let config = require('config'),
     pimsConfig = config.get('config'),
     admin_path = pimsConfig.ldap.admin.path,
     admin_pass = pimsConfig.ldap.admin.pass,
-    ldap_secret = pimsConfig.ldap.secret,
-    jwt = require('jsonwebtoken'),
+    tokenTools = require('../proxy/tokenTools'),
     LdapClient = require('promised-ldap');
 client = new LdapClient({
     url: pimsConfig.ldap.url
 });
 
 
-function generate_token(name) {
-    let token = jwt.sign({user: name}, ldap_secret, {expiresIn: '1h'});
-    return token;
-}
-
-
 function authenticate(request, response) {
-    client.bind('cn=admin,dc=PMD,dc=local', 'gogol,111').then(function (result) {
+    client.bind(admin_path, admin_pass).then(function (result) {
         console.log("Binding as Admin To Search");
     });
     let login = request.body.login,
@@ -43,7 +36,7 @@ function authenticate(request, response) {
                 console.log(result.object.dn);
                 client.bind(result.object.dn, pass).then(function (auth) {
                     console.log("User Found ...");
-                    r.token = generate_token(cn);
+                    r.token = tokenTools.generateToken(cn);
                     response.json(r);
                 }, function (error) {
                     response.send(401)

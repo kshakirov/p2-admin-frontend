@@ -18,5 +18,13 @@ function get_token(headers) {
     return token[1];
 }
 
+
+function generate_token(name) {
+    let token = jwt.sign({user: name}, ldap_secret, {expiresIn: '1h'});
+    return token;
+}
+
+
 exports.getToken = get_token;
 exports.verifyToken = verify_token;
+exports.generateToken = generate_token;
