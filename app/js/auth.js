@@ -1,5 +1,6 @@
 var pimsAuth = angular.module('PimsAuth', ['ngCookies']);
-pimsAuth.controller('AuthController', ['$scope','$http',  function ($scope, $http) {
+pimsAuth.controller('AuthController', ['$scope','$http', '$cookies',
+    '$window',    function ($scope, $http, $cookies, $window) {
 
     function _authenticate(auth_data) {
         return $http.post('/auth/authenticate', auth_data)
@@ -16,8 +17,10 @@ pimsAuth.controller('AuthController', ['$scope','$http',  function ($scope, $htt
                 login: username,
                 pass: pass
             };
-        _authenticate(auth_data).then(function (done) {
-            console.log("Success");
+        _authenticate(auth_data).then(function (response) {
+            console.log(response.data.token);
+            $cookies.putObject('token', response.data.token);
+            $window.location.href = '/';
         }, function (error) {
             $scope.auth = {
                 flag: true,

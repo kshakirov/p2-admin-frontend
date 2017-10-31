@@ -1,37 +1,31 @@
-let ldap = require('ldapjs'),
-    config = require('config'),
+let config = require('config'),
     pimsConfig = config.get('config'),
-    client = ldap.createClient({
-        url: pimsConfig.ldap.url
-    });
+    admin_path = pimsConfig.ldap.admin.path,
+    admin_pass = pimsConfig.ldap.admin.pass,
+    ldap_secret = pimsConfig.ldap.secret,
+    jwt = require('jsonwebtoken'),
+    LdapClient = require('promised-ldap');
+client = new LdapClient({
+    url: pimsConfig.ldap.url
+});
 
 
-function check_user_password(user_dn, pass) {
-    let userClient = ldap.createClient({
-        url: pimsConfig.ldap.url
-    });
-    userClient.bind(user_dn, pass, function (err) {
-
-        if (err == null) {
-            console.log("Successfully Logged In");
-            return true;
-        }
-        console.log("Error Logging In");
-        return false;
-    })
+function generate_token(name) {
+    let token = jwt.sign({user: name}, ldap_secret, {expiresIn: '1h'});
+    return token;
 }
 
-function authenticate(req, response) {
-    let login = req.body.login,
-        pass = req.body.pass,
-        r = {
-            user: false,
-            pass: false
-        };
 
-    client.bind('cn=admin,dc=PMD,dc=local', 'gogol,111', function (err) {
-        console.log("Binding As Admin ....");
+function authenticate(request, response) {
+    client.bind('cn=admin,dc=PMD,dc=local', 'gogol,111').then(function (result) {
+        console.log("Binding as Admin To Search");
     });
+    let login = request.body.login,
+        pass = request.body.pass,
+        r = {
+            login: null,
+            token: null
+        };
 
     var opts = {
         filter: (`cn=${login}`),
@@ -39,28 +33,29 @@ function authenticate(req, response) {
         attributes: []
     };
 
-    client.search('dc=PMD,dc=local', opts, function (err, res) {
-        let user_dn = false;
-        if (err == null) {
-            res.on('searchEntry', function (entry) {
-                user_dn = entry.object.dn;
-                if(check_user_password(user_dn, pass, response)){
-                    user_dn = true;
-                }
-            });
-            res.on('end', function (result) {
-                if (user_dn) {
-                    r.pass = true;
-                    r.user = true;
-                    response.json(r)
-                }else{
+    let user_dn = null;
+
+
+    client.search('dc=PMD,dc=local', opts).then(function (results) {
+        if (results.entries.length > 0) {
+            results.entries.forEach(function (result) {
+                let cn = result.object.cn;
+                console.log(result.object.dn);
+                client.bind(result.object.dn, pass).then(function (auth) {
+                    console.log("User Found ...");
+                    r.token = generate_token(cn);
+                    response.json(r);
+                }, function (error) {
                     response.send(401)
-                }
-            });
+                })
+            })
         } else {
-            console.log(err)
+            response.send(401)
         }
+    }, function (error) {
+        response.send(401)
     });
+
 }
 
 exports.authenticate = authenticate;

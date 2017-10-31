@@ -2,14 +2,13 @@ let config = require('config');
 let  pimsConfig = config.get('config');
 let express = require('express'),
     routes = require('./routes'),
+    express_proxy = require('express-http-proxy'),
     api = require('./routes/api'),
     pims_routes = require('./routes/pims2_router'),
     http = require('http'),
     path = require('path'),
     bodyParser = require('body-parser'),
     methodOverride = require('express-method-override'),
-    errorhandler = require('errorhandler'),
-    proxy = require('http-proxy-middleware'),
     pug = require('pug'),
     metadataProxy = require('./pims_app/proxy/metadata'),
     syncModuleProxy = require('./pims_app/proxy/sync_module');
@@ -24,25 +23,15 @@ app.use(express.static(path.join(__dirname, 'app')));
 app.use(methodOverride());
 
 
-//TODO move it to separate module
-let options = {
-    target: pimsConfig.metadataServer.url, // target host
-    changeOrigin: true,
-    onProxyReq: metadataProxy.onProxyReq
-};
+app.use('/rest',
+     express_proxy(pimsConfig.metadataServer.url, {
+         proxyReqPathResolver: metadataProxy.proxyReqPathResolver
+     })
+);
+app.use('/sync-module', express_proxy(pimsConfig.syncModule.url,{
+    proxyReqPathResolver: syncModuleProxy.proxyReqPathResolver
+}));
 
-let options_sync_module = {
-    target: pimsConfig.syncModule.url, // target host
-    changeOrigin: true,
-    onProxyReq: syncModuleProxy.onProxyReq,
-    onProxyRes: syncModuleProxy.onProxyRes,
-};
-
-let pims_proxy = proxy(options),
-    sync_module_proxy = proxy(options_sync_module);
-
-app.use('/rest', pims_proxy);
-app.use('/sync-module', sync_module_proxy);
 app.use(bodyParser.urlencoded(
     {
         'extended': 'true',

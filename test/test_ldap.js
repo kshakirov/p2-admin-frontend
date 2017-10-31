@@ -1,9 +1,9 @@
-var ldap = require('ldapjs');
-var client = ldap.createClient({
+var LdapClient = require('promised-ldap');
+var client = new LdapClient({
     url: 'ldap://10.1.3.23:8389'
 });
-client.bind('cn=admin,dc=PMD,dc=local', 'gogol,111', function(err) {
-    console.log(err);
+client.bind('cn=admin,dc=PMD,dc=local', 'gogol,111').then(function(result) {
+    console.log("bound");
 });
 
 var opts = {
@@ -14,38 +14,23 @@ var opts = {
 
 let user_dn = null;
 
-client.search('dc=PMD,dc=local', opts, function(err, res) {
-    //console.log(res);
-
-    res.on('searchEntry', function(entry) {
-        console.log('entry: ') ;
-        console.log(entry.object.dn);
-        user_dn = entry.object.dn;
-        check_user_password(user_dn);
-    });
-    res.on('searchReference', function(referral) {
-        console.log('referral: ' + referral.uris.join());
-    });
-    res.on('error', function(err) {
-        console.error('error: ' + err.message);
-    });
-    res.on('end', function(result) {
-        console.log('status: ' + result.status);
-    });
+client.search('dc=PMD,dc=local', opts).then( function(res) {
+    if(res.entries.length > 0) {
+        res.entries.forEach(function (result) {
+            console.log(result.object.dn);
+            client.bind(result.object.dn, "pims").then(function (reslut) {
+                console.log("Bound");
+            }, function (error) {
+                console.log("Not logged in")
+            })
+        })
+    }else{
+        console.log("No such a user")
+    }
 });
 
 
 
 
-//cn=admin,dc=PMD,dc=local -b "dc=PMD,dc=local" -w gogol,111
-function check_user_password(dn) {
-    var userClient = ldap.createClient({
-        url: 'ldap://10.1.3.23:8389'
-    });
-    userClient.bind(dn, "pims", function(err) {
-        console.log("Error binding user");
-        console.log(err);
-    }, function (error) {
-        console.log("Dfdfd")
-    })
-}
+
+

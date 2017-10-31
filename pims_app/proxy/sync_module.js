@@ -1,20 +1,18 @@
-function onProxyReq(proxyReq, req, res) {
-    // add custom header to request
-    proxyReq.setHeader('x-added', 'foobar');
-  //  console.log('SyncModuleReq: ', Date.now());
+let token_tools = require('./tokenTools');
+
+
+function proxyReqPathResolver(req) {
+    let token = token_tools.getToken(req.headers),
+        user = token_tools.verifyToken(token),
+        url = require('url').parse(req.url).path;
+
+    if (user) {
+        url = "/sync-module" + url;
+        return url;
+    } else {
+        return url
+    }
+
 }
 
-function onProxyRes(proxyRes, req, res) {
-    proxyRes.headers['x-added'] = 'foobar';     // add new header to response
-    delete proxyRes.headers['x-removed'];       // remove header from response
-}
-
-function onError(err, req, res) {
-    res.writeHead(500, {
-        'Content-Type': 'text/plain'
-    });
-    res.end('Something went wrong. And we are reporting a custom error message.');
-}
-
-exports.onProxyReq = onProxyReq;
-exports.onProxyRes = onProxyRes;
+exports.proxyReqPathResolver = proxyReqPathResolver;

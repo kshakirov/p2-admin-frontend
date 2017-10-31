@@ -1,7 +1,18 @@
-function onProxyReq(proxyReq, req, res) {
-    // add custom header to request
-    proxyReq.setHeader('x-added', 'foobar');
-   // console.log('PimsReq: ', Date.now());
+let token_tools = require('./tokenTools');
+
+
+function proxyReqPathResolver(req) {
+    let token = token_tools.getToken(req.headers),
+        user = token_tools.verifyToken(token),
+        url = require('url').parse(req.url).path;
+
+    if (user) {
+        url = "/rest" + url;
+        return url;
+    } else {
+        return url
+    }
+
 }
 
-exports.onProxyReq = onProxyReq;
+exports.proxyReqPathResolver = proxyReqPathResolver;
