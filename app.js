@@ -11,6 +11,7 @@ let express = require('express'),
     methodOverride = require('express-method-override'),
     pug = require('pug'),
     metadataProxy = require('./pims_app/proxy/metadata'),
+    userManagementProxy = require('./pims_app/proxy/user_management'),
     syncModuleProxy = require('./pims_app/proxy/sync_module');
 
 
@@ -28,6 +29,13 @@ app.use('/rest',
          proxyReqPathResolver: metadataProxy.proxyReqPathResolver
      })
 );
+
+app.use('/management',
+    express_proxy(pimsConfig.userManagementServer.url, {
+        proxyReqPathResolver: userManagementProxy.proxyReqPathResolver
+    })
+);
+
 app.use('/sync-module', express_proxy(pimsConfig.syncModule.url,{
     proxyReqPathResolver: syncModuleProxy.proxyReqPathResolver
 }));

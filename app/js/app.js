@@ -85,7 +85,14 @@ pimsApp.config(["$routeProvider", "$locationProvider", "ChartJsProvider",
                 templateUrl: 'partial/transformation_schema/transformation_schema',
                 controller: 'TransformationSchemaController'
             })
-
+            .when('/users', {
+                templateUrl: 'partial/user/users',
+                controller: 'UserListController'
+            })
+            .when('/users/:id', {
+                templateUrl: 'partial/user/user',
+                controller: 'UserController'
+            })
             .when('/', {
                 templateUrl: 'partial/dashboard/dashboard',
                 controller: 'DashboardController'

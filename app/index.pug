@@ -45,6 +45,18 @@ block body
                                 a(href="/transformation-schemata") Transformation Schemata
                             li
                                 a(href="/custom-sync-operations") Custom Sync Operations
+                li.dropdown
+                    a.dropdown-toggle(data-toggle="dropdown", href="")
+                        b User Management
+                        ul.dropdown-menu(role="menu")
+                            li
+                                a(href="/users") Users
+                            li
+                                a(href="/groups") Groups
+                            li
+                                a(href="/permissions") Permissions
+                            li
+                                a(href="/transformation-schemata") Roles
             ul.nav.navbar-nav.navbar-right-custom(ng-cloak)
                 li.dropdown
                     a.dropdown-toggle(data-toggle="dropdown", href="", role="button")
@@ -127,4 +139,7 @@ block body
     script(src='js/custom_sync_operation/service/CustomSyncOperationService.js')
     script(src='js/custom_sync_operation/CustomSyncOperationListController.js')
     script(src='js/notification/model/NotificationModel.js')
+    script(src='js/user/model/UserModel.js')
+    script(src='js/user/UserListController.js')
+    script(src='js/user/UserController.js')
     //script(src='dist/js/all.min.js')

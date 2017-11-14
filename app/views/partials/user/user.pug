@@ -1,0 +1,49 @@
+.row.top-buffer
+    .col-lg-6.col-lg-offset-3
+        ul.breadcrumb
+            li Users
+uib-tabset(active="active", ng-init="init()")
+    uib-tab(heading="Main")
+        .row(ng-init="init()")
+            .row
+                .col-lg-6
+                    form(name="UserForm", role="form", id="UserForm")
+                        div.form-group
+                            label(for="login") Login
+                            input.form-control(type="text",id="login", data-ng-model="user.login")
+                        div.form-group
+                            label(for="firstname") First Name
+                            input.form-control(type="text", id = "firstname", data-ng-model = "user.firstname")
+                        div.form-group
+                            label(for="lastname") Last Name
+                            input.form-control(type="text", id = "lastname", data-ng-model = "user.lastname")
+                        div.form-group
+                            label(for="email") Email
+                            input.form-control(type="email", id = "email", data-ng-model = "user.lastname")
+                .col-lg-6
+                    form(name="UserForm", role="form", id="AuthForm")
+                        div.form-group
+                            label(for="password") Password
+                            input.form-control(type="password",id="password", data-ng-model="user.password")
+                        div.form-group
+                            label(for="confirmation") Confirmation
+                            input.form-control(type="password", id = "confirmation", data-ng-model = "confirmation")
+                        div.form-group
+                            label(for="generate") Generate Password
+                            input.form-control(type="checkbox", id = "generate", data-ng-model = "generate")
+                        div.form-group
+                            label(for="must_change") Must change password at next logon
+                            input.form-control(type="checkbox", id = "must_change", data-ng-model = "must_change")
+                        div.form-group
+                            label(for="send") Must change password at next logon
+                            input.form-control(type="radio", id = "send", data-ng-model = "send")
+    uib-tab(heading="Groups")
+    uib-tab(heading="Resources")
+
+.row.top-buffer
+    form
+        div.btn-group
+            button.btn.btn-default(type="submit", ng-click="updateUser(user)") APPLY
+            button.btn.btn-danger(type="submit", ng-click="deleteUser(user.id)", ng-disabled="!user.id") DELETE
+            button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL
+
