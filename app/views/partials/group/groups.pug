@@ -1,0 +1,13 @@
+.row.top-buffer
+    .col-lg-6.col-lg-offset-3
+        ul.breadcrumb
+            li Groups
+.row(ng-init="init()")
+    .col-lg-2
+        button.btn.btn-info(type="submit",ng-click="createGroup()") ADD Group
+    .col-lg-10
+        table.table(ng-table="tableParams", show-filter="true")
+            tr(ng-repeat="group in $data")
+                td(title="name", filter="{ name: 'text'}",sortable="'name'")
+                    a(ng-href="users/{{group.id}}") {{group.name}}
+                td(title="valueType") {{attr.valueType}}

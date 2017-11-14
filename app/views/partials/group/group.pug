@@ -1,0 +1,44 @@
+.row.top-buffer
+    .col-lg-6.col-lg-offset-3
+        ul.breadcrumb
+            li Groups
+uib-tabset(active="active", ng-init="init()")
+    uib-tab(heading="Main")
+        .row(ng-init="init()")
+            .row
+                .col-lg-6
+                    form(name="GroupForm", role="form", id="GroupForm")
+                        div.form-group
+                            label(for="name") Name
+                            input.form-control(type="text",id="name", data-ng-model="group.name")
+                        div.form-group
+                            label(for="auth") Authentication Group
+                            input.form-control(type="checkbox",id="auth", data-ng-model="group.customAttributes.auth")
+    uib-tab(heading="Users")
+        .row.top-buffer
+            .col-lg-2
+                button.btn.btn-info(type="submit",ng-click="createUser()") ADD USER
+            .col-lg-10
+                table.table(ng-table="tableParams", show-filter="true")
+                    tr(ng-repeat="user in $data")
+                        td(title="name", filter="{ name: 'text'}",sortable="'name'")
+                            a(ng-href="users/{{user.uuid}}") {{attr.name}}
+                        td(title="valueType") {{attr.valueType}}
+    uib-tab(heading="Resources")
+        .row.top-buffer
+            .col-lg-2
+                button.btn.btn-info(type="submit",ng-click="createResource()") ADD Resource
+            .col-lg-10
+                table.table(ng-table="tableParams", show-filter="true")
+                    tr(ng-repeat="user in $data")
+                        td(title="name", filter="{ name: 'text'}",sortable="'name'")
+                            a(ng-href="users/{{user.uuid}}") {{attr.name}}
+                        td(title="valueType") {{attr.valueType}}
+
+.row.top-buffer
+    form
+        div.btn-group
+            button.btn.btn-default(type="submit", ng-click="updateGroup(group)") APPLY
+            button.btn.btn-danger(type="submit", ng-click="deleteGroup(group.id)", ng-disabled="!user.id") DELETE
+            button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL
+

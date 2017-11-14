@@ -93,6 +93,14 @@ pimsApp.config(["$routeProvider", "$locationProvider", "ChartJsProvider",
                 templateUrl: 'partial/user/user',
                 controller: 'UserController'
             })
+            .when('/groups', {
+                templateUrl: 'partial/group/groups',
+                controller: 'GroupListController'
+            })
+            .when('/groups/:id', {
+                templateUrl: 'partial/group/group',
+                controller: 'GroupController'
+            })
             .when('/', {
                 templateUrl: 'partial/dashboard/dashboard',
                 controller: 'DashboardController'
