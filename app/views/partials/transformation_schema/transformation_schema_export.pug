@@ -1,0 +1,52 @@
+.row.top-buffer(ng-repeat="item in transformation_schema", ng-if="schema.customAttributes.export")
+    hr
+    .col-lg-3
+        .row
+            .col-sm-1
+                .form-group.pull-right
+                    a.pull-right.btn.btn-success.btn-xs(ng-click="copyUUID(item)")
+                        span.glyphicon.glyphicon-edit
+        .row
+            .col-sm-11
+                .row(ng-repeat="i in item.in")
+                    input.form-control(type="text", data-ng-model="i.path")
+    .col-lg-4
+        .row
+            .col-sm-1
+                .form-group.pull-right
+                    a.pull-right.btn.btn-success.btn-xs(ng-click="addItemConverter(item)")
+                        span.glyphicon.glyphicon-plus
+            .col-sm-2.col-sm-offset-7
+        .row.top-small-buffer(ng-repeat="converter in item.converters")
+            .col-sm-10
+                .input-group
+                    select.form-control.input-sm(ng-model="converter.id",
+                    ng-options="c.id as c.name for c in converters")
+                    span.input-group-addon.pointer-cursor
+                        span.glyphicon.glyphicon-remove
+                    span.input-group-addon.pointer-cursor
+                        span.glyphicon.glyphicon-edit
+            .col-sm-2
+    .col-lg-4
+        .row
+            .col-sm-2
+                .form-group.pull-right
+                    a.pull-right.btn.btn-success.btn-xs(ng-click="addItemAttribute(item)")
+                        span.glyphicon.glyphicon-plus
+        .row
+            .col-sm-10
+                .input-group
+                    input.form-control(type="text", data-ng-model="item.out.path")
+                    span.input-group-addon.pointer-cursor PATH
+        .row.top-small-buffer
+            .col-sm-10
+                .input-group
+                    select.form-control.input-sm(ng-model="item.out.uuid",
+                    ng-options=" a.uuid as a.name for a in attributes")
+                    span.input-group-addon.pointer-cursor
+                        span.glyphicon.glyphicon-remove
+    .col-lg-1
+        form(role="form")
+            .form-group
+                a.btn.btn-danger.btn-xs(ng-click="removeSchemaItem($index)")
+                    span.glyphicon.glyphicon-remove

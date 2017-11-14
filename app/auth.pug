@@ -13,8 +13,8 @@ html(ng-app="PimsAuth")
         .row.top-buffer.top-buffer
             .col-lg-6.col-lg-offset-3
                 h4 PRODUCT INFORMATION MANAGEMENT SYSTEM
-        .row
-            .col-lg-6.col-lg-offset-3
+        .row(ng-cloak)
+            .col-lg-6.col-lg-offset-3(ng-cloak)
                 .alert.alert-danger.alert-dismissable(ng-if="auth.flag")
                     a.close(data-dismiss="alert", href="", aria-label="close") &times;
                     .strong {{auth.body}}

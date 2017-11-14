@@ -13,6 +13,13 @@ pimsServices.service('AttributeModel', ['$http', '$rootScope', function ($http, 
         })
     };
 
+    this.findOneDto = function (et_uuid, uuid) {
+        return $http.get("/rest/entity-types/" + et_uuid
+            + "/attributes/" + uuid + "/dto").then(function (attribute) {
+            return attribute.data
+        })
+    };
+
     this.delete = function (et_uuid, uuid) {
         return $http.delete("/rest/entity-types/" + et_uuid
             + "/attributes/" + uuid).then(function (attribute) {
