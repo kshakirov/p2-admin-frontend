@@ -1,0 +1,29 @@
+.row.top-buffer
+    .col-lg-6.col-lg-offset-5
+        ul.breadcrumb
+            li Resources
+
+uib-tabset(active="active", ng-init="init()")
+    uib-tab(heading="Main")
+        .row(ng-init="init()")
+            .row
+                .col-lg-6
+                    form(name="Form", role="form", id="Form")
+                        div.form-group
+                            label(for="name") Name
+                            input.form-control(type="text",id="name", data-ng-model="role.name")
+                        div.form-group()
+                            label Module
+                            select.form-control( ng-model="resource.moduleId",
+                            ng-options="module.id as module.name  for module in modules")
+                        div.form-group(ng-if="resource.moduleId==1")
+                            label Entity Types
+                            select.form-control( ng-model="resource.externalResourceId",
+                            ng-options="entityType.uuid as entityType.name  for entityType in pims.entities.list")
+    uib-tab(heading="Other")
+.row.top-buffer
+    form
+        div.btn-group
+            button.btn.btn-default(type="submit", ng-click="updateRole(role)") APPLY
+            button.btn.btn-danger(type="submit", ng-click="deleteRole(role.id)", ng-disabled="!role.id") DELETE
+            button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL

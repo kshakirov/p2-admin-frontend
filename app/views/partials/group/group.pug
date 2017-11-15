@@ -16,25 +16,14 @@ uib-tabset(active="active", ng-init="init()")
                             input.form-control(type="checkbox",id="auth", data-ng-model="group.customAttributes.auth")
     uib-tab(heading="Users")
         .row.top-buffer
-            .col-lg-2
-                button.btn.btn-info(type="submit",ng-click="createUser()") ADD USER
-            .col-lg-10
+            .col-lg-6
                 table.table(ng-table="tableParams", show-filter="true")
                     tr(ng-repeat="user in $data")
                         td(title="name", filter="{ name: 'text'}",sortable="'name'")
                             a(ng-href="users/{{user.uuid}}") {{attr.name}}
                         td(title="valueType") {{attr.valueType}}
-    uib-tab(heading="Resources")
-        .row.top-buffer
-            .col-lg-2
-                button.btn.btn-info(type="submit",ng-click="createResource()") ADD Resource
-            .col-lg-10
-                table.table(ng-table="tableParams", show-filter="true")
-                    tr(ng-repeat="user in $data")
-                        td(title="name", filter="{ name: 'text'}",sortable="'name'")
-                            a(ng-href="users/{{user.uuid}}") {{attr.name}}
-                        td(title="valueType") {{attr.valueType}}
-
+            .col-lg-6
+                h4 here the users
 .row.top-buffer
     form
         div.btn-group

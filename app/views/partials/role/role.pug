@@ -1,0 +1,41 @@
+.row.top-buffer
+    .col-lg-6.col-lg-offset-5
+        ul.breadcrumb
+            li Roles
+
+uib-tabset(active="active", ng-init="init()")
+    uib-tab(heading="Main")
+        .row
+            .row
+                .col-lg-6
+                    form(name="Form", role="form", id="Form")
+                        div.form-group
+                            label(for="name") Name
+                            input.form-control(type="text",id="name", data-ng-model="role.name")
+                        div.form-group
+                            label(for="auth") Description
+                            input.form-control(type="text",id="auth", data-ng-model="role.properties.description")
+    uib-tab(heading="Resources Vs Permissions")
+        .row.top-buffer(ng-init="initResources()")
+            .col-lg-6.col-lg-offset-5
+                form(role="form")
+                    .form-group.col-sm-6
+                    .btn-group.top-space
+                        button.btn.btn-info(type="submit", ng-click="addResource()")
+                            span.glyphicon.glyphicon-plus
+        .row.top-buffer
+            .col-lg-4
+                h5.text-center Resources
+            .col-lg-4
+                h5.text-center Permissions
+            .col-lg-4
+                h5.text-center Limitations
+        include role_resource_permission
+    uib-tab(heading="Other")
+
+.row.top-buffer.top-buffer
+    form
+        div.btn-group
+            button.btn.btn-default(type="submit", ng-click="updateRole(role)") APPLY
+            button.btn.btn-danger(type="submit", ng-click="deleteRole(role.id)", ng-disabled="!role.id") DELETE
+            button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL

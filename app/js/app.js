@@ -109,6 +109,22 @@ pimsApp.config(["$routeProvider", "$locationProvider", "ChartJsProvider",
                 templateUrl: 'partial/permission/permission',
                 controller: 'PermissionController'
             })
+            .when('/roles', {
+                templateUrl: 'partial/role/roles',
+                controller: 'RoleListController'
+            })
+            .when('/roles/:id', {
+                templateUrl: 'partial/role/role',
+                controller: 'RoleController'
+            })
+            .when('/resources', {
+                templateUrl: 'partial/resource/resources',
+                controller: 'ResourceListController'
+            })
+            .when('/resources/:id', {
+                templateUrl: 'partial/resource/resource',
+                controller: 'ResourceController'
+            })
             .when('/', {
                 templateUrl: 'partial/dashboard/dashboard',
                 controller: 'DashboardController'

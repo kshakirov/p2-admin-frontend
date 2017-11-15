@@ -1,0 +1,28 @@
+.row.top-buffer(ng-repeat="item in role.resources", ng-if="role.resources")
+    hr
+    .col-lg-4
+        .row
+            .col-sm-10
+                .input-group
+                    select.form-control.input-sm(ng-model="item.resource.id",
+                    ng-options=" r.id as r.name for r in resources")
+                    span.input-group-addon.pointer-cursor
+                        span.glyphicon.glyphicon-remove
+    .col-lg-4
+        .row
+            .col-sm-10
+                .input-group
+                    select.form-control.input-sm(ng-model="item.permission.id",
+                    ng-options=" p.id as p.name for p in permissions")
+                    span.input-group-addon.pointer-cursor
+                        span.glyphicon.glyphicon-remove
+    .col-lg-3
+        .row
+            .col-sm-10
+                form
+                    input.form-control(type="text", data-ng-model="item.filter")
+    .col-lg-1
+        form(role="form")
+            .form-group
+                a.btn.btn-danger.btn-xs(ng-click="removeResource($index)")
+                    span.glyphicon.glyphicon-remove
