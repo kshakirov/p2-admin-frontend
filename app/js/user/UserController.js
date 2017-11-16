@@ -1,22 +1,40 @@
 pimsApp.controller('UserController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'UserModel', 'MessageService',
+    'GroupModel','RoleModel','$q',
     function ($scope, $route, $routeParams,
               $location,
               $http,
               $rootScope,
               UserModel,
-              MessageService) {
+              MessageService,
+              GroupModel,
+              RoleModel,
+              $q) {
 
 
         $rootScope.message = MessageService.prepareMessage();
 
+        function loadDependencies() {
+            return $q.all([GroupModel.findAll(),RoleModel.findAll()])
+        }
+
+        function loadAll(id) {
+            return $q.all([GroupModel.findAll(),RoleModel.findAll(),UserModel.findOne(id)])
+        }
+
         $scope.init = function () {
             var id = $routeParams.id;
             if (id === "new") {
-
+                loadDependencies().then(function (promises) {
+                    $scope.user = {};
+                    $scope.groups = promises[0];
+                    $scope.roles = promises[1]
+                });
             } else {
-                UserModel.findOne(id).then(function (user) {
-                    $scope.attribute = user;
+                loadAll(id).then(function (promises) {
+                    $scope.user = promises[2];
+                    $scope.groups = promises[0];
+                    $scope.roles = promises[1]
                 })
             }
         };

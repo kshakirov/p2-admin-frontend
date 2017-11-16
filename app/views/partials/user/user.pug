@@ -4,7 +4,7 @@
             li Users
 uib-tabset(active="active", ng-init="init()")
     uib-tab(heading="Main")
-        .row(ng-init="init()")
+        .row
             .row
                 .col-lg-6
                     form(name="UserForm", role="form", id="UserForm")
@@ -19,7 +19,13 @@ uib-tabset(active="active", ng-init="init()")
                             input.form-control(type="text", id = "lastname", data-ng-model = "user.lastname")
                         div.form-group
                             label(for="email") Email
-                            input.form-control(type="email", id = "email", data-ng-model = "user.lastname")
+                            input.form-control(type="email", id = "email", data-ng-model = "user.email")
+                        div.form-group()
+                            label Deleted
+                            input.form-control(type="checkbox",id="deleted", data-ng-model="user.deleted")
+                        div.form-group()
+                            label Admin
+                            input.form-control(type="checkbox",id="admin", data-ng-model="user.admin", ng-value=false)
                 .col-lg-6
                     form(name="UserForm", role="form", id="AuthForm")
                         div.form-group
@@ -30,15 +36,33 @@ uib-tabset(active="active", ng-init="init()")
                             input.form-control(type="password", id = "confirmation", data-ng-model = "confirmation")
                         div.form-group
                             label(for="generate") Generate Password
-                            input.form-control(type="checkbox", id = "generate", data-ng-model = "generate")
+                            input.form-control(type="checkbox", id = "generate", data-ng-model = "user.properties.generate")
                         div.form-group
                             label(for="must_change") Must change password at next logon
-                            input.form-control(type="checkbox", id = "must_change", data-ng-model = "must_change")
+                            input.form-control(type="checkbox", id = "must_change", data-ng-model = "user.properties.must_change_password")
                         div.form-group
-                            label(for="send") Must change password at next logon
-                            input.form-control(type="radio", id = "send", data-ng-model = "send")
+                            label(for="send") Send This Data To User
+                            input.form-control(type="checkbox", id = "send", data-ng-model = "user.properties.send_credentials")
     uib-tab(heading="Groups")
-    uib-tab(heading="Resources")
+    uib-tab(heading="Roles")
+        .row.top-buffer
+            .col-lg-6
+                table.table(ng-table="tableParams", show-filter="true")
+                    tr(ng-repeat="role in $data")
+                        td(title="name", filter="{ name: 'text'}",sortable="'name'")
+                            a(ng-click="addMember(role)",ng-href="") {{role.name}}
+            .col-lg-6
+                table.table
+                    thead
+                        tr
+                            th User's Roles
+                    tbody(ui-sortable, ng-model="groupMembers")
+                        tr.item(ng-repeat="member in groupMembers track by member.id", style="cursor: move")
+                            td
+                                a(ng-href="/users/{{member.id}}") {{member.login}}
+                            td
+                                button.btn.btn-default.btn-sm(ng-click="deleteAttribute($index)")
+                                    span.glyphicon.glyphicon-remove
 
 .row.top-buffer
     form

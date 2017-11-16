@@ -14,10 +14,12 @@ pimsApp.controller('ResourceController', ['$scope', '$route', '$routeParams',
         $scope.init = function () {
             var id = $routeParams.id;
             if (id === "new") {
+                $scope.resource = {
 
+                }
             } else {
-                ResourceModel.findOne(id).then(function (roles) {
-                    $scope.roles = roles;
+                ResourceModel.findOne(id).then(function (resource) {
+                    $scope.resource = resource;
                 })
             }
         };
@@ -40,7 +42,7 @@ pimsApp.controller('ResourceController', ['$scope', '$route', '$routeParams',
         };
 
         $scope.cancel = function () {
-            $location.path("/roles");
+            $location.path("/resources");
         }
 
     }]);

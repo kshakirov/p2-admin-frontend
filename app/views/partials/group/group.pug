@@ -13,21 +13,34 @@ uib-tabset(active="active", ng-init="init()")
                             input.form-control(type="text",id="name", data-ng-model="group.name")
                         div.form-group
                             label(for="auth") Authentication Group
-                            input.form-control(type="checkbox",id="auth", data-ng-model="group.customAttributes.auth")
+                            input.form-control(type="checkbox",id="auth", data-ng-model="group.properties.auth")
+                        div.form-group()
+                            label Deleted
+                            input.form-control(type="checkbox",id="deleted", data-ng-model="group.deleted", ng-value=false)
     uib-tab(heading="Users")
         .row.top-buffer
             .col-lg-6
                 table.table(ng-table="tableParams", show-filter="true")
                     tr(ng-repeat="user in $data")
-                        td(title="name", filter="{ name: 'text'}",sortable="'name'")
-                            a(ng-href="users/{{user.uuid}}") {{attr.name}}
-                        td(title="valueType") {{attr.valueType}}
+                        td(title="login", filter="{ login: 'text'}",sortable="'login'")
+                            a(ng-click="addMember(user)",ng-href="") {{user.login}}
+                        td(title="lastname",filter="{ lastname: 'text'}",sortable="'lastname'") {{user.lastname}}
             .col-lg-6
-                h4 here the users
+                table.table
+                    thead
+                        tr
+                            th Group Memebers
+                    tbody(ui-sortable, ng-model="groupMembers")
+                        tr.item(ng-repeat="member in groupMembers track by member.id", style="cursor: move")
+                            td
+                                a(ng-href="/users/{{member.id}}") {{member.login}}
+                            td
+                                button.btn.btn-default.btn-sm(ng-click="deleteAttribute($index)")
+                                    span.glyphicon.glyphicon-remove
 .row.top-buffer
     form
         div.btn-group
-            button.btn.btn-default(type="submit", ng-click="updateGroup(group)") APPLY
-            button.btn.btn-danger(type="submit", ng-click="deleteGroup(group.id)", ng-disabled="!user.id") DELETE
+            button.btn.btn-default(type="submit", ng-click="updateGroup(group,groupMembers)") APPLY
+            button.btn.btn-danger(type="submit", ng-click="deleteGroup(group.id)", ng-disabled="!group.id") DELETE
             button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL
 

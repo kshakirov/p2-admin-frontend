@@ -1,34 +1,34 @@
 pimsServices.service('PermissionModel', ['$http', '$rootScope', function ($http, $rootScope) {
     this.findAll = function () {
         return $http.get("/management/permissions/page/0").then(function (users) {
-            return users.content
+            return users.data.content
         })
     };
 
-    this.findOne = function (et_uuid) {
-        return $http.get("/rest/entity-types/" + et_uuid).then(function (entities) {
-            return entities.data
+    this.findOne = function (id) {
+        return $http.get("/management/permissions/" + id).then(function (permission) {
+            return permission.data
         })
     };
 
-    this.delete = function (uuid) {
-        return $http.delete("/rest/entity-types/" + uuid).
-        then(function (attribute) {
-            return attribute.data
+    this.delete = function (id) {
+        return $http.delete("/management/permissions/" + id).
+        then(function (permission) {
+            return permission.data
         })
     };
 
-    this.create = function (entityType) {
-        return $http.post("/rest/entity-types/",
-            entityType).then(function (entityType) {
-            return entityType.data
+    this.create = function (permission) {
+        return $http.post("/management/permissions/",
+            permission).then(function (permission) {
+            return permission.data
         })
     }
 
-    this.update = function (entityType) {
-        return $http.put("/rest/entity-types/"
-            + entityType.uuid, entityType).then(function (entityType) {
-            return entityType.data
+    this.update = function (permission) {
+        return $http.put("/management/permissions/"
+            + permission.id, permission).then(function (permission) {
+            return permission.data
         })
     }
 

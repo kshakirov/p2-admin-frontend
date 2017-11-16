@@ -1,34 +1,34 @@
 pimsServices.service('GroupModel', ['$http', '$rootScope', function ($http, $rootScope) {
     this.findAll = function () {
         return $http.get("/management/groups/page/0").then(function (groups) {
-            return groups.content
+            return groups.data.content
         })
     };
 
-    this.findOne = function (et_uuid) {
-        return $http.get("/rest/entity-types/" + et_uuid).then(function (entities) {
-            return entities.data
+    this.findOne = function (id) {
+        return $http.get("/management/groups/" + id).then(function (group) {
+            return group.data
         })
     };
 
-    this.delete = function (uuid) {
-        return $http.delete("/rest/entity-types/" + uuid).
-        then(function (attribute) {
-            return attribute.data
+    this.delete = function (id) {
+        return $http.delete("/management/groups/" + id).
+        then(function (group) {
+            return group.data
         })
     };
 
-    this.create = function (entityType) {
-        return $http.post("/rest/entity-types/",
-            entityType).then(function (entityType) {
-            return entityType.data
+    this.create = function (group) {
+        return $http.post("/management/groups/",
+            group).then(function (group) {
+            return group.data
         })
     }
 
-    this.update = function (entityType) {
-        return $http.put("/rest/entity-types/"
-            + entityType.uuid, entityType).then(function (entityType) {
-            return entityType.data
+    this.update = function (group) {
+        return $http.put("/management/groups/"
+            + group.id, group).then(function (group) {
+            return group.data
         })
     }
 

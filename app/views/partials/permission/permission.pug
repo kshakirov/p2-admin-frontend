@@ -11,11 +11,14 @@ uib-tabset(active="active", ng-init="init()")
                         div.form-group
                             label(for="name") Name
                             input.form-control(type="text",id="name", data-ng-model="permission.name")
+                        div.form-group()
+                            label Deleted
+                            input.form-control(type="checkbox",id="deleted", data-ng-model="permission.deleted", ng-value=false)
 
     uib-tab(heading="Other")
 .row.top-buffer
     form
         div.btn-group
-            button.btn.btn-default(type="submit", ng-click="updateGroup(group)") APPLY
-            button.btn.btn-danger(type="submit", ng-click="deleteGroup(group.id)", ng-disabled="!user.id") DELETE
+            button.btn.btn-default(type="submit", ng-click="updatePermission(permission)") APPLY
+            button.btn.btn-danger(type="submit", ng-click="deletePermission(permission.id)", ng-disabled="!permission.id") DELETE
             button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL

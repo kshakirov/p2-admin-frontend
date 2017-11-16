@@ -5,30 +5,30 @@ pimsServices.service('RoleModel', ['$http', '$rootScope', function ($http, $root
         })
     };
 
-    this.findOne = function (et_uuid) {
-        return $http.get("/rest/entity-types/" + et_uuid).then(function (entities) {
+    this.findOne = function (id) {
+        return $http.get("/management/roles/" + id).then(function (entities) {
             return entities.data
         })
     };
 
-    this.delete = function (uuid) {
-        return $http.delete("/rest/entity-types/" + uuid).
+    this.delete = function (id) {
+        return $http.delete("/management/roles/" + id).
         then(function (attribute) {
             return attribute.data
         })
     };
 
-    this.create = function (entityType) {
-        return $http.post("/rest/entity-types/",
-            entityType).then(function (entityType) {
-            return entityType.data
+    this.create = function (role) {
+        return $http.post("/management/roles/",
+            role).then(function (role) {
+            return role.data
         })
     }
 
-    this.update = function (entityType) {
-        return $http.put("/rest/entity-types/"
-            + entityType.uuid, entityType).then(function (entityType) {
-            return entityType.data
+    this.update = function (role) {
+        return $http.put("/management/roles/"
+            + role.uuid, role).then(function (role) {
+            return role.data
         })
     }
 

@@ -39,7 +39,7 @@ pimsApp.controller('RoleController', ['$scope', '$route', '$routeParams',
             }
         };
 
-        $scope.updatePermission = function (role) {
+        $scope.updateRole = function (role) {
             if (role.id) {
                 RoleModel.update(role).then(function (response) {
                     MessageService.setSuccessMessage($rootScope.message, "Role Updated");
