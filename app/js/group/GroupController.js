@@ -29,7 +29,6 @@ pimsApp.controller('GroupController', ['$scope', '$route', '$routeParams',
                     GroupModel.findOne(id).then(function (group) {
                         $scope.group = group;
                         $scope.groupMembers = GroupService.getMembers(group, users)
-                        $scope.groupMembers = []
                     })
                 });
             }

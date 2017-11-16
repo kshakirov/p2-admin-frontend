@@ -6,7 +6,7 @@ pimsServices.service('GroupModel', ['$http', '$rootScope', function ($http, $roo
     };
 
     this.findOne = function (id) {
-        return $http.get("/management/groups/" + id).then(function (group) {
+        return $http.get("/management/groups/" + id + "/dto").then(function (group) {
             return group.data
         })
     };

@@ -1,6 +1,6 @@
 pimsApp.controller('UserController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'UserModel', 'MessageService',
-    'GroupModel','RoleModel','$q',
+    'GroupModel','RoleModel','$q','NgTableParams', 'UserService',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -9,7 +9,9 @@ pimsApp.controller('UserController', ['$scope', '$route', '$routeParams',
               MessageService,
               GroupModel,
               RoleModel,
-              $q) {
+              $q,
+              NgTableParams,
+              UserService) {
 
 
         $rootScope.message = MessageService.prepareMessage();
@@ -27,19 +29,24 @@ pimsApp.controller('UserController', ['$scope', '$route', '$routeParams',
             if (id === "new") {
                 loadDependencies().then(function (promises) {
                     $scope.user = {};
-                    $scope.groups = promises[0];
-                    $scope.roles = promises[1]
+                    $scope.rolesTableParams = new NgTableParams({}, {dataset: promises[1]}) ;
+                    $scope.userRoles= [];
                 });
             } else {
                 loadAll(id).then(function (promises) {
-                    $scope.user = promises[2];
-                    $scope.groups = promises[0];
-                    $scope.roles = promises[1]
+
+                    $scope.rolesTableParams = new NgTableParams({}, {dataset: promises[1]}) ;
+                    $scope.user = promises[2]
+                    $scope.userRoles= [];
+                    var userGroups = UserService.getUserGroups(user, promises[0])
+                    $scope.groupsTableParams =new NgTableParams({}, {dataset: userGroups}) ;
+
                 })
             }
         };
 
-        $scope.updateUser = function (user) {
+        $scope.updateUser = function (user,roles) {
+            var user = UserService.daoUser(user,roles);
             if (user.id) {
                 UserModel.update(user).then(function (response) {
                     MessageService.setSuccessMessage($rootScope.message, "User Updated");
@@ -58,6 +65,10 @@ pimsApp.controller('UserController', ['$scope', '$route', '$routeParams',
 
         $scope.cancel = function () {
             $location.path("/users");
+        }
+        
+        $scope.addRole = function (role) {
+            $scope.userRoles.push(role)
         }
 
     }]);

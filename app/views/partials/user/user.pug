@@ -44,30 +44,36 @@ uib-tabset(active="active", ng-init="init()")
                             label(for="send") Send This Data To User
                             input.form-control(type="checkbox", id = "send", data-ng-model = "user.properties.send_credentials")
     uib-tab(heading="Groups")
+        .row.top-buffer
+            .col-lg-6
+                table.table(ng-table="groupsTableParams", show-filter="true")
+                    tr(ng-repeat="group in $data")
+                        td(title="name", filter="{ name: 'text'}",sortable="'name'")
+                            a(ng-href="/groups/{{group.id}}") {{group.name}}
     uib-tab(heading="Roles")
         .row.top-buffer
             .col-lg-6
-                table.table(ng-table="tableParams", show-filter="true")
+                table.table(ng-table="rolesTableParams", show-filter="true")
                     tr(ng-repeat="role in $data")
                         td(title="name", filter="{ name: 'text'}",sortable="'name'")
-                            a(ng-click="addMember(role)",ng-href="") {{role.name}}
+                            a(ng-click="addRole(role)",ng-href="") {{role.name}}
             .col-lg-6
                 table.table
                     thead
                         tr
                             th User's Roles
-                    tbody(ui-sortable, ng-model="groupMembers")
-                        tr.item(ng-repeat="member in groupMembers track by member.id", style="cursor: move")
+                    tbody
+                        tr.item(ng-repeat="userRole in userRoles track by $id(userRole)", style="cursor: move")
                             td
-                                a(ng-href="/users/{{member.id}}") {{member.login}}
+                                a(ng-href="/roles/{{userRole.id}}") {{userRole.name}}
                             td
-                                button.btn.btn-default.btn-sm(ng-click="deleteAttribute($index)")
+                                button.btn.btn-default.btn-sm(ng-click="deleteUserRole($index)")
                                     span.glyphicon.glyphicon-remove
 
 .row.top-buffer
     form
         div.btn-group
-            button.btn.btn-default(type="submit", ng-click="updateUser(user)") APPLY
+            button.btn.btn-default(type="submit", ng-click="updateUser(user,userRoles)") APPLY
             button.btn.btn-danger(type="submit", ng-click="deleteUser(user.id)", ng-disabled="!user.id") DELETE
             button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL
 

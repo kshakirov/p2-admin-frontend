@@ -2,7 +2,7 @@ pimsServices.service('GroupService', ['AttributeModel',
     function (AttributeModel){
         this.getMembers = function (group, users) {
             var groupMembers = group.users;
-            users.filter(function (user) {
+            return users.filter(function (user) {
                 if(groupMembers.includes(user.id))
                     return user;
             })

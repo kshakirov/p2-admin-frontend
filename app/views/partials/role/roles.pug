@@ -9,5 +9,4 @@
         table.table(ng-table="tableParams", show-filter="true")
             tr(ng-repeat="role in $data")
                 td(title="name", filter="{ name: 'text'}",sortable="'name'")
-                    a(ng-href="users/{{role.id}}") {{role.name}}
-                td(title="valueType") {{attr.valueType}}
+                    a(ng-href="roles/{{role.id}}") {{role.name}}

@@ -17,14 +17,19 @@ pimsApp.controller('RoleController', ['$scope', '$route', '$routeParams',
 
 
 
-        function getDependencies() {
+        function loadDependencies() {
                  return $q.all([PermissionModel.findAll(), ResourceModel.findAll()]);
         }
+
+        function loadAll(id) {
+            return $q.all([PermissionModel.findAll(), ResourceModel.findAll(), RoleModel.findOne(id)]);
+        }
+
 
         $scope.init = function () {
             var id = $routeParams.id;
             if (id === "new") {
-                getDependencies().then(function (promises) {
+                loadDependencies().then(function (promises) {
                     $scope.role = {
                         resources: []
                     };
@@ -33,8 +38,10 @@ pimsApp.controller('RoleController', ['$scope', '$route', '$routeParams',
                 })
 
             } else {
-                RoleModel.findOne(id).then(function (role) {
-                    $scope.role = role;
+                loadAll(id).then(function (promises) {
+                    $scope.role = promises[2];
+                    $scope.resources = promises[1];
+                    $scope.permissions = promises[0];
                 })
             }
         };

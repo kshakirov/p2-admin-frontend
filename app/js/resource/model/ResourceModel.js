@@ -27,7 +27,7 @@ pimsServices.service('ResourceModel', ['$http', '$rootScope', function ($http, $
 
     this.update = function (resource) {
         return $http.put("/management/resources/"
-            + resource.uuid, resource).then(function (entityType) {
+            + resource.id, resource).then(function (entityType) {
             return entityType.data
         })
     }

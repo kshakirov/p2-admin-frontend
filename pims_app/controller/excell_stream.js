@@ -2,39 +2,18 @@ const fs = require('fs');
 var ExcelReader = require('node-excel-stream').ExcelReader;
 var ExcelWriter = require('node-excel-stream').ExcelWriter;
 
-function get_excell_fields(schema) {
-    let rules = schema.mapping.schema.schema;
-    return rules.map((rule) => {
+function get_excell_fields(headers) {
+    return headers.map((header) => {
         return {
-            name: rule.out,
-            key: rule.out,
+            name: header,
+            key: header,
         }
     })
 }
 
-let schema = {
-    "mapping": {
-        "id": 35,
-        "name": "Pims 2 Csv Product Category",
-        "schema": {
-            "schema": [{"out": "Id", "in": [{"uuid": "32", "path": "32.value"}]}, {
-                "out": "name",
-                "in": [{"uuid": "33", "path": "33.value"}]
-            }, {"out": "complete_name", "in": [{"uuid": "34", "path": "34.value"}]}, {
-                "out": "pc_name",
-                "in": [{"uuid": "35", "path": "35.value.attributes.33.value"}]
-            }, {"out": "pc_id", "in": [{"uuid": "35", "path": "35.value.attributes.32.value"}]}, {
-                "out": "pc_complete_name",
-                "in": [{"uuid": "35", "path": "35.value.attributes.34.value"}]
-            }]
-        },
-        "customAttributes": {"dto": true, "entity": {"uuid": 7}}
-    }
-};
 
-
-function create_reader(headers) {
-    let dataStream = fs.createReadStream('product_categories.xlsx');
+function create_reader(headers,filename) {
+    let dataStream = fs.createReadStream(filename);
     let reader = new ExcelReader(dataStream, {
         sheets: [{
             name: 'Sheet1',
@@ -49,9 +28,9 @@ function create_reader(headers) {
 
 
 function stream_xlxs(req, res) {
-    let schema = req.body.schema;
-    let headers = get_excell_fields(schema),
-        reader = create_reader(headers),
+    let headers = get_excell_fields(req.body.headers),
+        filename = req.params.filename,
+        reader = create_reader(headers, filename),
         start = parseInt(req.body.start) || 0,
         pagination = {
             last: 0,

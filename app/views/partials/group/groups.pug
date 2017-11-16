@@ -4,7 +4,7 @@
             li Groups
 .row(ng-init="init()")
     .col-lg-2
-        button.btn.btn-info(type="submit",ng-click="createGroup()") ADD Group
+        button.btn.btn-info(type="submit",ng-click="createGroup()") ADD GROUP
     .col-lg-10
         table.table(ng-table="tableParams", show-filter="true")
             tr(ng-repeat="group in $data")

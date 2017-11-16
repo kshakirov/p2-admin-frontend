@@ -1,45 +1,21 @@
-// var XLSX = require('xlsx')
-// var workbook = XLSX.readFile('../product_suppliers.xlsx');
-// var sheet_name_list = workbook.SheetNames;
-// var xlData = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]])
-// console.log(xlData);
-
 const fs = require('fs');
 var ExcelReader = require('node-excel-stream').ExcelReader;
 var ExcelWriter = require('node-excel-stream').ExcelWriter;
-let dataStream = fs.createReadStream('../product_categories.xlsx');
+let dataStream = fs.createReadStream('../product_categories.xlsx'),
+    headers = ['Id','name','complete_name','pc_name','pc_id','pc_complete_name'];
 
-function get_excell_fields(schema) {
-    let rules = schema.mapping.schema.schema;
-    return rules.map((rule) =>{
+function get_excell_fields(headers) {
+    return headers.map((header) => {
         return {
-            name: rule.out,
-            key: rule.out,
+            name: header,
+            key: header,
         }
     })
 }
 
-let schema = {
-    "mapping": {
-        "id": 35,
-        "name": "Pims 2 Csv Product Category",
-        "schema": {
-            "schema": [{"out": "Id", "in": [{"uuid": "32", "path": "32.value"}]}, {
-                "out": "name",
-                "in": [{"uuid": "33", "path": "33.value"}]
-            }, {"out": "complete_name", "in": [{"uuid": "34", "path": "34.value"}]}, {
-                "out": "pc_name",
-                "in": [{"uuid": "35", "path": "35.value.attributes.33.value"}]
-            }, {"out": "pc_id", "in": [{"uuid": "35", "path": "35.value.attributes.32.value"}]}, {
-                "out": "pc_complete_name",
-                "in": [{"uuid": "35", "path": "35.value.attributes.34.value"}]
-            }]
-        },
-        "customAttributes": {"dto": true, "entity": {"uuid": 7}}
-    }
-};
 
-let headers = get_excell_fields(schema);
+
+headers = get_excell_fields(headers);
 
 
 let reader = new ExcelReader(dataStream, {

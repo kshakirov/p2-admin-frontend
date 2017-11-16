@@ -1,12 +1,12 @@
 pimsServices.service('RoleModel', ['$http', '$rootScope', function ($http, $rootScope) {
     this.findAll = function () {
         return $http.get("/management/roles/page/0").then(function (roles) {
-            return roles.content
+            return roles.data.content
         })
     };
 
     this.findOne = function (id) {
-        return $http.get("/management/roles/" + id).then(function (entities) {
+        return $http.get("/management/roles/" + id + "/dto").then(function (entities) {
             return entities.data
         })
     };
@@ -27,7 +27,7 @@ pimsServices.service('RoleModel', ['$http', '$rootScope', function ($http, $root
 
     this.update = function (role) {
         return $http.put("/management/roles/"
-            + role.uuid, role).then(function (role) {
+            + role.id, role).then(function (role) {
             return role.data
         })
     }
