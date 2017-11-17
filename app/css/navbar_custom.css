@@ -12,6 +12,12 @@
     margin-right: 60px;
 }
 
+.btn-logout {
+    width: 100%;
+    padding: 3px 20px !important;
+    text-align: left !important;
+}
+
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
     display: none !important;
 }

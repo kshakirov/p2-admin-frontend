@@ -16,7 +16,7 @@ pimsServices.service('MessageService', [
                     flag: false,
                     body: ""
                 },
-                error: {
+                danger: {
                     flag: false,
                     body: ""
                 },
@@ -37,15 +37,15 @@ pimsServices.service('MessageService', [
         this.setInfoMessage = function(message, body) {
             message.info.flag = true;
             message.info.body = body;
-        }
+        };
 
         this.setWarningMessage = function(message, body) {
             message.warning.flag = true;
             message.warning.body = body;
-        }
+        };
 
         this.setDangerMessage = function(message, body) {
-            message.error.flag = true;
-            message.error.body = body;
+            message.danger.flag = true;
+            message.danger.body = body;
         }
-    }])
+    }]);

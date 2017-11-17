@@ -37,8 +37,8 @@ pimsApp.controller('UserController', ['$scope', '$route', '$routeParams',
 
                     $scope.rolesTableParams = new NgTableParams({}, {dataset: promises[1]}) ;
                     $scope.user = promises[2]
-                    $scope.userRoles= [];
-                    var userGroups = UserService.getUserGroups(user, promises[0])
+                    $scope.userRoles= UserService.getUserRoles(promises[2], promises[1]);
+                    var userGroups = UserService.getUserGroupes(promises[2], promises[0]);
                     $scope.groupsTableParams =new NgTableParams({}, {dataset: userGroups}) ;
 
                 })
@@ -69,6 +69,10 @@ pimsApp.controller('UserController', ['$scope', '$route', '$routeParams',
         
         $scope.addRole = function (role) {
             $scope.userRoles.push(role)
+        }
+
+        $scope.deleteUserRole = function (index) {
+            $scope.userRoles.splice(index, 1);
         }
 
     }]);

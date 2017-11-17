@@ -1,14 +1,17 @@
 pimsApp.controller('EntityListController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'EntityModel', 'NgTableParams', 'usSpinnerService',
+    'MessageService',
     function ($scope, $route, $routeParams,
               $location,
               $http,
               $rootScope,
               EntityModel,
               NgTableParams,
-              usSpinnerService) {
+              usSpinnerService,
+              MessageService) {
         var entity_type_uuid = $rootScope.pims.entities.current.uuid;
         var pageSize = 10;
+        $rootScope.message = MessageService.prepareMessage();
 
         function PaginationObject(response) {
             return {
@@ -34,6 +37,9 @@ pimsApp.controller('EntityListController', ['$scope', '$route', '$routeParams',
                 usSpinnerService.stop('spinner-1');
 
             }, function (error) {
+                MessageService.setDangerMessage($rootScope.message,
+                    "You are not authorized");
+                usSpinnerService.stop('spinner-1');
                 console.log(error);
             })
         };

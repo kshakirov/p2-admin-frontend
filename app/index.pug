@@ -45,20 +45,28 @@ block body
                                 a(href="/transformation-schemata") Transformation Schemata
                             li
                                 a(href="/custom-sync-operations") Custom Sync Operations
-                li.dropdown
-                    a.dropdown-toggle(data-toggle="dropdown", href="")
-                        b User Management
-                        ul.dropdown-menu(role="menu")
-                            li
-                                a(href="/users") Users
-                            li
-                                a(href="/groups") Groups
-                            li
-                                a(href="/permissions") Permissions
-                            li
-                                a(href="/roles") Roles
-                            li
-                                a(href="/resources") Resources
+                if admin
+                    li.dropdown
+                        a.dropdown-toggle(data-toggle="dropdown", href="")
+                            b User Management
+                            ul.dropdown-menu(role="menu")
+                                li
+                                    a(href="/users") Users
+                                li
+                                    a(href="/groups") Groups
+                                li
+                                    a(href="/permissions") Permissions
+                                li
+                                    a(href="/roles") Roles
+                                li
+                                    a(href="/resources") Resources
+                else
+                    li.dropdown
+                        a.dropdown-toggle(data-toggle="dropdown", href="")
+                            b My Profile
+                            ul.dropdown-menu(role="menu")
+                                li
+                                    a(href="/profile") Setting
             ul.nav.navbar-nav.navbar-right-custom(ng-cloak)
                 li.dropdown
                     a.dropdown-toggle(data-toggle="dropdown", href="", role="button")
@@ -68,7 +76,9 @@ block body
                         ul.dropdown-menu(role="menu")
                             li(ng-repeat="entityType in pims.entities.list")
                                 a(href="", ng-click="selectEntity(entityType)") {{entityType.name}}
-
+                form.navbar-form.navbar-left
+                    button.btn.btn-default(type="submit", ng-click="logout()")
+                        span.glyphicon.glyphicon-log-out &nbsp
     .container
         .row.top-message-buffer
             .col-lg-8.col-lg-offset4(ng-cloak)

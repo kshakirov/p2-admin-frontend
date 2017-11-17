@@ -1,6 +1,7 @@
 pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
-    'EntityTypeModel', '$cookies', '$location', '$routeParams', function ($scope, $rootScope, $http, EntityTypeModel,
-                                             $cookies, $location, $routeParams) {
+    'EntityTypeModel', '$cookies', '$location', '$routeParams', '$window',
+    function ($scope, $rootScope, $http, EntityTypeModel,
+                                             $cookies, $location, $routeParams,$window) {
         var selectedTypes = ['product', 'supplier', 'product uom'];
 
 
@@ -45,7 +46,7 @@ pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
         $scope.selectEntity = function (entityType) {
             $rootScope.pims.entities.current = entityType;
             $location.path("/");
-        }
+        };
 
         $scope.initialize = function () {
             var uuid = $routeParams.uuid;
@@ -69,7 +70,12 @@ pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
 
                 })
             }
-        }
+        };
+
+        $scope.logout = function () {
+            $cookies.remove("token");
+            $window.location.href = '/auth/login';
+        };
 
         $scope.cancel = function () {
             $location.path("/entity-types");
