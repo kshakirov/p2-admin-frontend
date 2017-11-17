@@ -148,13 +148,13 @@ pimsApp.config(['$httpProvider', function($httpProvider) {
 pimsApp.factory('sessionInjector', ['$cookies','$window', function($cookies,$window) {
     var sessionInjector = {
         request: function(config) {
-            var token = $cookies.getObject('token');
+            var token = $cookies.get('token');
             if(angular.isUndefined(token)){
                 console.log("You are not authorised");
                 $window.location.href = '/auth/login';
                 }
             else
-                config.headers['Authorization'] = "Bearer " +  $cookies.getObject('token');
+                config.headers['Authorization'] = "Bearer " +  $cookies.get('token');
 
             return config;
         }

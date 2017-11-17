@@ -6,7 +6,7 @@ function proxyReqPathResolver(req) {
         user = token_tools.verifyToken(token),
         url = require('url').parse(req.url).path;
 
-    if (user) {
+    if (user && user.admin) {
         url = "/rest" + url;
         return url;
     } else {

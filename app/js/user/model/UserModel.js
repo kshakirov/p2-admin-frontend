@@ -6,7 +6,7 @@ pimsServices.service('UserModel', ['$http', '$rootScope', function ($http, $root
     };
 
     this.findOne = function (id) {
-        return $http.get("/management/users/" + id).then(function (user) {
+        return $http.get("/management/users/" + id + "/dto").then(function (user) {
             return user.data;
         })
     };

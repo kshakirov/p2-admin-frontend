@@ -7,7 +7,7 @@ let jwt = require('jsonwebtoken'),
 function verify_token(token) {
     try {
         var decoded = jwt.verify(token, token_secret);
-        return decoded.user;
+        return decoded;
     } catch (err) {
         return false;
     }
@@ -20,8 +20,8 @@ function get_token(headers) {
 }
 
 
-function generate_token(name) {
-    let token = jwt.sign({user: name}, token_secret, {expiresIn: token_expiration});
+function generate_token(data) {
+    let token = jwt.sign(data, token_secret, {expiresIn: token_expiration});
     return token;
 }
 

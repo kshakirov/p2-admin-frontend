@@ -19,7 +19,7 @@ pimsAuth.controller('AuthController', ['$scope','$http', '$cookies',
             };
         _authenticate(auth_data).then(function (response) {
             console.log(response.data.token);
-            $cookies.putObject('token', response.data.token);
+            $cookies.put('token', response.data.token);
             $window.location.href = '/';
         }, function (error) {
             $scope.auth = {
