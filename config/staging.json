@@ -6,12 +6,22 @@
     "syncModule": {
       "url": "http://localhost:4567"
     },
+    "userManagementServer": {
+      "url": "http://localhost:9090"
+    },
     "elasticSearch": {
       "url": "localhost:9200",
       "indexName": "pims-staging"
     },
     "ldap": {
-      "url": "ldap://localhost:8389"
+      "url": "ldap://ldap.pmdistributing.com",
+      "user": {
+        "baseDN": "cn=Users,dc=PMD,dc=local",
+        "name": "kshakirov@PMD.local",
+        "password": "6AMPWVhDobB2"
+      },
+      "secret": "pims_resurrected",
+      "tokenExpiration": "1d"
     },
     "rabbitMq":{
       "url":"localhost",

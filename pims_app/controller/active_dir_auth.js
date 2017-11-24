@@ -9,7 +9,7 @@ let ActiveDirectory = require('activedirectory'),
     username = pimsConfig.ldap.user.name,
     password = pimsConfig.ldap.user.password;
 
-function authenticate_by_samaccount_name(login, pass) {
+function authenticate_active_directory(login, pass) {
 
     let opts = {
         bindDN: username,
@@ -44,4 +44,4 @@ function authenticate_by_samaccount_name(login, pass) {
     })
 }
 
-let result = authenticate_by_samaccount_name('kshakirov', '6AMPWVhDobB2');
+exports.authenticate = authenticate_active_directory;

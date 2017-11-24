@@ -12,7 +12,7 @@ function get_excell_fields(headers) {
 }
 
 
-function create_reader(headers,filename) {
+function create_reader(headers, filename) {
     let dataStream = fs.createReadStream(filename);
     let reader = new ExcelReader(dataStream, {
         sheets: [{
@@ -45,7 +45,6 @@ function stream_xlxs(req, res) {
     reader.eachRow((rowData, rowNum, sheetSchema) => {
         pagination.last += 1;
         if (rowNum >= start + 1 && rowNum < start + pageSize + 1) {
-            console.log(rowNum);
             pagination.results.push(rowData);
         }
         if (rowNum == start + pageSize + 1) {
@@ -56,6 +55,8 @@ function stream_xlxs(req, res) {
         .then(() => {
             console.log('done parsing');
             res.json(pagination);
+        }, e => {
+            res.sendStatus(500);
         });
 
 }

@@ -3,6 +3,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"dependencies": {
+		"activedirectory": "^0.7.2",
 		"amqplib": "^0.5.1",
 		"angular-ui-bootstrap": "^2.5.6",
 		"body-parser": "^1.17.2",
@@ -36,6 +37,7 @@
 		"node-rest-client": "^3.1.0",
 		"node-rest-client-promise": "^3.0.0",
 		"promised-ldap": "^0.3.0",
+		"promisify-node": "^0.4.0",
 		"pug": "^2.0.0-rc.3",
 		"xlsx": "^0.11.7"
 	},
