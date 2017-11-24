@@ -11,6 +11,9 @@
             div.form-group
                 label(for="basePath") Base Path
                 input.form-control(type="text",id="basePath", data-ng-model="external_system.customAttributes.basePath")
+            div.form-group
+                label(for="xml") XML-RPC
+                input.form-control(type="checkbox",id="xml", data-ng-model="external_system.customAttributes.xml")
             div.btn-group
                 button.btn.btn-default(type="submit", ng-click="updateExternalSystem(external_system)") APPLY
                 button.btn.btn-danger(type="submit", ng-click="deleteExternalSystem(external_system.id)", ng-disabled="!external_system.id") DELETE
@@ -32,7 +35,7 @@
                 span.glyphicon.glyphicon-edit.pull-right(ng-click="editEntity(key)")
     .col-lg-6
         h5.text-info Edit  Entity Type
-        form(role="form",name="helpForm")
+        form(role="form",name="helpForm", ng-if="!external_system.customAttributes.xml")
             div.form-group
                 label(for="itemName") Entity Type Name
                 input.form-control(type="text",id="itemName", data-ng-model="item[item_key].name")
@@ -51,6 +54,29 @@
             div.form-group
                 label(for="entity_types") Trigger Type
                 select.form-control(id="trigger", ng-model="item[item_key].trigger",
+                ng-options="trigger for trigger in triggers")
+            div.btn-group
+                button.btn.btn-default(type="submit", ng-click="saveEntityTypeEntry(item)") SAVE
+                button.btn.btn-default(type="submit", ng-click="emptyEntityTypeEntry()") Empty
+        form(role="form",name="helpForm", ng-if="external_system.customAttributes.xml")
+            div.form-group
+                label Entity Type Name
+                input.form-control(type="text", data-ng-model="item[item_key].name")
+            div.form-group
+                label Write Model
+                input.form-control(type="text", data-ng-model="item[item_key].write.model")
+            div.form-group
+                label Write Page Size
+                input.form-control(type="number", data-ng-model="item[item_key].write.pageSize")
+            div.form-group
+                label Read Model
+                input.form-control(type="text", data-ng-model="item[item_key].read.model")
+            div.form-group
+                label Read Page Size
+                input.form-control(type="number", data-ng-model="item[item_key].read.pageSize")
+            div.form-group
+                label Trigger Type
+                select.form-control( ng-model="item[item_key].trigger",
                 ng-options="trigger for trigger in triggers")
             div.btn-group
                 button.btn.btn-default(type="submit", ng-click="saveEntityTypeEntry(item)") SAVE
