@@ -8,12 +8,12 @@
                         span.glyphicon.glyphicon-plus
         .row.top-small-buffer(ng-repeat="attribute in item.in")
             .col-sm-10
-                .input-group
+                .input-group.small
                     select.form-control.input-sm(ng-model="attribute.uuid",
                     ng-options=" a.uuid as a.name for a in attributes", ng-change="checkReference(attribute, item)")
                     span.input-group-addon.pointer-cursor
                         span.glyphicon.glyphicon-remove
-                .input-group(ng-if="item.reference")
+                .input-group.small(ng-if="item.reference")
                     select.form-control.input-sm(ng-model="item.reference.uuid",
                     ng-options=" a.uuid as a.name for a in item.reference.attributes")
                     span.input-group-addon.pointer-cursor
@@ -43,7 +43,7 @@
                         span.glyphicon.glyphicon-edit
         .row
             .col-sm-11
-                input.form-control(type="text",id="name", data-ng-model="item.out")
+                input.form-control.input-sm(type="text",id="name", data-ng-model="item.out")
     .col-lg-1
         form(role="form")
             .form-group

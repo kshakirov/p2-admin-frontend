@@ -43,6 +43,9 @@ uib-tabset(active="active", ng-init="init()")
                         div.form-group
                             label(for="send") Send This Data To User
                             input.form-control(type="checkbox", id = "send", data-ng-model = "user.properties.send_credentials")
+                        div.form-group
+                            label(for="send") External Authentication
+                            input.form-control(type="checkbox",  data-ng-model = "user.properties.external_authentication")
     uib-tab(heading="Groups")
         .row.top-buffer
             .col-lg-6
