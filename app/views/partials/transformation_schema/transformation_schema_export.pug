@@ -7,7 +7,7 @@
                     a.pull-right.btn.btn-success.btn-xs(ng-click="addItemAttribute(item)")
                         span.glyphicon.glyphicon-plus
         .row(ng-repeat="i in item.in")
-            .col-sm-11
+            .col-sm-10
                 .input-group.small
                     input.form-control.input-sm(type="text", data-ng-model="i.path")
                     span.input-group-addon.pointer-cursor
@@ -18,7 +18,7 @@
                 .form-group.pull-right
                     a.pull-right.btn.btn-success.btn-xs(ng-click="addItemConverter(item)")
                         span.glyphicon.glyphicon-plus
-        .row.top-small-buffer(ng-repeat="converter in item.converters")
+        .row(ng-repeat="converter in item.converters")
             .col-sm-10
                 .input-group
                     select.form-control.input-sm(ng-model="converter.id",
