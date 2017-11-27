@@ -3,7 +3,10 @@
         ul.breadcrumb
             li Attributes
 .row(ng-init="init()")
+
     .col-lg-6
+        span
+            us-spinner(spinner-key="spinner-attribute", spinner-start-active="true")
         form(name="AttributeForm", role="form", id="AttributeForm")
             div.form-group
                 label(for="attributeName") Name
@@ -22,6 +25,9 @@
                 select.form-control(id="frontendType",
                 ng-model="attribute.properties.frontendType",
                 ng-options="valueType as valueType for valueType in frontendTypes")
+            div.form-group
+                label(for="indexed") Indexed
+                input.form-control(type="checkbox",id="indexed", data-ng-model="attribute.properties.indexed")
             div.btn-group
                 button.btn.btn-default(type="submit", ng-click="updateAttribute(attribute)") APPLY
                 button.btn.btn-danger(type="submit", ng-click="deleteAttribute(attribute.uuid)", ng-disabled="!attribute.uuid") DELETE

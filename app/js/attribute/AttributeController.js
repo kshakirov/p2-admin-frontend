@@ -1,11 +1,12 @@
 pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
-    '$location', '$http', '$rootScope', 'AttributeModel', 'MessageService',
+    '$location', '$http', '$rootScope', 'AttributeModel', 'MessageService','usSpinnerService',
     function ($scope, $route, $routeParams,
               $location,
               $http,
               $rootScope,
               AttributeModel,
-              MessageService) {
+              MessageService,
+              usSpinnerService) {
 
         $scope.valueTypes = ["STRING", "ARRAY", "DECIMAL", "INTEGER", "BOOLEAN",
             "REFERENCE", "ENUM"];
@@ -18,21 +19,25 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
         $scope.init = function () {
             var uuid = $routeParams.uuid;
             if (uuid === "new") {
-
+                usSpinnerService.stop('spinner-attribute');
             } else {
                 AttributeModel.findOne(entity_type_uuid, uuid).then(function (attribute) {
+                    usSpinnerService.stop('spinner-attribute');
                     $scope.attribute = attribute;
                 })
             }
         };
 
         $scope.updateAttribute = function (attribute) {
+            usSpinnerService.spin('spinner-attribute');
             if (attribute.uuid) {
                 AttributeModel.update(entity_type_uuid, attribute).then(function (response) {
+                    usSpinnerService.stop('spinner-attribute');
                     MessageService.setSuccessMessage($rootScope.message, "Attribute Updated");
                 })
             } else {
                 AttributeModel.create(entity_type_uuid, attribute).then(function (response) {
+                    usSpinnerService.stop('spinner-attribute');
                     MessageService.setSuccessMessage($rootScope.message, "Attribute Created");
                 })
             }
