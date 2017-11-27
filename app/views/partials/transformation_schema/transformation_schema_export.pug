@@ -2,10 +2,10 @@
     hr
     .col-lg-3
         .row
-            .col-sm-1
+            .col-sm-2
                 .form-group.pull-right
-                    a.pull-right.btn.btn-success.btn-xs(ng-click="copyUUID(item)")
-                        span.glyphicon.glyphicon-edit
+                    a.pull-right.btn.btn-success.btn-xs(ng-click="addItemAttribute(item)")
+                        span.glyphicon.glyphicon-plus
         .row
             .col-sm-11
                 .row(ng-repeat="i in item.in")
@@ -28,11 +28,6 @@
                         span.glyphicon.glyphicon-edit
             .col-sm-2
     .col-lg-4
-        .row
-            .col-sm-2
-                .form-group.pull-right
-                    a.pull-right.btn.btn-success.btn-xs(ng-click="addItemAttribute(item)")
-                        span.glyphicon.glyphicon-plus
         .row
             .col-sm-10
                 .input-group.small

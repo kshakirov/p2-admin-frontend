@@ -15,7 +15,7 @@ uib-tabset(active="active", ng-init="init()")
                         select.form-control(id="entities", ng-model="schema.customAttributes.entity.uuid",
                         ng-options="entity.uuid as entity.name for entity in entity_types")
                     div.form-group
-                        label Export
+                        label Import
                         input.form-control(id="export",type="checkbox",data-ng-model="schema.customAttributes.export")
                     div.form-group
                         label DTO Reference
@@ -34,8 +34,8 @@ uib-tabset(active="active", ng-init="init()")
                         td(title="'OUT'",filter="{ out: 'text'}",sortable="'out'") {{schema.out}}
 
     uib-tab(heading="Schema" )
-        .row
-            .col-lg-6.col-lg-offset-6
+        .row.top-buffer
+            .col-lg-2
                 form(role="form")
                     .form-group.col-sm-6
                     .btn-group.top-space
