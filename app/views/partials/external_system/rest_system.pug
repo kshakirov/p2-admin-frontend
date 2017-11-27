@@ -1,0 +1,23 @@
+form(role="form",name="helpForm", ng-if="external_system.customAttributes.system_id===0")
+    div.form-group
+        label(for="itemName") Entity Type Name
+        input.form-control(type="text",id="itemName", data-ng-model="item[item_key].name")
+    div.form-group
+        label(for="write.url") Write Relative Url
+        input.form-control(type="text",id="write.url", data-ng-model="item[item_key].write.url")
+    div.form-group
+        label(for="write.method") Write HTTP METHOD
+        input.form-control(type="text",id="write.method", data-ng-model="item[item_key].write.method")
+    div.form-group
+        label(for="read.url") Read Relative Url
+        input.form-control(type="text",id="read.url", data-ng-model="item[item_key].read.url")
+    div.form-group
+        label(for="read.method") Read HTTP METHOD
+        input.form-control(type="text",id="read.method", data-ng-model="item[item_key].read.method")
+    div.form-group
+        label Trigger Type
+        select.form-control(id="trigger", ng-model="item[item_key].trigger",
+        ng-options="trigger for trigger in triggers")
+    div.btn-group
+        button.btn.btn-default(type="submit", ng-click="saveEntityTypeEntry(item)") SAVE
+        button.btn.btn-default(type="submit", ng-click="emptyEntityTypeEntry()") Empty

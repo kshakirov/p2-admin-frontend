@@ -11,6 +11,11 @@ pimsApp.controller('ExternalSystemController', ['$scope', '$route', '$routeParam
               MessageService) {
 
         $scope.triggers = ["ON_DEMAND", "CRON", "AUTOMATIC", "NEVER"];
+        $scope.system_types = [
+            {name: 'REST', id:0},
+            {name: 'XML-RPC', id: 1},
+            {name: 'AMAZON', id: 2}
+        ];
         $rootScope.message = MessageService.prepareMessage();
             $scope.init = function () {
                 var id = $routeParams.id;
