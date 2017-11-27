@@ -20,21 +20,17 @@
                         span.glyphicon.glyphicon-remove
     .col-lg-4
         .row
-            .col-sm-1
+            .col-sm-2
                 .form-group.pull-right
                     a.pull-right.btn.btn-success.btn-xs(ng-click="addItemConverter(item)")
                         span.glyphicon.glyphicon-plus
-            .col-sm-2.col-sm-offset-7
         .row.top-small-buffer(ng-repeat="converter in item.converters")
             .col-sm-10
                 .input-group
                     select.form-control.input-sm(ng-model="converter.id",
                     ng-options="c.id as c.name for c in converters")
                     span.input-group-addon.pointer-cursor
-                        span.glyphicon.glyphicon-remove
-                    span.input-group-addon.pointer-cursor
-                        span.glyphicon.glyphicon-edit
-            .col-sm-2
+                        span.glyphicon.glyphicon-remove(ng-click="removeItemConverter(item)")
     .col-lg-3
         .row
             .col-sm-1
@@ -43,7 +39,10 @@
                         span.glyphicon.glyphicon-edit
         .row
             .col-sm-11
-                input.form-control.input-sm(type="text",id="name", data-ng-model="item.out")
+                .input-group.small
+                    input.form-control.input-sm(type="text", data-ng-model="item.out")
+                    span.input-group-addon.pointer-cursor
+                        span.glyphicon.glyphicon-remove(ng-click="removeOutItem(item)")
     .col-lg-1
         form(role="form")
             .form-group

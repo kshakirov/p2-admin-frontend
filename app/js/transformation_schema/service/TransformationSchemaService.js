@@ -37,6 +37,10 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
         })
     };
 
+    this.removeItemConverter = function (item) {
+            item.converters = [];
+    };
+
     this.addItemAttribute = function (item) {
         item.in.push({})
     };

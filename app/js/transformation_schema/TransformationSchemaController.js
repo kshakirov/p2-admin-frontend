@@ -115,8 +115,18 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
             $scope.transformation_schema.splice(index, 1);
         };
 
+        $scope.removeInPathItem = function (item, index) {
+            console.log(item);
+            console.log(index);
+            item.in.splice(index,1);
+        };
+
         $scope.addItemConverter = function (item) {
             TransformationSchemaService.addItemConverter(item)
+        };
+
+        $scope.removeItemConverter = function (item) {
+            TransformationSchemaService.removeItemConverter(item)
         };
 
         $scope.cancel = function () {

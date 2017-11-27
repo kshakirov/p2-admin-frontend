@@ -6,27 +6,25 @@
                 .form-group.pull-right
                     a.pull-right.btn.btn-success.btn-xs(ng-click="addItemAttribute(item)")
                         span.glyphicon.glyphicon-plus
-        .row
+        .row(ng-repeat="i in item.in")
             .col-sm-11
-                .row(ng-repeat="i in item.in")
+                .input-group.small
                     input.form-control.input-sm(type="text", data-ng-model="i.path")
+                    span.input-group-addon.pointer-cursor
+                        span.glyphicon.glyphicon-remove(ng-click="removeInPathItem(item, $index)")
     .col-lg-4
         .row
-            .col-sm-1
+            .col-sm-2
                 .form-group.pull-right
                     a.pull-right.btn.btn-success.btn-xs(ng-click="addItemConverter(item)")
                         span.glyphicon.glyphicon-plus
-            .col-sm-2.col-sm-offset-7
         .row.top-small-buffer(ng-repeat="converter in item.converters")
             .col-sm-10
                 .input-group
                     select.form-control.input-sm(ng-model="converter.id",
                     ng-options="c.id as c.name for c in converters")
                     span.input-group-addon.pointer-cursor
-                        span.glyphicon.glyphicon-remove
-                    span.input-group-addon.pointer-cursor
-                        span.glyphicon.glyphicon-edit
-            .col-sm-2
+                        span.glyphicon.glyphicon-remove(ng-click="removeItemConverter(item)")
     .col-lg-4
         .row
             .col-sm-10
