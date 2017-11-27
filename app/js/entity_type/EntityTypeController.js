@@ -1,7 +1,7 @@
 pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
     'EntityTypeModel', '$cookies', '$location', '$routeParams', '$window',
     function ($scope, $rootScope, $http, EntityTypeModel,
-                                             $cookies, $location, $routeParams,$window) {
+              $cookies, $location, $routeParams, $window) {
         var selectedTypes = ['product', 'supplier', 'product uom'];
 
 
@@ -27,20 +27,27 @@ pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
             return $cookies.getObject("entityTypes")
         }
 
+        function set_entities() {
+            return EntityTypeModel.findAll().then(function (entities) {
+                store_entity_types(entities);
+                var entities = get_stored_entities();
+                set_current_entity_type(entities);
+                return true;
+            })
+        }
+
         $rootScope.message = {};
 
         $scope.init = function () {
             var entites = get_stored_entities();
-           if (!entites) {
-                EntityTypeModel.findAll().then(function (entities) {
-                    store_entity_types(entities);
-                    var entities = get_stored_entities();
-                    set_current_entity_type(entities);
+            if (!entites) {
+                set_entities().then(function () {
+                    console.log("loaded");
                 })
-           }else{
-               set_current_entity_type(entites);
+            } else {
+                set_current_entity_type(entites);
 
-           }
+            }
         };
 
         $scope.selectEntity = function (entityType) {
@@ -61,13 +68,17 @@ pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
         };
 
         $scope.updateEntityType = function (entityType) {
-            if(entityType.uuid){
+            if (entityType.uuid) {
                 EntityTypeModel.update(entityType).then(function () {
-
+                    set_entities().then(function () {
+                        console.log("loaded");
+                    })
                 })
-            }else{
+            } else {
                 EntityTypeModel.create(entityType).then(function () {
-
+                    set_entities().then(function () {
+                        console.log("loaded");
+                    })
                 })
             }
         };
