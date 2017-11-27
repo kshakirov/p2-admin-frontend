@@ -21,6 +21,7 @@
                 select.form-control(id="transformationSchemata",
                 ng-model="custom_sync_operation.customAttributes.transformationSchema.id",
                 ng-options="transformationSchema.id  as transformationSchema.name  for transformationSchema in transformationSchemata")
+                    option(value="")
             div.form-group
                 label Entity Type
                 select.form-control(id="entityType",
