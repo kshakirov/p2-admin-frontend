@@ -14,7 +14,9 @@
                 tr
                     th(ng-repeat="attr in layout")
                         form(role="form")
-                            input.form-control(type="text",id="", data-ng-model="search_params[attr.uuid]")
+                            input.form-control(type="text",id="",
+                            ng-keypress="($event.which === 13)?search():0",
+                            data-ng-model="search_params[attr.uuid]")
             tbody
                 tr(ng-repeat="entity in entities", ng-click="redirectToEntity(entity.id)")
                     td(ng-repeat="attr in layout") {{entity[attr.uuid]}}

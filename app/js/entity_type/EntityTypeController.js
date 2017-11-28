@@ -14,12 +14,27 @@ pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
         }
 
         function set_current_entity_type(entities) {
-            $rootScope.pims = {
-                entities: {
-                    current: entities[3],
-                    list: entities
-                }
-            };
+            var currentEntity =  $cookies.getObject("currentEntity");
+            if(angular.isUndefined(currentEntity)) {
+                $rootScope.pims = {
+                    entities: {
+                        current: entities[3],
+                        list: entities
+                    }
+                };
+            }else{
+                var entity = entities.find(function (v) {
+                    if(v.name==currentEntity.name){
+                        return v;
+                    }
+                })
+                $rootScope.pims = {
+                    entities: {
+                        current: entity,
+                        list: entities
+                    }
+                };
+            }
         }
 
 
@@ -52,6 +67,7 @@ pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
 
         $scope.selectEntity = function (entityType) {
             $rootScope.pims.entities.current = entityType;
+            $cookies.putObject("currentEntity", entityType);
             $location.path("/");
         };
 

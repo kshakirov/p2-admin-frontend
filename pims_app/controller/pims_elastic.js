@@ -23,9 +23,9 @@ function build_query(query) {
         q.match = {};
         q.match[k] = query[k];
         return q
-    })
+    });
     return bl;
-};
+}
 
 function compact_query(query) {
     if(query) {
@@ -39,7 +39,7 @@ function compact_query(query) {
         if (keys.length > 0) {
             keys.forEach((k) => {
                 parsed_query[k] = query[k]
-            })
+            });
             return parsed_query
         } else {
             return false;
@@ -55,8 +55,9 @@ function findAll(req, res) {
         type = req.body.type,
         from = req.body.from,
         size = req.body.size;
-    if (compact_query(req.body.query)) {
-        query = build_query(req.body.query);
+    let compacted_query = compact_query(req.body.query);
+    if (compacted_query) {
+        query = build_query(compacted_query);
     }
     return elastic_model.findAll(type, query, from * size, size).then((response) => {
         res.json(prep_response(response, from, size));

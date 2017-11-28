@@ -123,7 +123,7 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
                     EntityService.prepMsg(msg, entity, entity_type_uuid);
                     NotificationModel.notifyEntity(msg).then(function () {
                         MessageService.setSuccessMessage($rootScope.message,
-                            "Entity Updated and Changed Synced to Other Systems")
+                            "Entity Updated")
                     })
                 }, function (error) {
                 })
@@ -131,7 +131,7 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
                 EntityModel.create(entity_type_uuid, entity_copy).then(function (response) {
                     EntityService.prepMsg(msg, entity, entity_type_uuid);
                     MessageService.setSuccessMessage($rootScope.message,
-                        "Entity Updated and Changed Synced to Other Systems")
+                        "Entity Created ")
                 });
             }
         };

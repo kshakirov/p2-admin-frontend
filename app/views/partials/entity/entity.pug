@@ -17,7 +17,7 @@ uib-tabset(active="active", ng-init="init()")
             .col-lg-6.col-lg
                 form(name="{{tab.name}}", role="form")
                     div.form-group(ng-repeat="attr in tab.attributes")
-                        div(ng-if="attr.properties.frontendType !='multiselect'")
+                        div(ng-if="attr.properties.frontendType !='multiselect' && attr.properties.frontendType !='select'")
                             label {{attr.name}}
                             input.form-control(type="{{attr.properties.frontendType}}", data-ng-model="entity.attributes[attr.uuid].value")
                         div(ng-if="attr.properties.frontendType =='multiselect'")
@@ -28,6 +28,10 @@ uib-tabset(active="active", ng-init="init()")
                                     span.glyphicon.glyphicon-remove-sign(aria-hidden="true")
                                 span.input-group-btn
                                     button.btn.btn-default(type="submit", ng-click="open(attr)") SELECT
+                        div(ng-if="attr.properties.frontendType =='select'")
+                            label {{attr.name}}
+                            select.form-control(data-ng-model="entity.attributes[attr.uuid].value",
+                            ng-options="enum as enum for enum in attr.properties.enumValues")
 form(role="form")
     div.btn-group
         button.btn.btn-default(type="submit", ng-click="updateEntity(entity)") APPLY

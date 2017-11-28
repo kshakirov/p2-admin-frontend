@@ -25,7 +25,7 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
             return {
 
                 currentPage: response.number,
-                totalPages: response.totalPages,
+                totalPages: Math.ceil(response.totalPages),
                 first: response.first,
                 last: response.last
 
@@ -52,7 +52,7 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
 
         };
 
-        $scope.getPage = function (page) {
+         $scope.getPage = function (page) {
             usSpinnerService.spin('spinner-2');
             $scope.search_query.from = page;
             return paginate_entites($scope.search_query).then(function (response) {

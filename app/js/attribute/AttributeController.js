@@ -52,4 +52,11 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
             $location.path("/attributes");
         }
 
+        $scope.addEnumValue = function () {
+            if($scope.attribute.properties.enumValues===null || angular.isUndefined($scope.attribute.properties.enumValues) ){
+                $scope.attribute.properties.enumValues = [];
+            }
+            $scope.attribute.properties.enumValues.push('');
+        }
+
     }]);
