@@ -3,7 +3,7 @@
         ul.breadcrumb
             li Attributes
 .row(ng-init="init()")
-    .col-lg-6
+    .col-lg-4
         span
             us-spinner(spinner-key="spinner-attribute", spinner-start-active="true")
         form(name="AttributeForm", role="form", id="AttributeForm")
@@ -31,7 +31,16 @@
                 button.btn.btn-default(type="submit", ng-click="updateAttribute(attribute)") APPLY
                 button.btn.btn-danger(type="submit", ng-click="deleteAttribute(attribute.uuid)", ng-disabled="!attribute.uuid") DELETE
                 button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL
-    .col-lg-4.col-lg-offset-2(ng-if="attribute.valueType=='ENUM'")
+    .col-lg-4
+        form(role="form")
+            .form-group.col-sm-6
+            .btn-group.top-space
+                button.btn.btn-info(type="submit", ng-if="!schema.customAttributes.export", ng-click="addEnumValue()") ADD VALIDATOR
+                div(ng-repeat="enum in attribute.properties.enumValues track by $index")
+                    div.form-group
+                        label  Value {{$index + 1}}
+                        input.form-control(type="text", data-ng-model="attribute.properties.enumValues[$index]")
+    .col-lg-4(ng-if="attribute.valueType=='ENUM'")
         form(role="form")
             .form-group.col-sm-6
             .btn-group.top-space
@@ -41,4 +50,3 @@
                     div.form-group
                         label  Value {{$index + 1}}
                         input.form-control(type="text", data-ng-model="attribute.properties.enumValues[$index]")
-

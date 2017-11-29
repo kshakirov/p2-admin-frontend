@@ -27,10 +27,6 @@ pimsApp.controller('EntityListController', ['$scope', '$route', '$routeParams',
             }
         }
 
-        function ara_params_empty(params) {
-
-        }
-
         function paginate_entites(page, size, query) {
             if(query){
                 return EntityModel.search(entity_type_uuid, query, page, size).then(function (response) {
@@ -41,12 +37,6 @@ pimsApp.controller('EntityListController', ['$scope', '$route', '$routeParams',
                     return response;
                 })
             }
-        }
-
-        function paginate_search(query, page, size) {
-            return EntityModel.search(entity_type_uuid, query, page, size).then(function (response) {
-                return response;
-            })
         }
 
         function prepare_params(search_params) {

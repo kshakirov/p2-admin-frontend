@@ -4,14 +4,18 @@
         table.table
             thead
                 tr
-                    th NAME
-                    th VERSION
+                    th(ng-repeat="attr in layout") {{attr.name}}
+                tr
+                    th(ng-repeat="attr in layout")
+                        form(role="form")
+                            input.form-control(type="text",id="",
+                            ng-keypress="($event.which === 13)?search():0",
+                            data-ng-model="search_params[attr.uuid]")
             tbody
                 tr(ng-repeat="entity in entities")
-                    td
-                        a(ng-href="", ng-click="selectReference(entity.uuid)") {{entity.name}}
-                    td
-                        a(ng-href="entities/{{entity.uuid}}") {{entity.version}}
+                    td(ng-repeat="attr in layout")
+                        a(ng-href="",ng-click="selectReference(entity.uuid)") {{entity.attributes[attr.uuid]}}
+
         nav(aria-label="Page navigation example")
             ul.pagination(ng-if="pagination.totalPages")
                 li.page-item(ng-class = "{'active': !pagination.first, 'disabled': pagination.first }")
@@ -26,4 +30,4 @@
                     a.page-link(ng-click="getPage(pagination.currentPage + 1)",href="") Next
     .modal-footer
         button.btn.btn-primary(ng-click="ok()") OK
-        button.btn.btn-warning(ng-click="cancel()") Cance
+        button.btn.btn-warning(ng-click="cancel()") Cancel
