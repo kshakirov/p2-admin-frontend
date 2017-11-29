@@ -23,10 +23,17 @@ pimsServices.service('EntityService', ['$http', '$rootScope', function ($http, $
     this.prepAttributesDto = function (attriubtes) {
         var attributes_dto = {};
         angular.forEach(attriubtes, function (attr, value) {
-            if (angular.isArray(attr.value )) {
-                if(attr.value[0] && attr.value[0].hasOwnProperty("uuid"))
-                    attributes_dto[attr.key.uuid] = [attr.value[0].uuid];
-                else
+            if (angular.isArray(attr.value)) {
+                if (attr.value[0] && attr.value[0].hasOwnProperty("uuid")) {
+                    attributes_dto[attr.key.uuid] = attr.value.filter(function (item) {
+                        if (item && item.hasOwnProperty('uuid')) {
+                            return item;
+                        }
+                    });
+                    attributes_dto[attr.key.uuid] = attributes_dto[attr.key.uuid].map(function (item) {
+                        return item.uuid;
+                    });
+                } else
                     attributes_dto[attr.key.uuid] = [];
             }
             else if (angular.isObject(attr.value))
@@ -44,5 +51,25 @@ pimsServices.service('EntityService', ['$http', '$rootScope', function ($http, $
     this.prepMsg = function (msg, entity, entityTypeId) {
         msg.pimsId = entity.uuid;
         msg.entity_type_id = entityTypeId;
+    }
+
+    this.getReferenceArrayAttributes = function (tabs) {
+        var attrs = tabs.map(function (tab) {
+            return tab.attributes;
+        });
+        attrs = [].concat.apply([], attrs);
+        console.log("done");
+        var reference_array = attrs.filter(function (a) {
+            if (a.valueType.toLowerCase() === "array") {
+                return a;
+            }
+        }).map(function (ra) {
+            return {
+                uuid: ra.uuid,
+                entity_type_id: ra.properties.referencedEntityTypeId
+            };
+        });
+        return reference_array;
+
     }
 }]);

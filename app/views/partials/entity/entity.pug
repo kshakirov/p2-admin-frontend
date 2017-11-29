@@ -15,9 +15,9 @@ uib-tabset(active="active", ng-init="init()")
     uib-tab(ng-repeat="tab in tabs",heading="{{tab.name}}" )
         .row
             .col-lg-6.col-lg
-                form(name="{{tab.name}}", role="form")
+                form(name='{{tab.name}}', role="form")
                     div.form-group(ng-repeat="attr in tab.attributes")
-                        div(ng-if="attr.properties.frontendType !='multiselect' && attr.properties.frontendType !='select'")
+                        div(ng-if="attr.properties.frontendType !='multiselect' && attr.properties.frontendType !='select' && attr.properties.frontendType !='table'")
                             label {{attr.name}}
                             input.form-control(type="{{attr.properties.frontendType}}", data-ng-model="entity.attributes[attr.uuid].value")
                         div(ng-if="attr.properties.frontendType =='multiselect'")
@@ -27,11 +27,26 @@ uib-tabset(active="active", ng-init="init()")
                                 span.input-group-addon.pointer-cursor(ng-click="clearStructureReference(attribute)")
                                     span.glyphicon.glyphicon-remove-sign(aria-hidden="true")
                                 span.input-group-btn
-                                    button.btn.btn-default(type="submit", ng-click="open(attr)") SELECT
+                                    button.btn.btn-default(type="submit", ng-click="open(attr,replaceReference)") SELECT
                         div(ng-if="attr.properties.frontendType =='select'")
                             label {{attr.name}}
                             select.form-control(data-ng-model="entity.attributes[attr.uuid].value",
                             ng-options="enum as enum for enum in attr.properties.enumValues")
+                        div(ng-if="attr.properties.frontendType =='table'")
+                            div
+                                .btn-group.top-space
+                                    button.btn.btn-info.btn-xs(type="submit", ng-if="!schema.customAttributes.export", ng-click="open(attr,addReference)")
+                                        span.glyphicon.glyphicon-list-alt
+                            table.table
+                                thead
+                                    tr()
+                                        th(ng-repeat="h in reference_tables[attr.uuid][0].attributes") {{h.name}}
+                                tbody
+                                    tr(ng-repeat="row in entity.attributes[attr.uuid].value")
+                                        td(ng-repeat="h in reference_tables[attr.uuid][0].attributes") {{row.attributes[h.uuid].value}}
+                                        td
+                                            button.btn.btn-danger.btn-xs(type="submit", ng-if="!schema.customAttributes.export", ng-click="removeReference(attr, $index)")
+                                                span.glyphicon.glyphicon-remove
 form(role="form")
     div.btn-group
         button.btn.btn-default(type="submit", ng-click="updateEntity(entity)") APPLY
