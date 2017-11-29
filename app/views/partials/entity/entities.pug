@@ -11,14 +11,17 @@
         table.table
             thead
                 tr
-                    th NAME
-                    th VERSION
+                    th(ng-repeat="attr in layout") {{attr.name}}
+                tr
+                    th(ng-repeat="attr in layout")
+                        form(role="form")
+                            input.form-control(type="text",id="",
+                            ng-keypress="($event.which === 13)?search():0",
+                            data-ng-model="search_params[attr.uuid]")
             tbody
                 tr(ng-repeat="entity in entities")
-                    td
-                        a(ng-href="entities/{{entity.uuid}}") {{entity.name}}
-                    td
-                        a(ng-href="entities/{{entity.uuid}}") {{entity.version}}
+                    td(ng-repeat="attr in layout")
+                        a(ng-href="/entities/{{entity.uuid}}") {{entity.attributes[attr.uuid]}}
 .row
     .col-lg-6.col-lg-offset-2
         nav(aria-label="Page navigation example")

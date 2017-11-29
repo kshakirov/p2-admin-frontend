@@ -32,10 +32,16 @@ pimsServices.service('EntityModel', ['$http', '$rootScope', function ($http, $ro
             + "/entities/" + entity.uuid, entity).then(function (entities) {
             return entities.data
         })
-    }
+    };
     this.create = function (et_uuid, entity) {
         return $http.post("/rest/entity-types/" + et_uuid
             + "/entities", entity).then(function (entities) {
+            return entities.data
+        })
+    }
+    this.search = function (et_uuid, params, page, size) {
+        return $http.get("/rest/entity-types/" + et_uuid
+            + "/entities/findByAttribute/page/" + page + "?" + params).then(function (entities) {
             return entities.data
         })
     }
