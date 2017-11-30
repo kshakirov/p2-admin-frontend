@@ -2,61 +2,13 @@ pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
     'EntityTypeModel', '$cookies', '$location', '$routeParams', '$window',
     '$uibModal',
     function ($scope, $rootScope, $http, EntityTypeModel,
-              $cookies, $location, $routeParams, $window,$uibModal) {
-        var selectedTypes = ['product', 'supplier', 'product uom'];
-
-
-        function store_entity_types(entities) {
-            var entities = entities.filter(function (entity) {
-                if (!entity.deleted)
-                    return entity;
-            });
-            $cookies.putObject("entityTypes", entities);
-        }
-
-        function set_current_entity_type(entities) {
-            var currentEntity =  $cookies.getObject("currentEntity");
-            if(angular.isUndefined(currentEntity)) {
-                $rootScope.pims = {
-                    entities: {
-                        current: entities[3],
-                        list: entities
-                    }
-                };
-            }else{
-                var entity = entities.find(function (v) {
-                    if(v.name==currentEntity.name){
-                        return v;
-                    }
-                })
-                $rootScope.pims = {
-                    entities: {
-                        current: entity,
-                        list: entities
-                    }
-                };
-            }
-        }
-
-
-        function get_stored_entities() {
-            return $cookies.getObject("entityTypes")
-        }
-
-        function set_entities() {
-            return EntityTypeModel.findAll().then(function (entities) {
-                store_entity_types(entities);
-                var entities = get_stored_entities();
-                set_current_entity_type(entities);
-                return true;
-            })
-        }
+              $cookies, $location, $routeParams, $window, $uibModal) {
 
         $rootScope.message = {};
 
         $scope.init = function () {
-            var currentEntity =  $cookies.getObject("currentEntity");
-            if(angular.isUndefined(currentEntity)) {
+            var currentEntity = $cookies.getObject("currentEntity");
+            if (angular.isUndefined(currentEntity)) {
                 EntityTypeModel.findAll().then(function (entity_types) {
                     $rootScope.pims = {
                         entities: {
@@ -64,7 +16,7 @@ pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
                         }
                     };
                 })
-            }else{
+            } else {
                 $rootScope.pims = {
                     entities: {
                         current: currentEntity,
@@ -88,15 +40,11 @@ pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
         $scope.updateEntityType = function (entityType) {
             if (entityType.uuid) {
                 EntityTypeModel.update(entityType).then(function () {
-                    set_entities().then(function () {
-                        console.log("loaded");
-                    })
+
                 })
             } else {
                 EntityTypeModel.create(entityType).then(function () {
-                    set_entities().then(function () {
-                        console.log("loaded");
-                    })
+
                 })
             }
         };
@@ -108,10 +56,9 @@ pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
 
         $scope.cancel = function () {
             $location.path("/entity-types");
-        }
+        };
 
         $scope.open = function (attr, callback) {
-            console.log('opening pop up');
             var attr = attr;
             $scope.selected_reference = null;
             var $uibModalInstance = modalInstance = $uibModal.open({
