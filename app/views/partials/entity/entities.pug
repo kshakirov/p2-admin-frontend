@@ -2,37 +2,37 @@
     .col-lg-6.col-lg-offset-3
         ul.breadcrumb
             li Entities
-.row(ng-init="init()")
-    .col-lg-2
-        button.btn.btn-info(type="submit",ng-click="createEntity()") ADD ENTITY
-    .col-lg-10
-        span
-            us-spinner(spinner-key="spinner-1", spinner-start-active="true")
-        table.table
-            thead
-                tr
-                    th(ng-repeat="attr in layout") {{attr.name}}
-                tr
-                    th(ng-repeat="attr in layout")
-                        form(role="form")
-                            input.form-control(type="text",id="",
-                            ng-keypress="($event.which === 13)?search():0",
-                            data-ng-model="search_params[attr.uuid]")
-            tbody
-                tr(ng-repeat="entity in entities")
-                    td(ng-repeat="attr in layout")
-                        a(ng-href="/entities/{{entity.uuid}}") {{entity.attributes[attr.uuid]}}
-.row
-    .col-lg-6.col-lg-offset-2
-        nav(aria-label="Page navigation example")
-            ul.pagination(ng-if="pagination.totalPages")
-                li.page-item(ng-class = "{'active': !pagination.first, 'disabled': pagination.first }")
-                    a.page-link(ng-class="", ng-click="getPage(pagination.currentPage - 1)", href="") Previous
-                li.page-item
-                    a.page-link(href="#", ng-click="getPage(0)") 1
-                li.page-item
-                    a.page-link(href="#") Page: {{pagination.currentPage + 1}}
-                li.page-item
-                    a.page-link(href="#", ng-click="getPage(pagination.totalPages - 1)") {{pagination.totalPages}}
-                li.page-item(ng-class = "{'active': !pagination.last, 'disabled': pagination.last }")
-                    a.page-link(ng-click="getPage(pagination.currentPage + 1)",href="") Next
+div(ng-init="init()")
+    .row
+        .col-lg-2
+            button.top-pagination.btn.btn-info(type="submit",ng-click="createEntity()") ADD ENTITY
+        .col-lg-6
+            include pagination
+        .col-lg-2
+            select.top-pagination.form-control(id="frontendType",
+            ng-model="pageSize",
+            ng-options="size as size for size in pageSizes")
+    .row
+        .col-lg-12
+            span
+                us-spinner(spinner-key="spinner-1", spinner-start-active="true")
+            table.table
+                thead
+                    tr
+                        th(ng-repeat="attr in layout") {{attr.name}}
+                    tr
+                        th(ng-repeat="attr in layout")
+                            form(role="form")
+                                input.form-control(type="text",id="",
+                                ng-keypress="($event.which === 13)?search():0",
+                                data-ng-model="search_params[attr.uuid]")
+                tbody
+                    tr(ng-repeat="entity in entities")
+                        td(ng-repeat="attr in layout")
+                            a(ng-href="/entities/{{entity.uuid}}") {{entity.attributes[attr.uuid]}}
+    .row
+        .col-lg-6.col-lg-offset-2
+            include pagination
+        .col-lg-2
+            select.top-pagination.form-control(ng-model="pageSize",
+            ng-options="size as size for size in pageSizes")

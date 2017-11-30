@@ -11,14 +11,17 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
               usSpinnerService) {
         var entity_type_uuid = $rootScope.pims.entities.current.uuid,
             query = 'propertyName=role&propertyValues=search';
-        $scope.page_size = 10;
         $scope.search_params = {};
+        $scope.pageSize = 10;
+        $scope.pageSizes = [10,25,50,100];
         $scope.search_query = {
-            size: $scope.page_size,
+            size: $scope.pageSize,
             from: 0,
             type: entity_type_uuid,
-            query: null
+            query: null,
         };
+
+
 
         function PaginationObject(response) {
             return {
@@ -26,8 +29,8 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
                 currentPage: response.number,
                 totalPages: Math.ceil(response.totalPages),
                 first: response.first,
-                last: response.last
-
+                last: response.last,
+                totalRecords:  response.totalPages * $scope.pageSize
             }
         }
 
@@ -78,6 +81,11 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
             console.log(id);
             $location.url('/entities/' + id)
         }
+
+        $scope.$watch('pageSize', function () {
+            $scope.search_query.size = $scope.pageSize || 10;
+            $scope.init();
+        })
     }]);
 
 
