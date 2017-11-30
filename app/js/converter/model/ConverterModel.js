@@ -32,4 +32,11 @@ pimsServices.service('ConverterModel', ['$http', '$rootScope', function ($http, 
                 return response.data
             })
     }
+    
+    this.validate = function (value) {
+        return $http.post("/sync-module/validator" , value)
+            .then(function (response) {
+                return response.data
+            })
+    }
 }]);

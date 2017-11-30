@@ -46,12 +46,12 @@ pimsServices.service('EntityService', ['$http', '$rootScope', function ($http, $
 
     this.prepEntityTypeId = function (entity) {
         return entity.entityType.uuid;
-    }
+    };
 
     this.prepMsg = function (msg, entity, entityTypeId) {
         msg.pimsId = entity.uuid;
         msg.entity_type_id = entityTypeId;
-    }
+    };
 
     this.getReferenceArrayAttributes = function (tabs) {
         var attrs = tabs.map(function (tab) {
@@ -71,5 +71,22 @@ pimsServices.service('EntityService', ['$http', '$rootScope', function ($http, $
         });
         return reference_array;
 
+    }
+
+    this.processValidationData = function (validation_data,entity ) {
+        var failed = validation_data.result.filter(function (r) {
+            if(!r.result){
+                return r;
+            }
+        });
+        var message = failed.map(function (f) {
+            return "Attribute [" + f.id + "]  Failed On Validator ["+ f.validatorName + "]"
+        });
+        message.join("; ");
+        return {
+            result: failed.length > 0 ? false: true,
+            failed: failed,
+            message: message
+        }
     }
 }]);
