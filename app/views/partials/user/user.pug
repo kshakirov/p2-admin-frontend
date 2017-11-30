@@ -31,14 +31,14 @@ uib-tabset(active="active", ng-init="init()")
                         div.form-group
                             label(for="password") Password
                             input.form-control(type="password",id="password", data-ng-model="user.password",
-                            ng-disabled="user.properties.external_authentication || user.properties.generate")
+                            ng-disabled="user.properties.external_authentication || user.properties.generate_password")
                         div.form-group
                             label(for="confirmation") Confirmation
                             input.form-control(type="password", id = "confirmation", data-ng-model = "user.confirmation",
-                            ng-disabled="user.properties.external_authentication || user.properties.generate")
+                            ng-disabled="user.properties.external_authentication || user.properties.generate_password")
                         div.form-group
                             label(for="generate") Generate Password
-                            input.form-control(type="checkbox", id = "generate", data-ng-model = "user.properties.generate",
+                            input.form-control(type="checkbox", id = "generate", data-ng-model = "user.properties.generate_password",
                             ng-disabled="user.properties.external_authentication")
                         div.form-group
                             label(for="must_change") Must change password at next logon
@@ -50,7 +50,7 @@ uib-tabset(active="active", ng-init="init()")
                         div.form-group
                             label(for="send") External Authentication
                             input.form-control(type="checkbox",  data-ng-model = "user.properties.external_authentication",
-                            ng-disabled="user.properties.generate")
+                            ng-disabled="user.properties.generate_password")
     uib-tab(heading="Groups")
         .row.top-buffer
             .col-lg-6
