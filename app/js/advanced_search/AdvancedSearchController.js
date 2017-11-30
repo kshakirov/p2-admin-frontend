@@ -80,10 +80,11 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
         $scope.redirectToEntity = function (id) {
             console.log(id);
             $location.url('/entities/' + id)
-        }
+        };
 
         $scope.$watch('pageSize', function () {
             $scope.search_query.size = $scope.pageSize || 10;
+            $scope.search_query.from = 0;
             $scope.init();
         })
     }]);

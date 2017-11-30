@@ -6,7 +6,7 @@
 .top-buffer { margin-top:30px; }
 .top-message-buffer { margin-top:80px; }
 .top-small-buffer { margin-top:10px; }
-
+.top-pagination { margin-top:20px; }
 .navbar-right-custom {
     float: right !important;
     margin-right: 60px;
