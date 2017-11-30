@@ -26,6 +26,7 @@ uib-tabset(active="active", ng-init="init()")
                             select.form-control(data-ng-model="entity.attributes[attr.uuid].value",
                             ng-options="enum as enum for enum in attr.properties.enumValues")
                         div(ng-if="attr.properties.frontendType =='table'")
+                            label {{attr.name}}
                             div
                                 .btn-group.top-space
                                     button.btn.btn-info.btn-xs(type="submit", ng-if="!schema.customAttributes.export", ng-click="open(attr,addReference)")
