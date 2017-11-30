@@ -1,0 +1,11 @@
+.modal-header(ng-init="init()")
+    h3.modal-title SELECT REFERENCE
+    .modal-body
+        table.table(ng-table="converterTableParams", show-filter="true")
+            tr(ng-repeat="converter in $data")
+                td(title="'Name'", filter="{ name: 'text'}",sortable="'name'")
+                    a(ng-href="", ng-click="selectReference(converter.id)") {{converter.name}}
+                td(title="'Language'",filter="{ language: 'text'}",sortable="'language'") {{converter.language}}
+    .modal-footer
+        button.btn.btn-primary(ng-click="ok()") OK
+        button.btn.btn-warning(ng-click="cancel()") Cancel

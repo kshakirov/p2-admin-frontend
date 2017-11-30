@@ -1,12 +1,54 @@
+function createValidatorController(attr) {
+    var attribute = attr;
+    var ConverterModalController = function ($uibModalInstance, $scope,
+                                             ConverterModel, NgTableParams) {
+        var entity_type_uuid = 7,
+            pageSize = 10,
+            query = 'propertyName=role&propertyValues=base_search';
+
+        $scope.search_params = {};
+
+        $scope.init = function () {
+            ConverterModel.findAll().then(function (converters) {
+                $scope.converterTableParams = new NgTableParams({}, {dataset: converters});
+            });
+        };
+
+        $scope.selectReference = function (id) {
+            return ConverterModel.findOne(id).then(function (converter) {
+                var result = {
+                    converter: converter
+                };
+                $uibModalInstance.close(result);
+            })
+        };
+
+        $scope.ok = function () {
+            $uibModalInstance.close("Test");
+        };
+
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss("cancel");
+        };
+    };
+    ConverterModalController.$inject = ['$uibModalInstance', '$scope',
+        'ConverterModel', 'NgTableParams'];
+    return ConverterModalController;
+}
+
 pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
-    '$location', '$http', '$rootScope', 'AttributeModel', 'MessageService','usSpinnerService',
+    '$location', '$http', '$rootScope', 'AttributeModel', 'MessageService', 'usSpinnerService',
+    '$uibModal', 'AttributeService','ConverterModel',
     function ($scope, $route, $routeParams,
               $location,
               $http,
               $rootScope,
               AttributeModel,
               MessageService,
-              usSpinnerService) {
+              usSpinnerService,
+              $uibModal,
+              AttributeService,
+              ConverterModel) {
 
         $scope.valueTypes = ["STRING", "ARRAY", "DECIMAL", "INTEGER", "BOOLEAN",
             "REFERENCE", "ENUM"];
@@ -22,21 +64,24 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
                 usSpinnerService.stop('spinner-attribute');
             } else {
                 AttributeModel.findOne(entity_type_uuid, uuid).then(function (attribute) {
-                    usSpinnerService.stop('spinner-attribute');
-                    $scope.attribute = attribute;
+                    ConverterModel.findAll().then(function (converters) {
+                        usSpinnerService.stop('spinner-attribute');
+                        $scope.attribute = AttributeService.dtoAttribute(attribute, converters);
+                    })
                 })
             }
         };
 
         $scope.updateAttribute = function (attribute) {
             usSpinnerService.spin('spinner-attribute');
+            var attribute_to_save = AttributeService.daoAttribute(attribute);
             if (attribute.uuid) {
-                AttributeModel.update(entity_type_uuid, attribute).then(function (response) {
+                AttributeModel.update(entity_type_uuid, attribute_to_save).then(function (response) {
                     usSpinnerService.stop('spinner-attribute');
                     MessageService.setSuccessMessage($rootScope.message, "Attribute Updated");
                 })
             } else {
-                AttributeModel.create(entity_type_uuid, attribute).then(function (response) {
+                AttributeModel.create(entity_type_uuid, attribute_to_save).then(function (response) {
                     usSpinnerService.stop('spinner-attribute');
                     MessageService.setSuccessMessage($rootScope.message, "Attribute Created");
                 })
@@ -53,10 +98,35 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
         }
 
         $scope.addEnumValue = function () {
-            if($scope.attribute.properties.enumValues===null || angular.isUndefined($scope.attribute.properties.enumValues) ){
+            if ($scope.attribute.properties.enumValues === null || angular.isUndefined($scope.attribute.properties.enumValues)) {
                 $scope.attribute.properties.enumValues = [];
             }
             $scope.attribute.properties.enumValues.push('');
+        }
+
+        $scope.addValidator = function () {
+            var attr = attr;
+            var $uibModalInstance = modalInstance = $uibModal.open({
+                templateUrl: 'partial/attribute/modal_validator',
+                controller: createValidatorController(attr),
+                resolve: {
+                    user: function () {
+                        return "Return";
+                    }
+                }
+            });
+            $uibModalInstance.result.then(function (selectedItem) {
+                console.log(selectedItem);
+                if (!$scope.attribute.properties.validators) {
+                    $scope.attribute.properties.validators = [];
+                }
+                $scope.attribute.properties.validators.push(selectedItem.converter);
+            }, function () {
+            });
+
+        };
+        $scope.deleteValidator = function (index) {
+            $scope.attribute.properties.validators.splice(index,1);
         }
 
     }]);

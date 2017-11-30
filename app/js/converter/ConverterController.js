@@ -6,6 +6,12 @@ pimsApp.controller('ConverterController' ,[ '$scope', '$route', '$routeParams',
                                                                      ConverterModel) {
 
         $scope.types = ['Converter', 'Validator'];
+        $scope.languages = [
+            {name: 'Java Script', mode:"javascript"},
+            {name: "Python", mode:"python"},
+            {name: 'Ruby', mode:"ruby"},
+            {name: 'Groovy', mode:"groovy"}
+            ];
         $scope.init = function () {
             var id = $routeParams.id;
             if(id === "new"){
