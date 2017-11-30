@@ -1,0 +1,10 @@
+.modal-header(ng-init="init()")
+    h4 SELECT ENTITY TYPE
+    .modal-body
+        table.table(ng-table="entityTypeTableParams", show-filter="true")
+            tr(ng-repeat="entityType in $data")
+                td(title="'Name'", filter="{ name: 'text'}",sortable="'name'")
+                    a(ng-href="", ng-click="selectEntityType(entityType.uuid)") {{entityType.name}}
+    .modal-footer
+        button.btn.btn-primary(ng-click="ok()") OK
+        button.btn.btn-warning(ng-click="cancel()") Cancel
