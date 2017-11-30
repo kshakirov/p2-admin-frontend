@@ -16,13 +16,16 @@ pimsApp.controller('EntityListController', ['$scope', '$route', '$routeParams',
             query = 'propertyName=role&propertyValues=base_search';
         $rootScope.message = MessageService.prepareMessage();
         $scope.search_params = {};
+        $scope.pageSize = 10;
+        $scope.pageSizes = [10,25,50,100];
 
         function PaginationObject(response) {
             return {
                 totalPages: response.totalPages,
                 first: response.first,
                 last: response.last,
-                currentPage: response.number
+                currentPage: response.number,
+                totalRecords: response.totalElements
 
             }
         }
@@ -108,5 +111,10 @@ pimsApp.controller('EntityListController', ['$scope', '$route', '$routeParams',
                 })
             })
         }
+
+        $scope.$watch('pageSize', function () {
+            pageSize = $scope.pageSize || 10;
+            $scope.init();
+        })
 
     }]);
