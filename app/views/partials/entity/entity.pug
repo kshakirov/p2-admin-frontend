@@ -2,8 +2,9 @@
     .col-lg-6.col-lg-offset-3
         ul.breadcrumb
             li Entities
-    .col-lg-4
-        p
+    .col-lg-6
+        span
+            us-spinner(spinner-key="spinner-entity", spinner-start-active="true")
 uib-tabset(active="active", ng-init="init()")
     uib-tab(ng-repeat="tab in tabs",heading="{{tab.name}}" )
         .row

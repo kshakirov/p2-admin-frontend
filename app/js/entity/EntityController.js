@@ -1,7 +1,7 @@
 pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'EntityModel', 'EntityService',
     'AttributeSetModel', 'NotificationModel', 'MessageService', '$uibModal',
-    '$q', 'ConverterModel',
+    '$q', 'ConverterModel','usSpinnerService',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -13,7 +13,8 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
               MessageService,
               $uibModal,
               $q,
-              ConverterModel) {
+              ConverterModel,
+              usSpinnerService) {
 
         var entity_type_uuid = $rootScope.pims.entities.current.uuid,
             msg = {
@@ -69,6 +70,7 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
                             $scope.reference_tables = promises;
                             $scope.tabs = order_tabs(tabs);
                             $scope.entity = entity;
+                            usSpinnerService.stop('spinner-entity');
                         });
 
                     })
@@ -172,9 +174,6 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
                     id: entity.attributes[key].key.name
                 }
             });
-            // var validate_promises = attrs_to_validate.map(function (v) {
-            //     ConverterModel.validate(v);
-            // });
             return ConverterModel.validate(attrs_to_validate);
         }
 
