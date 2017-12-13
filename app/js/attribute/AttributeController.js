@@ -38,7 +38,7 @@ function createValidatorController(attr) {
 
 pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'AttributeModel', 'MessageService', 'usSpinnerService',
-    '$uibModal', 'AttributeService','ConverterModel',
+    '$uibModal', 'AttributeService','ConverterModel','EntityTypeModel',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -48,7 +48,8 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
               usSpinnerService,
               $uibModal,
               AttributeService,
-              ConverterModel) {
+              ConverterModel,
+              EntityTypeModel) {
 
         $scope.valueTypes = ["STRING", "ARRAY", "DECIMAL", "INTEGER", "BOOLEAN",
             "REFERENCE", "ENUM"];
@@ -65,8 +66,11 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
             } else {
                 AttributeModel.findOne(entity_type_uuid, uuid).then(function (attribute) {
                     ConverterModel.findAll().then(function (converters) {
-                        usSpinnerService.stop('spinner-attribute');
-                        $scope.attribute = AttributeService.dtoAttribute(attribute, converters);
+                        EntityTypeModel.findAll().then(function (entity_types) {
+                            usSpinnerService.stop('spinner-attribute');
+                            $scope.entity_types = entity_types;
+                            $scope.attribute = AttributeService.dtoAttribute(attribute, converters);
+                        })
                     })
                 })
             }

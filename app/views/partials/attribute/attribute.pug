@@ -18,7 +18,7 @@
             div.form-group()
                 label Referenced Entity Type
                 select.form-control(id="entityType", ng-model="attribute.properties.referencedEntityTypeId",
-                ng-options="entitityType.uuid as entitityType.name  for entitityType in pims.entities.list")
+                ng-options="entitityType.uuid as entitityType.name  for entitityType in entity_types")
             div.form-group
                 label(for="frontendType") FrontEnd Type
                 select.form-control(id="frontendType",
