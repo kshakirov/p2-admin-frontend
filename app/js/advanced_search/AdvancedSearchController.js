@@ -1,6 +1,6 @@
 pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'AdvancedSearchModel', 'AttributeSetModel',
-    'AttributeModel', 'usSpinnerService',
+    'AttributeModel', 'usSpinnerService', 'AdvancedSearchService', '$q',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -8,19 +8,24 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
               AdvancedSearchModel,
               AttributeSetModel,
               AttributeModel,
-              usSpinnerService) {
+              usSpinnerService,
+              AdvancedSearchService,
+              $q) {
         var entity_type_uuid = $rootScope.pims.entities.current.uuid,
+            references = null,
             query = 'propertyName=role&propertyValues=search';
         $scope.search_params = {};
         $scope.pageSize = 10;
-        $scope.pageSizes = [10,25,50,100];
+        $scope.pageSizes = [10, 25, 50, 100];
         $scope.search_query = {
             size: $scope.pageSize,
             from: 0,
             type: entity_type_uuid,
             query: null,
+            references: null,
+            fields: [],
+            referenceNames: {"7": 33}
         };
-
 
 
         function PaginationObject(response) {
@@ -30,31 +35,48 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
                 totalPages: Math.ceil(response.totalPages),
                 first: response.first,
                 last: response.last,
-                totalRecords:  response.totalPages * $scope.pageSize
+                totalRecords: response.totalPages * $scope.pageSize
             }
         }
 
         function paginate_entites(search_query) {
-            return AdvancedSearchModel.findAll(search_query).then(function (response) {
-                return response;
-            })
+            return AdvancedSearchModel.findAll(search_query)
+        }
+
+
+        function getReferenceNameSets(references) {
+            var request_hash = {},
+                q = 'propertyName=role&propertyValues=reference_name';
+            references.map(function (ref) {
+                request_hash[ref.entityTypeId] = AttributeSetModel.search(ref.entityTypeId, q);
+            });
+            return $q.all(request_hash);
         }
 
         $scope.init = function () {
             usSpinnerService.spin('spinner-2');
             AttributeSetModel.search(entity_type_uuid, query).then(function (attribute_set) {
                 $scope.layout = attribute_set[0].attributes;
-                return paginate_entites($scope.search_query).then(function (response) {
-                    $scope.entities = response.content;
-                    $scope.pagination = new PaginationObject(response);
-                    usSpinnerService.stop('spinner-2');
+                $scope.search_query.references = AdvancedSearchService.getReferences(attribute_set[0].attributes);
+                $scope.search_query.fields = AdvancedSearchService.getFields(attribute_set[0].attributes);
+                getReferenceNameSets($scope.search_query.references).then(function (referencesName) {
+                    $scope.search_query.referenceNames = AdvancedSearchService.prepReferencesName(referencesName);
+                    console.log($scope.search_query.referenceNames);
+                    return paginate_entites($scope.search_query).then(function (response) {
+                        $scope.entities = response.content;
+                        $scope.pagination = new PaginationObject(response);
+                        usSpinnerService.stop('spinner-2');
 
+                    },function (error) {
+                        console.log(error);
+                        usSpinnerService.stop('spinner-2');
+                    })
                 })
             })
 
         };
 
-         $scope.getPage = function (page) {
+        $scope.getPage = function (page) {
             usSpinnerService.spin('spinner-2');
             $scope.search_query.from = page;
             return paginate_entites($scope.search_query).then(function (response) {
@@ -73,6 +95,9 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
             return paginate_entites($scope.search_query).then(function (response) {
                 $scope.entities = response.content;
                 $scope.pagination = new PaginationObject(response);
+                usSpinnerService.stop('spinner-2');
+            },function (error) {
+                console.log(error);
                 usSpinnerService.stop('spinner-2');
             })
         };

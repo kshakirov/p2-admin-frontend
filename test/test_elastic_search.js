@@ -15,18 +15,20 @@ client.ping({
     }
 });
 
-client.search({
-    index: 'twitter',
-    type: 'tweets',
-    body: {
-        query: {
-            match: {
-                body: 'elasticsearch'
-            }
-        }
+client.msearch({
+    body: [
+
+        { index: 'pims-staging', type: '7' },
+        { query: { bool: { must: {match: {
+            "33": "79"
+        }}} } }
+    ]
     }
-}).then(function (resp) {
-    var hits = resp.hits.hits;
+).then(function (resp) {
+    resp.responses.map(resp =>{
+        let hits = resp.hits.hits;
+    })
+
 }, function (err) {
     console.trace(err.message);
 });

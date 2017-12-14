@@ -8,22 +8,51 @@ let client = new elasticsearch.Client({
    // log: 'trace'
 });
 
-function findAll(type, query, from, size = 10) {
+function findAll(type, query, from, size = 10, fields) {
     return client.search({
         index: elastic_index,
         type: type,
         size: size,
         from: from,
         body: {
+            _source: fields,
             query: query
         }
-    }).then(function (resp) {
-        return resp;
-    }, function (err) {
-        console.trace(err.message);
-        return
+    })
+}
+
+function multiGet(refs) {
+    let ds = refs.map(d =>{
+        d['_index'] = elastic_index;
+        return d;
+    });
+    console.log(ds);
+    return client.mget({
+        body: {
+            docs: ds
+        }
+    }).then(function (r) {
+        return r;
+    },e => {
+        console.log(e)
+    });
+}
+
+function  multiSearch(refs) {
+    let ds = refs.map(d =>{
+        if(d.hasOwnProperty('index'))
+            d['index'] = elastic_index;
+        return d;
+    });
+    return client.msearch({
+        body:
+            ds
+
+
     });
 }
 
 
 exports.findAll = findAll;
+exports.multiGet = multiGet;
+exports.multiSearch = multiSearch;
