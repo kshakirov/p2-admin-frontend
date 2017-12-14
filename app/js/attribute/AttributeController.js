@@ -38,7 +38,7 @@ function createValidatorController(attr) {
 
 pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'AttributeModel', 'MessageService', 'usSpinnerService',
-    '$uibModal', 'AttributeService','ConverterModel','EntityTypeModel',
+    '$uibModal', 'AttributeService','ConverterModel','EntityTypeModel','$timeout',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -49,27 +49,35 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
               $uibModal,
               AttributeService,
               ConverterModel,
-              EntityTypeModel) {
+              EntityTypeModel,
+              $timeout) {
 
         $scope.valueTypes = ["STRING", "ARRAY", "DECIMAL", "INTEGER", "BOOLEAN",
             "REFERENCE", "ENUM"];
         $scope.frontendTypes = ["text", "number", "email", "password",
-            "date", "select", "multiselect", "checkbox", "radio", "table"];
-
+            "date", "select", "multiselect", "checkbox", "radio", "table", "file", "preview"];
         var entity_type_uuid = $rootScope.pims.entities.current.uuid;
         $rootScope.message = MessageService.prepareMessage();
 
         $scope.init = function () {
             var uuid = $routeParams.uuid;
+
             if (uuid === "new") {
-                usSpinnerService.stop('spinner-attribute');
+                $timeout(function () {
+                    usSpinnerService.stop('spinner-attribute');
+                    console.log("Spin must stop")
+                },200)
+
             } else {
+
+
                 AttributeModel.findOne(entity_type_uuid, uuid).then(function (attribute) {
                     ConverterModel.findAll().then(function (converters) {
                         EntityTypeModel.findAll().then(function (entity_types) {
                             usSpinnerService.stop('spinner-attribute');
                             $scope.entity_types = entity_types;
                             $scope.attribute = AttributeService.dtoAttribute(attribute, converters);
+                            usSpinnerService.stop('spinner-attribute');
                         })
                     })
                 })
