@@ -1,0 +1,69 @@
+.modal-header(ng-init="init()")
+    h3.modal-title ADD TRANSITIVE REFERENCE
+    .modal-body(ng-init="init()")
+       .row
+           hr
+           .col-lg-4
+               h6 ENTITY TYPE TO SEARCH
+           .col-lg-6
+               select.form-control.input-sm(ng-model="searchEntityTypeId",
+               ng-options=" et.uuid as et.name for et in entity_types", ng-change="reloadSearchAttributes(searchEntityTypeId)")
+       .row.top-small-buffer
+           .col-lg-6
+               h6 FIND AN ENTITY  BY ATTRIBUTES & VALUES
+           .col-lg-2.col-lg-offset-4
+               button.btn.btn-info.btn-sm(type="submit", ng-click="addSearchAttribute()")
+                   span.glyphicon.glyphicon-plus
+       .row.top-small-buffer(ng-repeat="item in transitive_search_attributes")
+            .col-lg-4
+                select.form-control.input-sm(ng-model="item.attribute",
+                ng-options=" a.uuid as a.name for a in search_attributes")
+            .col-lg-2
+                select.form-control.input-sm(ng-model="item.type",
+                ng-options=" t as t for t in search_attribute_types")
+            .col-lg-4
+                input.form-control.input-sm(type="text", data-ng-model="item.value")
+       .row.top-small-buffer
+           hr
+           .col-lg-4
+                h6 {{foundEntityAttribute}}
+           .col-lg-6
+               select.form-control.input-sm(ng-model="referenceAttribute", ng-disabled="edit",
+               ng-options=" a as a.name for a in search_attributes", ng-change="reloadReferenceAttributes(referenceAttribute)")
+           .col-lg-2
+               button.btn.btn-danger.btn-sm(type="submit", ng-click="removeChain(reference)")
+                   span.glyphicon.glyphicon-remove
+       .row
+            .col-lg-6
+                h6 RETURN  REFERENCE ATTRIBUTE VALUE
+            .col-lg-2.col-lg-offset-4
+                button.btn.btn-info.btn-sm(type="submit",ng-disabled="edit", ng-click="addReferenceAttribute()")
+                    span.glyphicon.glyphicon-plus
+       .row.top-small-buffer(ng-repeat="item in transitive_reference_attributes")
+            .col-lg-4
+                select.form-control.input-sm(ng-model="item.attribute",ng-disabled="edit",
+                ng-options=" a as a.name for a in reference_attributes",
+                ng-change="addChainedReference(item.attribute)")
+       div(ng-repeat="reference in chained_references")
+           .row.top-small-buffer
+                hr
+                .col-lg-4
+                    h6 {{reference.foundEntityAttribute}}
+                .col-lg-6
+                    select.form-control.input-sm(ng-model="reference.referenceAttribute",
+                    ng-options=" a as a.name for a in reference.referenceAttributes", disabled=true)
+
+           .row
+                .col-lg-6
+                    h6 RETURN  REFERENCE ATTRIBUTE VALUE
+                .col-lg-2.col-lg-offset-4
+                    button.btn.btn-info.btn-sm(type="submit",ng-disabled="edit", ng-click="addChainedReferenceAttribute(reference)")
+                        span.glyphicon.glyphicon-plus
+           .row.top-small-buffer(ng-repeat="item in reference.attributes")
+                .col-lg-4
+                    select.form-control.input-sm(ng-model="item.attribute",ng-disabled="edit",
+                    ng-options=" a as a.name for a in reference.reference_attributes",
+                    ng-change="addChainedReference(item.attribute, $index)")
+    .modal-footer
+        button.btn.btn-primary(ng-click="ok()") OK
+        button.btn.btn-warning(ng-click="cancel()") Cancel

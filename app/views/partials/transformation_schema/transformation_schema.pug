@@ -44,13 +44,39 @@ uib-tabset(active="active", ng-init="init()")
                         button.btn.btn-info(type="submit",ng-if="schema.customAttributes.export", ng-click="addSchemaItemExport(out_attribute_name)")
                             span.glyphicon.glyphicon-plus
         .row.top-buffer
-            .col-lg-4
-                h5.text-center IN
-            .col-lg-4
-                h5.text-center CONVERTERS
-            .col-lg-4
-                h5.text-center OUT
+            .col-lg-5
+                h4.text-center IN
+                .row
+                    .col-sm-6
+                        h5.text-center PATH
+                    .col-sm-4.col-sm-offset-2
+                        h5.text-center CONST(DEFAULT)
+            .col-lg-3
+                h4.text-center CONVERTERS
+            .col-lg-3
+                h4.text-center OUT
         include transformation_schema_import
         include transformation_schema_export
+    uib-tab(heading="Preprocessing" )
+        .row.top-buffer
+            .col-lg-2
+                form(role="form")
+                    .form-group.col-sm-6
+                    .btn-group.top-space
+                        button.btn.btn-info(type="submit", ng-click="addPreProcSchemaItem(out_attribute_name)")
+                            span.glyphicon.glyphicon-plus
+        .row.top-buffer
+            .col-lg-5
+                h4.text-center IN
+                .row
+                    .col-sm-6
+                        h5.text-center PATH
+                    .col-sm-4.col-sm-offset-2
+                        h5.text-center CONST(DEFAULT)
+            .col-lg-3
+                h4.text-center CONVERTERS
+            .col-lg-3
+                h4.text-center OUT
+        include transformation_schema_preproc
 
 

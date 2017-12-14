@@ -1,7 +1,7 @@
 pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'TransformationSchemaModel',
     'TransformationSchemaService', 'EntityTypeModel', 'AttributeModel',
-    'ConverterModel', 'MessageService', '$q',
+    'ConverterModel', 'MessageService', '$q','$uibModal',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -11,7 +11,9 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
               EntityTypeModel,
               AttributeModel,
               ConverterModel,
-              MessageService, $q) {
+              MessageService,
+              $q,
+              $uibModal) {
 
         $rootScope.message = MessageService.prepareMessage();
 
@@ -39,6 +41,7 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
                     }
                 };
                 $scope.transformation_schema = [];
+                $scope.preproc_schema = [];
             } else {
                 TransformationSchemaModel.findOne(id).then(function (schema) {
 
@@ -51,6 +54,7 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
 
 
                     $scope.transformation_schema = schema.schema.schema || [];
+                    $scope.preprocSchema = TransformationSchemaService.preprocSchema(schema.schema.preprocSchema) || [];
                     entity_type_id = schema.customAttributes.entity.uuid;
                     AttributeModel.findAll(entity_type_id).then(function (attributes) {
                         if (isDto(schema)) {
@@ -80,11 +84,15 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
             schema.schema = {
                 schema: TransformationSchemaService
                     .prepTransformationSchema($scope.transformation_schema,
-                        $scope.schema.customAttributes.dto)
+                        $scope.schema.customAttributes.dto, $scope.attributes),
+                preprocSchema: TransformationSchemaService
+                    .prepPreProcSchema($scope.preprocSchema)
             };
             if (schema.id)
                 TransformationSchemaModel.update(schema).then(function () {
                     MessageService.setSuccessMessage($rootScope.message, "Schema Updated");
+                }, function (error) {
+                    MessageService.setDangerMessage($rootScope.message, "Failed: " +  error.data.status.message);
                 });
             else
                 TransformationSchemaModel.save(schema).then(function () {
@@ -105,6 +113,18 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
             )
         };
 
+        $scope.addPreProcSchemaItem = function (out_attribute_name) {
+            $scope.preprocSchema.push(
+                TransformationSchemaService.addSchemaItemExport(out_attribute_name)
+            )
+        };
+
+        $scope.removePreProcSchemaItem = function (index) {
+            $scope.preprocSchema.splice(index, 1);
+        };
+
+
+
         $scope.addSchemaItemExport = function (out_attribute_name) {
             $scope.transformation_schema.push(
                 TransformationSchemaService.addSchemaItemExport(out_attribute_name)
@@ -116,8 +136,6 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
         };
 
         $scope.removeInPathItem = function (item, index) {
-            console.log(item);
-            console.log(index);
             item.in.splice(index,1);
         };
 
@@ -128,6 +146,13 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
         $scope.removeItemConverter = function (item) {
             TransformationSchemaService.removeItemConverter(item)
         };
+
+        $scope.addItemConst = function (item) {
+            TransformationSchemaService.addItemConst(item)
+        };
+
+        $scope.removeItemConst = function (item, index) {
+            item.default.splice(index,1);        };
 
         $scope.cancel = function () {
             $location.path("/transformation-schemata");
@@ -163,6 +188,30 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
                     };
                 })
             }
-        }
+        };
+
+        $scope.addTransitiveReference = function (item) {
+            var item = item;
+            var $uibModalInstance = modalInstance = $uibModal.open({
+                templateUrl: 'partial/attribute/transitive_modal',
+                controller: createTransitiveRefController(item, $scope.entity_types),
+                resolve: {
+                    user: function () {
+                        return "Return";
+                    }
+                }
+            });
+            $uibModalInstance.result.then(function (reference) {
+                console.log(reference);
+                if(angular.isUndefined(item.in)){
+                    item.in = [];
+                }
+                item.in[0]={
+                    ref: reference,
+                }
+            }, function () {
+            });
+
+        };
 
     }]);

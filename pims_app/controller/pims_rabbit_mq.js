@@ -6,6 +6,9 @@ let amqp = require('amqplib/callback_api'),
 function notify(req, res, queue_name) {
     amqp.connect(`amqp://${pimsConfig.rabbitMq.url}`, function (err, conn) {
         conn.createChannel(function (err, ch) {
+            if(err){
+                console.log(err)
+            }
             let ex = pimsConfig.rabbitMq.pimsExchange,
                 msg = JSON.stringify(req.body.message);
             ch.publish(ex, queue_name, new Buffer(msg));

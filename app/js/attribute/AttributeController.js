@@ -111,7 +111,7 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
         $scope.addValidator = function () {
             var attr = attr;
             var $uibModalInstance = modalInstance = $uibModal.open({
-                templateUrl: 'partial/attribute/modal_validator',
+                templateUrl: 'partial/attribute/modal_validato',
                 controller: createValidatorController(attr),
                 resolve: {
                     user: function () {

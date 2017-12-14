@@ -13,6 +13,7 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
         return {
             in: [],
             converters: [],
+            default: [],
             out: ""
         }
     };
@@ -38,8 +39,24 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
     };
 
     this.removeItemConverter = function (item) {
-            item.converters = [];
+        item.converters = [];
     };
+
+
+    this.addItemConst = function (item) {
+        if (angular.isUndefined(item)) {
+            item = {};
+        }
+        if (angular.isUndefined(item.default) || item.default==null) {
+            item.default = [];
+        }
+        item.default.push("")
+    };
+
+    this.removeItemConst = function (item) {
+        item.default = [];
+    };
+
 
     this.addItemAttribute = function (item) {
         item.in.push({})
@@ -66,31 +83,43 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
         var t = transformation_schema;
         var schema = t.schema.schema;
         var regex = /.+value.+value/;
-        schema = schema.map(function (s) {
-            var reference = null;
-            var inn = s.in.map(function (i) {
-                if (is_reference(i, regex)) {
-                    reference = {
-                        referenceId: get_child_attr_from_path(i),
-                        uuid: parseInt(get_child_attr_from_path(i)),
-                        attributes: null
-                    };
-                }
+        if (schema) {
+            schema = schema.map(function (s) {
+                var reference = null;
+                var inn = s.in.map(function (i) {
+                    if (is_reference(i, regex)) {
+                        reference = {
+                            referenceId: get_child_attr_from_path(i),
+                            uuid: parseInt(get_child_attr_from_path(i)),
+                            attributes: null
+                        };
+                    }
+                    return {
+                        uuid: parseInt(get_parent_attr_from_path(i)),
+                        path: i.path
+                    }
+                });
                 return {
-                    uuid: parseInt(get_parent_attr_from_path(i)),
-                    path: i.path
+                    in: inn,
+                    reference: reference,
+                    converters: s.converters,
+                    out: s.out
                 }
             });
-            return {
-                in: inn,
-                reference: reference,
-                converters: s.converters,
-                out: s.out
-            }
-        });
-        t.schema.schema = schema;
+            t.schema.schema = schema;
+        } else {
+            t.schema.schema = [];
+        }
         return t;
     };
+
+    function check_empty_default(def) {
+        return def.find(function (d) {
+            if(d)
+                return d;
+        });
+    }
+
 
 
     this.importExportTransformationSchema = function (transformation_schema) {
@@ -103,11 +132,18 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
                     uuid: getAttribute(s.out)
                 };
 
+                var def = s.in.map(function (sd) {
+                    return sd.default
+                });
+                if(!check_empty_default(def)){
+                    def=null;
+                }
 
                 return {
                     in: s.in,
                     converters: s.converters,
-                    out: out
+                    out: out,
+                    default: def
                 }
             });
             transformation_schema.schema.schema = schema;
@@ -122,7 +158,8 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
                 return {
                     in: inn,
                     converters: s.converters,
-                    out: s.out
+                    out: s.out,
+                    default: s.in.default
                 }
             });
             transformation_schema.schema.schema = schema;
@@ -147,12 +184,62 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
         return isNaN(uuid)
     }
 
-    this.prepTransformationSchema = function (transformation_schema, dto) {
+    function get_attribute_uuid(out, criteria) {
+        var uuid = out.split(criteria);
+        return uuid[1];
+    }
+
+    function get_attribute_value(attr_uuid, attributes) {
+        var attribute = attributes.find(function (a) {
+            if (a.uuid == attr_uuid)
+                return a;
+        });
+        if (attribute) {
+            return attribute.valueType;
+        }
+        return false;
+    }
+
+    function coerce_const_type(c, inn, out, attributes) {
+        var out_attr_criteria = "attributes.",
+            attr_uuid = null,
+            attr_type = null;
+
+        if (out.search(out_attr_criteria) >= 0) {
+            attr_uuid = get_attribute_uuid(out, out_attr_criteria);
+            attr_type = get_attribute_value(attr_uuid, attributes);
+        } else if (angular.isNumber(inn.path)) {
+            attr_uuid = inn.path;
+            attr_type = get_attribute_value(attr_uuid, attributes);
+        } else {
+            attr_type = "string"
+        }
+        if (attr_type.toLowerCase() === 'integer') {
+            return parseInt(c)
+        } else if (attr_type.toLowerCase() === 'decimal') {
+            return parseFloat(c)
+        } else if (attr_type.toLowerCase() === 'boolean') {
+            if(typeof c == 'boolean'){
+                return c
+            }
+            return c.toLowerCase() == "true" ? true : false
+        } else {
+            return c
+        }
+    }
+
+    this.prepTransformationSchema = function (transformation_schema, dto, attributes) {
         return transformation_schema.map(function (schema) {
             var inn = schema.in.map(function (i) {
-                return {
-                    uuid: parseInt(i.uuid),
-                    path: selectPath(i, dto)
+                if (i.hasOwnProperty('ref')) {
+                    return {
+                        ref: i.ref
+                    }
+                } else {
+                    return {
+                        uuid: parseInt(i.uuid),
+                        path: selectPath(i, dto)
+                    }
                 }
             });
 
@@ -164,6 +251,7 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
                     }
                 });
             }
+
 
             var converters = schema.converters;
             if (converters) {
@@ -183,6 +271,13 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
                     out = out.path + "." + out.uuid;
             }
 
+
+            if (schema.default) {
+                schema.default.map(function (c, index) {
+                    inn[index].default = coerce_const_type(c, inn[index], out, attributes)
+                })
+            }
+
             return {
                 in: inn,
                 converters: converters,
@@ -190,6 +285,70 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
             }
         })
     };
+
+    function save_entity_types(preproc_schema) {
+        if (preproc_schema) {
+            return preproc_schema.map(function (ps) {
+                return ps.out.entityTypeId;
+            });
+        }
+        return false;
+
+    }
+
+    this.prepPreProcSchema = function (preproc_schema) {
+        var entity_type_ids = save_entity_types(preproc_schema);
+        if (entity_type_ids) {
+            var schema = this.prepTransformationSchema(preproc_schema, false);
+            entity_type_ids.map(function (id, index) {
+                var p = schema[index].out;
+                if (p && p.length > 0) {
+                    schema[index].out = id + "." + p;
+                } else {
+                    schema[index].out = id.toString();
+                }
+            });
+            return schema;
+        }
+        return {};
+    };
+
+    function get_entity_type_id(out) {
+        if(out){
+            var path = out.split(".");
+            return parseInt(path[0]);
+        }
+        return null;
+    }
+
+    function get_out_path(out) {
+        if(out){
+            var path = out.split(".");
+            return path[1];
+        }
+        return null;
+    }
+
+    this.preprocSchema = function (preproc_schema) {
+       var schema = preproc_schema.map(function (s) {
+           var def = s.in.map(function (sd) {
+               return sd.default
+           });
+           if(!check_empty_default(def)){
+               def=null;
+           }
+           return {
+               in: s.in,
+               default: def,
+               out: {
+                   entityTypeId: get_entity_type_id(s.out),
+                   path: get_out_path(s.out)
+               }
+           }
+       })
+        return schema;
+    };
+
     this.getReferencedEntity = function (id, attributes) {
         var attribute = attributes.find(function (a) {
             return a.uuid === id

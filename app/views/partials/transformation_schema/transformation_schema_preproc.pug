@@ -1,18 +1,15 @@
-.row.top-buffer(ng-repeat="item in transformation_schema", ng-if="schema.customAttributes.export")
+.row.top-buffer(ng-repeat="item in preprocSchema", ng-if="schema.customAttributes.export")
     hr
     .col-lg-3
         .row
-            .col-sm-4
+            .col-sm-2
                 .form-group.pull-right
-                    a.pull-right.btn.btn-warning.btn-xs(ng-click="addTransitiveReference(item)")
-                        span.glyphicon.glyphicon-search
                     a.pull-right.btn.btn-success.btn-xs(ng-click="addItemAttribute(item)")
                         span.glyphicon.glyphicon-link
         .row(ng-repeat="i in item.in")
-            .col-sm-8
+            .col-sm-10
                 .input-group.small
-                    input.form-control.input-sm(ng-if="i.ref", type="text", data-ng-model="i.ref.name")
-                    input.form-control.input-sm(ng-if="!i.ref",type="text", data-ng-model="i.path")
+                    input.form-control.input-sm(type="text", data-ng-model="i.path")
                     span.input-group-addon.pointer-cursor
                         span.glyphicon.glyphicon-remove(ng-click="removeInPathItem(item, $index)")
     .col-lg-2
@@ -45,18 +42,18 @@
     .col-lg-3
         .row
             .col-sm-10
+                .input-group
+                    select.form-control.input-sm(ng-model="item.out.entityTypeId",
+                    ng-options=" et.uuid as et.name for et in entity_types")
+                    span.input-group-addon.pointer-cursor
+                        span.glyphicon.glyphicon-remove
+        .row.top-small-buffer
+            .col-sm-10
                 .input-group.small
                     input.form-control.input-sm(type="text", data-ng-model="item.out.path")
                     span.input-group-addon.small.pointer-cursor PATH
-        .row.top-small-buffer
-            .col-sm-10
-                .input-group
-                    select.form-control.input-sm(ng-model="item.out.uuid",
-                    ng-options=" a.uuid as a.name for a in attributes")
-                    span.input-group-addon.pointer-cursor
-                        span.glyphicon.glyphicon-remove
     .col-lg-1
         form(role="form")
             .form-group
-                a.btn.btn-danger.btn-xs(ng-click="removeSchemaItem($index)")
+                a.btn.btn-danger.btn-xs(ng-click="removePreProcSchemaItem($index)")
                     span.glyphicon.glyphicon-remove
