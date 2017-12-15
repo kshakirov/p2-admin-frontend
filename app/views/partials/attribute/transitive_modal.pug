@@ -15,14 +15,17 @@
                button.btn.btn-info.btn-sm(type="submit", ng-click="addSearchAttribute()")
                    span.glyphicon.glyphicon-plus
        .row.top-small-buffer(ng-repeat="item in transitive_search_attributes")
-            .col-lg-4
+            .col-lg-5
                 select.form-control.input-sm(ng-model="item.attribute",
                 ng-options=" a.uuid as a.name for a in search_attributes")
-            .col-lg-2
+            .col-lg-3
                 select.form-control.input-sm(ng-model="item.type",
                 ng-options=" t as t for t in search_attribute_types")
-            .col-lg-4
+            .col-lg-2
                 input.form-control.input-sm(type="text", data-ng-model="item.value")
+            .col-lg-2
+                button.btn.btn-danger.btn-sm(type="submit", ng-click="removeSearchAttribute($index)")
+                    span.glyphicon.glyphicon-remove
        .row.top-small-buffer
            hr
            .col-lg-4

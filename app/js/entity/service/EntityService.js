@@ -71,7 +71,7 @@ pimsServices.service('EntityService', ['$http', '$rootScope', function ($http, $
         });
         return reference_array;
 
-    }
+    };
 
     this.processValidationData = function (validation_data,entity ) {
         var failed = validation_data.result.filter(function (r) {
@@ -88,5 +88,33 @@ pimsServices.service('EntityService', ['$http', '$rootScope', function ($http, $
             failed: failed,
             message: message
         }
+    };
+
+    function find_attr_uuid_by_name(name, attributes) {
+        var attr = attributes.find(function (a) {
+            if(a.name==name){
+                return a
+            }
+        });
+        return attr.uuid;
+    }
+
+    function merge_tab_attributes(tabs) {
+        var attributes = [];
+        tabs.map(function (t) {
+           attributes =  attributes.concat(t.attributes)
+        });
+        return attributes;
+    }
+
+    this.fillAttachmentData = function (response, entity, tabs) {
+        var response = response.data,
+            attributes = merge_tab_attributes(tabs),
+            names = ['Id','File Name','Size','Content Type'],
+            response_names =['uuid','name','size','contentType'];
+        names.map(function (n, index) {
+            var id = find_attr_uuid_by_name(n, attributes);
+            entity.attributes[id].value = response[response_names[index]];
+        })
     }
 }]);

@@ -1,7 +1,7 @@
 'use strict';
 
 var pimsApp = angular.module('PimsApp', ['ngRoute', 'ui.sortable', 'PimsApp.services', 'ngTable', 'chart.js', 'ui.bootstrap',
-    'angularSpinner','ngCookies','ui.ace']);
+    'angularSpinner','ngCookies','ui.ace','ngFileUpload']);
 
 
 pimsApp.config(["$routeProvider", "$locationProvider", "ChartJsProvider",
