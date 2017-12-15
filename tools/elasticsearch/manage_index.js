@@ -1,7 +1,7 @@
 let elasticsearch = require('elasticsearch'),
     windowSize = 1000000,
     client = new elasticsearch.Client({
-        host: '10.1.3.15:9200',
+        host: 'localhost:9200',
         log: 'trace'
     });
 
