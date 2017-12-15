@@ -200,12 +200,17 @@ function createTransitiveRefController(item, entity_types) {
             }
         };
 
-        function create_reference_name(first, chained_references) {
-            var name = first.name;
+        function create_reference_name(searchEntityTypeId, referenceAttribute,  chained_references) {
+            var name = entity_types.find(function (et) {
+                if(et.uuid==searchEntityTypeId)
+                    return et
+            });
+            name = name.name;
+            var second_name = referenceAttribute.name;
             if (angular.isUndefined(chained_references) ||
                 chained_references.length == 0 ||
                 !chained_references[chained_references.length - 1].hasOwnProperty('attributes'))
-                return name;
+                return name + "> " + second_name;
             return name + " > " + chained_references[chained_references.length - 1].attributes[0].attribute.name;
 
         }
@@ -231,11 +236,12 @@ function createTransitiveRefController(item, entity_types) {
             }
             projections = projections + "." + prep_projections($scope.chained_references);
             console.log($scope.chained_references);
+
             var result = {
                 entityTypeId: $scope.searchEntityTypeId,
                 key: prep_keys($scope.transitive_search_attributes, $scope.search_attributes),
                 projections: [projections],
-                name: create_reference_name($scope.referenceAttribute, $scope.chained_references)
+                name: create_reference_name($scope.searchEntityTypeId, $scope.referenceAttribute, $scope.chained_references)
             };
             $uibModalInstance.close(result);
         };
