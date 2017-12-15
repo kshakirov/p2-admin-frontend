@@ -1,12 +1,16 @@
 pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', function ($http, $rootScope) {
     function getPath(out) {
-        var paths = out.split(".");
-        return paths[0];
+        if (out) {
+            var paths = out.split(".");
+            return paths[0];
+        }
     }
 
     function getAttribute(out) {
-        var paths = out.split(".");
-        return parseInt(paths[1]);
+        if (out) {
+            var paths = out.split(".");
+            return parseInt(paths[1]);
+        }
     }
 
     this.addSchemaItem = function () {
@@ -47,7 +51,7 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
         if (angular.isUndefined(item)) {
             item = {};
         }
-        if (angular.isUndefined(item.default) || item.default==null) {
+        if (angular.isUndefined(item.default) || item.default == null) {
             item.default = [];
         }
         item.default.push("")
@@ -115,11 +119,10 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
 
     function check_empty_default(def) {
         return def.find(function (d) {
-            if(d)
+            if (d)
                 return d;
         });
     }
-
 
 
     this.importExportTransformationSchema = function (transformation_schema) {
@@ -135,8 +138,8 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
                 var def = s.in.map(function (sd) {
                     return sd.default
                 });
-                if(!check_empty_default(def)){
-                    def=null;
+                if (!check_empty_default(def)) {
+                    def = null;
                 }
 
                 return {
@@ -219,7 +222,7 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
         } else if (attr_type.toLowerCase() === 'decimal') {
             return parseFloat(c)
         } else if (attr_type.toLowerCase() === 'boolean') {
-            if(typeof c == 'boolean'){
+            if (typeof c == 'boolean') {
                 return c
             }
             return c.toLowerCase() == "true" ? true : false
@@ -314,7 +317,7 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
     };
 
     function get_entity_type_id(out) {
-        if(out){
+        if (out) {
             var path = out.split(".");
             return parseInt(path[0]);
         }
@@ -322,7 +325,7 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
     }
 
     function get_out_path(out) {
-        if(out){
+        if (out) {
             var path = out.split(".");
             return path[1];
         }
@@ -330,22 +333,23 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
     }
 
     this.preprocSchema = function (preproc_schema) {
-       var schema = preproc_schema.map(function (s) {
-           var def = s.in.map(function (sd) {
-               return sd.default
-           });
-           if(!check_empty_default(def)){
-               def=null;
-           }
-           return {
-               in: s.in,
-               default: def,
-               out: {
-                   entityTypeId: get_entity_type_id(s.out),
-                   path: get_out_path(s.out)
-               }
-           }
-       })
+        var schema = preproc_schema || [];
+        schema = schema.map(function (s) {
+            var def = s.in.map(function (sd) {
+                return sd.default
+            });
+            if (!check_empty_default(def)) {
+                def = null;
+            }
+            return {
+                in: s.in,
+                default: def,
+                out: {
+                    entityTypeId: get_entity_type_id(s.out),
+                    path: get_out_path(s.out)
+                }
+            }
+        })
         return schema;
     };
 

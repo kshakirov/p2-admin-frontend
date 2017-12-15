@@ -8,7 +8,7 @@ function createTransitiveRefController(item, entity_types) {
         $scope.entity_types = entity_types;
         $scope.transitive_search_attributes = [];
         $scope.transitive_reference_attributes = [];
-        $scope.search_attribute_types = ['path', 'const'];
+        $scope.search_attribute_types = ['path', 'default'];
 
         function reloadAttributes(id) {
             return AttributeModel.findAll(id).then(function (attrs) {
@@ -31,31 +31,54 @@ function createTransitiveRefController(item, entity_types) {
             return ""
         }
 
-        function prep_keys(transitive_search_attributes) {
+
+        function coerce_const_type(c, uuid, search_attributes) {
+            var attr_type = search_attributes.find(function (sa) {
+                if (sa.uuid == uuid)
+                    return sa
+            });
+            attr_type = attr_type.valueType;
+            if (attr_type.toLowerCase() === 'integer' || attr_type.toLowerCase() === 'reference') {
+                return parseInt(c)
+            } else if (attr_type.toLowerCase() === 'decimal') {
+                return parseFloat(c)
+            } else if (attr_type.toLowerCase() === 'boolean') {
+                if (typeof c == 'boolean') {
+                    return c
+                }
+                return c.toLowerCase() == "true" ? true : false
+            } else {
+                return c
+            }
+        }
+
+
+        function prep_keys(transitive_search_attributes, search_attributes) {
             var key = {};
             transitive_search_attributes.map(function (ta) {
                 key[ta.attribute] = {};
                 if (ta.type == 'path')
                     key[ta.attribute][ta.type] = ta.value;
-                else
-                    key[ta.attribute][ta.type] = {
-                        value: ta.value,
-                        type: "string"
-                    };
-
+                else if (ta.type == 'default') {
+                    key[ta.attribute][ta.type] = coerce_const_type(ta.value, ta.attribute, search_attributes);
+                }
             });
             return key;
         }
 
         function prep_projections(chained_references) {
-            var projections = chained_references.filter(function (cr) {
-                if (cr.hasOwnProperty('attributes'))
-                    return cr
-            });
-            projections = projections.map(function (cr) {
-                return cr.attributes[0].attribute.uuid
-            });
-            return projections.join(".");
+            if (angular.isUndefined(chained_references)) {
+                return ""
+            } else {
+                var projections = chained_references.filter(function (cr) {
+                    if (cr.hasOwnProperty('attributes'))
+                        return cr
+                });
+                projections = projections.map(function (cr) {
+                    return cr.attributes[0].attribute.uuid
+                });
+                return projections.join(".");
+            }
         }
 
         $scope.reloadSearchAttributes = function (id) {
@@ -178,20 +201,25 @@ function createTransitiveRefController(item, entity_types) {
         };
 
         function create_reference_name(first, chained_references) {
-            var name = first.name,
-                last = chained_references[chained_references.length - 1];
-            if (angular.isUndefined(last) || !last.hasOwnProperty('attributes'))
+            var name = first.name;
+            if (angular.isUndefined(chained_references) ||
+                chained_references.length == 0 ||
+                !chained_references[chained_references.length - 1].hasOwnProperty('attributes'))
                 return name;
-            return name + " > " + last.attributes[0].attribute.name;
+            return name + " > " + chained_references[chained_references.length - 1].attributes[0].attribute.name;
 
         }
+
+        $scope.removeSearchAttribute = function (index) {
+            $scope.transitive_search_attributes.splice(index, 1);
+        };
 
         $scope.removeChain = function () {
             $scope.chained_references = [];
             $scope.referenceAttribute = null;
             $scope.transitive_reference_attributes = []
             $scope.reference_attributes = null;
-            $scope.foundEntityAttribute = ""
+            $scope.foundEntityAttribute = "";
             $scope.edit = false;
         };
 
@@ -205,7 +233,7 @@ function createTransitiveRefController(item, entity_types) {
             console.log($scope.chained_references);
             var result = {
                 entityTypeId: $scope.searchEntityTypeId,
-                key: prep_keys($scope.transitive_search_attributes),
+                key: prep_keys($scope.transitive_search_attributes, $scope.search_attributes),
                 projections: [projections],
                 name: create_reference_name($scope.referenceAttribute, $scope.chained_references)
             };
