@@ -73,18 +73,18 @@ pimsServices.service('EntityService', ['$http', '$rootScope', function ($http, $
 
     };
 
-    this.processValidationData = function (validation_data,entity ) {
+    this.processValidationData = function (validation_data, entity) {
         var failed = validation_data.result.filter(function (r) {
-            if(!r.result){
+            if (!r.result) {
                 return r;
             }
         });
         var message = failed.map(function (f) {
-            return "Attribute [" + f.id + "]  Failed On Validator ["+ f.validatorName + "]"
+            return "Attribute [" + f.id + "]  Failed On Validator [" + f.validatorName + "]"
         });
         message.join("; ");
         return {
-            result: failed.length > 0 ? false: true,
+            result: failed.length > 0 ? false : true,
             failed: failed,
             message: message
         }
@@ -92,7 +92,7 @@ pimsServices.service('EntityService', ['$http', '$rootScope', function ($http, $
 
     function find_attr_uuid_by_name(name, attributes) {
         var attr = attributes.find(function (a) {
-            if(a.name==name){
+            if (a.name == name) {
                 return a
             }
         });
@@ -102,16 +102,22 @@ pimsServices.service('EntityService', ['$http', '$rootScope', function ($http, $
     function merge_tab_attributes(tabs) {
         var attributes = [];
         tabs.map(function (t) {
-           attributes =  attributes.concat(t.attributes)
+            attributes = attributes.concat(t.attributes)
         });
         return attributes;
-    }
+    };
+
+    this.getAttributeValueByName = function (entity, tabs, name) {
+        var attributes = attributes = merge_tab_attributes(tabs);
+        var uuid = find_attr_uuid_by_name(name, attributes);
+        return entity.attributes[uuid].value
+    };
 
     this.fillAttachmentData = function (response, entity, tabs) {
         var response = response.data,
             attributes = merge_tab_attributes(tabs),
-            names = ['Id','File Name','Size','Content Type'],
-            response_names =['uuid','name','size','contentType'];
+            names = ['Id', 'File Name', 'Size', 'Content Type'],
+            response_names = ['uuid', 'name', 'size', 'contentType'];
         names.map(function (n, index) {
             var id = find_attr_uuid_by_name(n, attributes);
             entity.attributes[id].value = response[response_names[index]];

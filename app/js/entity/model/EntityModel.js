@@ -38,11 +38,24 @@ pimsServices.service('EntityModel', ['$http', '$rootScope', function ($http, $ro
             + "/entities", entity).then(function (entities) {
             return entities.data
         })
-    }
+    };
     this.search = function (et_uuid, params, page, size) {
         return $http.get("/rest/entity-types/" + et_uuid
             + "/entities/findByAttribute/page/" + page + "?" + params).then(function (entities) {
             return entities.data
+        })
+    }
+    this.attachmentUploadUrl = function (url) {
+        var payload = {};
+        return $http.post("/rest/attachment/uploadUrl?url" + url,payload ).then(function (response) {
+            return response
+        })
+    };
+
+    this.attachmentUpdateUploadUrl = function (id, url) {
+        var payload = {};
+        return $http.put("/rest/attachment/updateUrl/" + id + "?url=" + url,payload ).then(function (response) {
+            return response
         })
     }
 

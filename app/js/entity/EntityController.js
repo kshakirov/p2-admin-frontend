@@ -179,9 +179,14 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
         }
 
         $scope.upload = function (file) {
-            if($scope.entity.name) {
+            if ($scope.entity.name) {
+                var id = EntityService.getAttributeValueByName($scope.entity, $scope.tabs,"Id");
+                var url = '/rest/attachment/uploadFile';
+                if(id){
+                    url = "/rest/attachment/updateFile/" + id;
+                }
                 Upload.upload({
-                    url: '/rest/attachment/uploadFile',
+                    url: url,
                     data: {file: file, 'username': $scope.username}
                 }).then(function (resp) {
                     console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);
@@ -194,9 +199,24 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
                     var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
                     console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
                 });
-            }else{
+            } else {
                 MessageService.setDangerMessage($rootScope.message,
                     "Cannot be loaded without name");
+            }
+        };
+
+        $scope.postAttachmentUrl = function (url) {
+            var id = EntityService.getAttributeValueByName($scope.entity, $scope.tabs,"Id");
+            if (id) {
+                EntityModel.attachmentUpdateUploadUrl(id, url).then(function (resp) {
+                    EntityService.fillAttachmentData(resp, $scope.entity, $scope.tabs);
+                    $scope.updateEntity($scope.entity);
+                })
+            } else {
+                EntityModel.attachmentUploadUrl(url).then(function (resp) {
+                    EntityService.fillAttachmentData(resp, $scope.entity, $scope.tabs);
+                    $scope.updateEntity($scope.entity);
+                })
             }
         };
 
