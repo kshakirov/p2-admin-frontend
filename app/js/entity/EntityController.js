@@ -1,7 +1,7 @@
 pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'EntityModel', 'EntityService',
     'AttributeSetModel', 'NotificationModel', 'MessageService', '$uibModal',
-    '$q', 'ConverterModel','usSpinnerService',
+    '$q', 'ConverterModel', 'usSpinnerService', 'Upload',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -14,7 +14,8 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
               $uibModal,
               $q,
               ConverterModel,
-              usSpinnerService) {
+              usSpinnerService,
+              Upload) {
 
         var entity_type_uuid = $rootScope.pims.entities.current.uuid,
             msg = {
@@ -86,7 +87,7 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
             delete entity_copy.entityType;
             validateAttributes(entity).then(function (validation_data) {
                 var validation = EntityService.processValidationData(validation_data, entity);
-                if(validation.result) {
+                if (validation.result) {
                     if (entity.uuid) {
                         EntityModel.update(entity_type_uuid, entity_copy).then(function (response) {
                             EntityService.prepMsg(msg, entity, entity_type_uuid);
@@ -103,7 +104,7 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
                                 "Entity Created ")
                         });
                     }
-                }else {
+                } else {
                     MessageService.setDangerMessage($rootScope.message,
                         validation.message);
                 }
@@ -175,6 +176,37 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
                 }
             });
             return ConverterModel.validate(attrs_to_validate);
+        }
+
+        $scope.upload = function (file) {
+            if($scope.entity.name) {
+                Upload.upload({
+                    url: '/rest/attachment/uploadFile',
+                    data: {file: file, 'username': $scope.username}
+                }).then(function (resp) {
+                    console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);
+                    console.log(resp);
+                    EntityService.fillAttachmentData(resp, $scope.entity, $scope.tabs);
+                    $scope.updateEntity($scope.entity);
+                }, function (resp) {
+                    console.log('Error status: ' + resp.status);
+                }, function (evt) {
+                    var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                    console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+                });
+            }else{
+                MessageService.setDangerMessage($rootScope.message,
+                    "Cannot be loaded without name");
+            }
+        };
+
+        $scope.getImageId = function (attributes) {
+            var id = attributes.find(function (a) {
+                if (a.name == 'Id') {
+                    return a
+                }
+            });
+            return $scope.entity.attributes[id.uuid].value;
         }
 
 

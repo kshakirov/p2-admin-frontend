@@ -1,5 +1,6 @@
 let jwt = require('jsonwebtoken'),
     config = require('config'),
+    cookie = require('cookie'),
     pimsConfig = config.get('config'),
     token_expiration = pimsConfig.ldap.tokenExpiration,
     token_secret = pimsConfig.ldap.secret;
@@ -15,8 +16,17 @@ function verify_token(token) {
 
 function get_token(headers) {
     let authorization = headers['authorization'];
-    let token = authorization.split(" ");
-    return token[1];
+    let token = "";
+    if(!authorization){
+        console.log(headers['cookie']);
+        let cookies = cookie.parse(headers['cookie']);
+        token =cookies.token;
+        console.log(token);
+    }else {
+        token = authorization.split(" ");
+        token = token[1]
+    }
+    return token;
 }
 
 
