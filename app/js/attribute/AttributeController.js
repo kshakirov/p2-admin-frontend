@@ -55,7 +55,8 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
         $scope.valueTypes = ["STRING", "ARRAY", "DECIMAL", "INTEGER", "BOOLEAN",
             "REFERENCE", "ENUM"];
         $scope.frontendTypes = ["text", "number", "email", "password",
-            "date", "select", "multiselect", "checkbox", "radio", "table", "file", "preview"];
+            "date", "select", "multiselect", "checkbox", "radio", "table", "file", "preview",
+        "image_url"];
         var entity_type_uuid = $rootScope.pims.entities.current.uuid;
         $rootScope.message = MessageService.prepareMessage();
 
