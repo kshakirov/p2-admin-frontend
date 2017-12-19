@@ -2,6 +2,7 @@ pimsApp.controller('ExternalOperationController', ['$scope', '$route', '$routePa
     '$location', '$http', '$rootScope', 'ExternalOperationModel',
     'ExternalOperationService', 'EntityTypeModel', 'ConverterModel',
     'NgTableParams', 'TransformationSchemaModel', 'MessageService',
+    'ExternalSystemModel',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -12,25 +13,43 @@ pimsApp.controller('ExternalOperationController', ['$scope', '$route', '$routePa
               ConverterModel,
               NgTableParams,
               TransformationSchemaModel,
-              MessageService) {
+              MessageService,
+              ExternalSystemModel) {
 
         $rootScope.message = MessageService.prepareMessage();
         $scope.init = function () {
             var id = $routeParams.id;
             if (id === "new") {
+                ExternalSystemModel.findAll().then(function (external_systems) {
                 ExternalOperationModel.createPipeline().then(function (external_operation) {
-                    $scope.external_operation = external_operation;
-                    $scope.external_operation.transformationSchemata = {};
 
-                });
-                TransformationSchemaModel.findAll().then(function (schemata) {
-                    $scope.transformation_schemata = schemata;
-                    EntityTypeModel.findAll().then(function (entity_types) {
-                        $scope.entity_types = entity_types;
-                        ExternalOperationService.dto_transformation_schemata(external_operation, schemata,
-                            entity_types)
+                    $scope.external_operation = external_operation;
+                    $scope.external_operation.sourceSystem = {
+                        frontendInfo: {
+                            options: external_systems,
+                            type: "select",
+                            selected: {}
+                        }
+                    };
+                    $scope.external_operation.targetSystem = {
+                        frontendInfo: {
+                            options: external_systems,
+                            type: "select",
+                            selected: {}
+                        }
+                    };
+                    $scope.external_operation.transformationSchemata = {};
+                    TransformationSchemaModel.findAll().then(function (schemata) {
+                        $scope.transformation_schemata = schemata;
+                        EntityTypeModel.findAll().then(function (entity_types) {
+                            $scope.entity_types = entity_types;
+                            ExternalOperationService.dto_transformation_schemata(external_operation, schemata,
+                                entity_types)
+                        });
                     });
                 });
+                });
+
             } else {
                 ExternalOperationModel.findOne(id).then(function (external_operation) {
                     $scope.external_operation = external_operation;

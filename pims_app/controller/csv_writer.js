@@ -1,4 +1,6 @@
 let fs = require('fs'),
+    config = require('config'),
+    pimsConfig = config.get('config'),
     csvWriter = require('csv-write-stream'),
     json2csv = require('json2csv'),
     writer = csvWriter();
@@ -22,6 +24,7 @@ function get_fields(body) {
 function writeCsv(req, res) {
     let fileName = req.params.filename,
         data = req.body;
+    fileName = pimsConfig.filesFolder.path + "/" + fileName;
     let fields = get_fields(req.body);
     if (!fs.existsSync(fileName)) {
         console.log(`Created Filename ${fileName}`);
@@ -35,7 +38,7 @@ function writeCsv(req, res) {
     writer.pipe(fs.createWriteStream(fileName, {flags: 'a'}));
     data.map(function (d) {
         writer.write(d);
-    })
+    });
     writer.end();
     res.json({result: true})
 }

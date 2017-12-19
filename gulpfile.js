@@ -59,6 +59,8 @@ gulp.task('scripts', function() {
         'app/bower_components/angular-spinner/dist/angular-spinner.js',
         'app/bower_components/angular-cookies/angular-cookies.js',
         'app/bower_components/ng-file-upload/ng-file-upload.js',
+        'app/bower_components/angular-bootstrap-multiselect/dist/angular-bootstrap-multiselect.js',
+        'app/bower_components/angular-file-saver/dist/angular-file-saver.bundle.js',
         'app/js/app.js',
         'app/js/services.js',
         'app/js/**/*.js'

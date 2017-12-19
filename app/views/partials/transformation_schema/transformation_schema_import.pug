@@ -17,7 +17,7 @@
                     select.form-control.input-sm(ng-model="item.reference.uuid",
                     ng-options=" a.uuid as a.name for a in item.reference.attributes")
                     span.input-group-addon.pointer-cursor
-                        span.glyphicon.glyphicon-remove
+                        span.glyphicon.glyphicon-remove(ng-click="removeInPathItem(item, $index)")
     .col-lg-2
         .row
             .row
