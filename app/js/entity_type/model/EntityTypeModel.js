@@ -1,7 +1,7 @@
 pimsServices.service('EntityTypeModel', ['$http', '$rootScope', function ($http, $rootScope) {
     this.findAll = function () {
-        return $http.get("/rest/entity-types/").then(function (entities) {
-            return entities.data
+        return $http.get("/rest/entity-types/page/0?size=1000").then(function (entities) {
+            return entities.data.content
         })
     };
 

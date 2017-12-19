@@ -1,6 +1,7 @@
 pimsApp.controller('UserController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'UserModel', 'MessageService',
     'GroupModel','RoleModel','$q','NgTableParams', 'UserService',
+    'usSpinnerService','$timeout',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -11,7 +12,9 @@ pimsApp.controller('UserController', ['$scope', '$route', '$routeParams',
               RoleModel,
               $q,
               NgTableParams,
-              UserService) {
+              UserService,
+              usSpinnerService,
+              $timeout) {
 
 
         $rootScope.message = MessageService.prepareMessage();
@@ -31,6 +34,7 @@ pimsApp.controller('UserController', ['$scope', '$route', '$routeParams',
                     $scope.user = {};
                     $scope.rolesTableParams = new NgTableParams({}, {dataset: promises[1]}) ;
                     $scope.userRoles= [];
+                    usSpinnerService.stop('spinner-user');
                 });
             } else {
                 loadAll(id).then(function (promises) {
@@ -40,6 +44,7 @@ pimsApp.controller('UserController', ['$scope', '$route', '$routeParams',
                     $scope.userRoles= UserService.getUserRoles(promises[2], promises[1]);
                     var userGroups = UserService.getUserGroupes(promises[2], promises[0]);
                     $scope.groupsTableParams =new NgTableParams({}, {dataset: userGroups}) ;
+                    usSpinnerService.stop('spinner-user');
 
                 })
             }
@@ -47,13 +52,19 @@ pimsApp.controller('UserController', ['$scope', '$route', '$routeParams',
 
         $scope.updateUser = function (user,roles) {
             var user = UserService.daoUser(user,roles);
+            $timeout(function() {
+                usSpinnerService.spin('spinner-user');
+            }, 100);
+
             if (user.id) {
                 UserModel.update(user).then(function (response) {
                     MessageService.setSuccessMessage($rootScope.message, "User Updated");
+                    usSpinnerService.stop('spinner-user');
                 })
             } else {
                 UserModel.create(user).then(function (response) {
                     MessageService.setSuccessMessage($rootScope.message, "User Created");
+                    usSpinnerService.stop('spinner-user');
                 })
             }
         };
