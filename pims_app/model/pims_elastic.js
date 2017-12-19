@@ -8,15 +8,17 @@ let client = new elasticsearch.Client({
    // log: 'trace'
 });
 
-function findAll(type, query, from, size = 10, fields) {
+function findAll(type, query, from, size = 10, fields, sort) {
     return client.search({
         index: elastic_index,
         type: type,
         size: size,
         from: from,
+
         body: {
             _source: fields,
-            query: query
+            query: query,
+            sort: sort
         }
     })
 }

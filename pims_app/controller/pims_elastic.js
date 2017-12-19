@@ -165,6 +165,12 @@ function replace_resolved_query(r, references, query) {
             }
         }
     });
+    queries = queries.map(q => {
+        if(q)
+            return q
+        else
+            return "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
+    });
     queries.map(q =>{
        query.bool.must.map( m => {
            if(m.match.hasOwnProperty(q.queryId)){
@@ -177,13 +183,13 @@ function replace_resolved_query(r, references, query) {
 }
 
 
-function base_find(type, query, from, size, fields, references, names, res) {
-    return elastic_model.findAll(type, query, from * size, size, fields).then((response) => {
+function base_find(type, query, from, size, fields, references, names, sort,res) {
+    return elastic_model.findAll(type, query, from * size, size, fields,sort).then((response) => {
         response = prep_response(response, from, size);
         let refs = resolve_references(response, references);
         return elastic_model.multiGet(refs).then(p => {
             if (p && p.hasOwnProperty('docs')) {
-                response.content = replace_references(response.content, p, names);
+                response.content= replace_references(response.content, p, names);
             }
             res.json(response);
         }, e => {
@@ -204,6 +210,7 @@ function findAll(req, res) {
         size = req.body.size,
         fields = req.body.fields,
         names = req.body.referenceNames,
+        sort = req.body.sort,
         references = req.body.references;
     let compacted_query = compact_query(req.body.query);
     if (compacted_query) {
@@ -213,15 +220,15 @@ function findAll(req, res) {
             let mquery = build_msearch_query(reference_query);
             return elastic_model.multiSearch(mquery).then(r => {
                 let q = replace_resolved_query(r, references, query);
-                base_find(type,q, from , size, fields, references,names, res)
+                base_find(type,q, from , size, fields, references,names,sort, res)
             }, error => {
                 console.log(error)
             })
         }else {
-            base_find(type,query, from , size, fields, references,names, res)
+            base_find(type,query, from , size, fields, references,names,sort, res)
         }
     }else{
-        return base_find(type,query, from , size, fields, references,names, res)
+        return base_find(type,query, from , size, fields, references,names,sort, res)
     }
 
 
