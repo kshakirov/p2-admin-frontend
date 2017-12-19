@@ -59,7 +59,7 @@ app.use(bodyParser.json(
         parameterLimit: 100000,
         limit: '50mb'
     })); // parse application/vnd.api+json as json
-
+//app.use(bodyParser({uploadDir:'./uploads'}));
 
 app.use('/control/', pims_routes);
 app.use('/auth/', pims_routes);

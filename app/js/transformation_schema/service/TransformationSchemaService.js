@@ -67,9 +67,11 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
     };
 
     function is_reference(i, regexp) {
-        var match = i.path.match(regexp);
-        if (match)
-            return true;
+        if(i.hasOwnProperty('path')) {
+            var match = i.path.match(regexp);
+            if (match)
+                return true;
+        }
         return false;
     }
 
@@ -79,8 +81,10 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
     }
 
     function get_parent_attr_from_path(i) {
-        var segs = i.path.split('.');
-        return segs[0];
+        if(i.hasOwnProperty('path') && i.path) {
+            var segs = i.path.split('.');
+            return segs[0];
+        }
     }
 
     this.useDto = function (transformation_schema) {
@@ -118,10 +122,12 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
     };
 
     function check_empty_default(def) {
-        return def.find(function (d) {
-            if (d)
-                return d;
-        });
+        if(def) {
+            return def.find(function (d) {
+                if (d)
+                    return d;
+            });
+        }
     }
 
 
@@ -291,7 +297,11 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
 
     function save_entity_types(preproc_schema) {
         if (preproc_schema) {
-            return preproc_schema.map(function (ps) {
+            var entity_type_eds = preproc_schema.filter(function (i) {
+                if(i.out.entityTypeId)
+                    return i;
+            });
+            return entity_type_eds.map(function (ps) {
                 return ps.out.entityTypeId;
             });
         }
@@ -301,7 +311,7 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
 
     this.prepPreProcSchema = function (preproc_schema) {
         var entity_type_ids = save_entity_types(preproc_schema);
-        if (entity_type_ids) {
+        if (entity_type_ids.length > 0) {
             var schema = this.prepTransformationSchema(preproc_schema, false);
             entity_type_ids.map(function (id, index) {
                 var p = schema[index].out;
@@ -335,9 +345,11 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
     this.preprocSchema = function (preproc_schema) {
         var schema = preproc_schema || [];
         schema = schema.map(function (s) {
-            var def = s.in.map(function (sd) {
-                return sd.default
-            });
+            if(s.in) {
+                var def = s.in.map(function (sd) {
+                    return sd.default
+                });
+            }
             if (!check_empty_default(def)) {
                 def = null;
             }
