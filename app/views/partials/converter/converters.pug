@@ -14,3 +14,4 @@ br
                 td(title="'Name'", filter="{ name: 'text'}",sortable="'name'")
                     a(ng-href="converters/{{converter.id}}") {{converter.name}}
                 td(title="'Language'",filter="{ language: 'text'}",sortable="'language'") {{converter.language}}
+                td(title="'Type'",filter="{'customAttributes.type' : 'text'}", sortable="'customAttributes.type'") {{converter.customAttributes.type}}
