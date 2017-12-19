@@ -24,7 +24,7 @@ pimsAuth.controller('AuthController', ['$scope','$http', '$cookies',
         }, function (error) {
             $scope.auth = {
                 flag: true,
-                body: "Your Loing or Password Are Not Correct"
+                body: "Your Login and/or Password Are Not Correct"
             }
         })
     };
