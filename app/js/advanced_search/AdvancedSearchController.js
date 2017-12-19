@@ -24,7 +24,8 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
             query: null,
             references: null,
             fields: [],
-            referenceNames: {"7": 33}
+            sort: '5',
+            referenceNames: {}
         };
 
 
@@ -53,12 +54,17 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
             return $q.all(request_hash);
         }
 
+        function getSortField(layout) {
+            return layout[0].uuid.toString()
+        }
+
         $scope.init = function () {
             usSpinnerService.spin('spinner-2');
             AttributeSetModel.search(entity_type_uuid, query).then(function (attribute_set) {
                 $scope.layout = attribute_set[0].attributes;
                 $scope.search_query.references = AdvancedSearchService.getReferences(attribute_set[0].attributes);
                 $scope.search_query.fields = AdvancedSearchService.getFields(attribute_set[0].attributes);
+                $scope.search_query.sort = getSortField($scope.layout) ;
                 getReferenceNameSets($scope.search_query.references).then(function (referencesName) {
                     $scope.search_query.referenceNames = AdvancedSearchService.prepReferencesName(referencesName);
                     console.log($scope.search_query.referenceNames);
