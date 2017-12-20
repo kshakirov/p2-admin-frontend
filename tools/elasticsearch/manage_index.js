@@ -1,13 +1,18 @@
 let elasticsearch = require('elasticsearch'),
+    config = require('config'),
+    pimsConfig = config.get('config'),
+    elastic_index = pimsConfig.elasticSearch.indexName,
     windowSize = 1000000,
     client = new elasticsearch.Client({
-        host: '10.1.3.15:9200',
+        host: pimsConfig.elasticSearch.url,
         log: 'trace'
     });
 
 let indexParams = {
-    index: "pims-staging",
+    index: elastic_index,
 };
+
+
 
 function set_window_size(size) {
     client.indices.putSettings({body: {

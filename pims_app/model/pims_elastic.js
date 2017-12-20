@@ -54,7 +54,20 @@ function  multiSearch(refs) {
     });
 }
 
+function makeSortable(type, body) {
+    let indexParams = {
+        index: elastic_index,
+    };
+
+    let requestParams = {
+        index: elastic_index,
+        type: type,
+        body
+    };
+    return   client.indices.putMapping(requestParams);
+}
 
 exports.findAll = findAll;
 exports.multiGet = multiGet;
 exports.multiSearch = multiSearch;
+exports.makeSortable = makeSortable;

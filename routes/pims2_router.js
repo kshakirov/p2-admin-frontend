@@ -28,6 +28,10 @@ router.post('/search', function (req, res) {
     elastic_controller.findAll(req, res);
 });
 
+router.post('/search/make_sortable/', function (req, res) {
+    elastic_controller.makeSortable(req, res);
+});
+
 router.post('/notify/batch/:queuePrefix', function (req, res) {
     rabbit_mq_controller.notifyBatch(req, res);
 });

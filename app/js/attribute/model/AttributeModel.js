@@ -41,5 +41,11 @@ pimsServices.service('AttributeModel', ['$http', '$rootScope', function ($http, 
         })
     }
 
+    this.searchUpdate = function (data) {
+        return $http.post("/control/search/make_sortable", data).then(function (attribute) {
+            return attribute.data
+        })
+    }
+
 
 }]);
