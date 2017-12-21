@@ -5,7 +5,7 @@ let elasticsearch = require('elasticsearch'),
 
 let client = new elasticsearch.Client({
     host: pimsConfig.elasticSearch.url,
-   // log: 'trace'
+   log: 'trace'
 });
 
 function findAll(type, query, from, size = 10, fields, sort) {
@@ -42,8 +42,10 @@ function multiGet(refs) {
 
 function  multiSearch(refs) {
     let ds = refs.map(d =>{
-        if(d.hasOwnProperty('index'))
+        if(d.hasOwnProperty('index')) {
             d['index'] = elastic_index;
+            d['size'] = 100;
+        }
         return d;
     });
     return client.msearch({
