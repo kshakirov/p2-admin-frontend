@@ -63,7 +63,8 @@
       "pipelineRoutingKey": "pipelineResponseQueue"
     },
     "filesFolder": {
-      "path": "files"
+      "path": "files",
+      "uploadPath": "uploads"
     }
   }
 }

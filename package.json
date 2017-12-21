@@ -20,6 +20,7 @@
 		"express": "^4.15.4",
 		"express-http-proxy": "^1.0.7",
 		"express-method-override": "0.0.3",
+		"fast-csv": "^2.4.1",
 		"gulp": "^3.9.1",
 		"gulp-clean-css": "^3.7.0",
 		"gulp-connect": "^5.0.0",
