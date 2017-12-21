@@ -73,6 +73,25 @@ pimsServices.service('EntityService', ['$http', '$rootScope', function ($http, $
 
     };
 
+    this.getReferenceAttributes = function (tabs) {
+        var attrs = tabs.map(function (tab) {
+            return tab.attributes;
+        });
+        attrs = [].concat.apply([], attrs);
+        var reference_array = attrs.filter(function (a) {
+            if (a.valueType.toLowerCase() === "reference") {
+                return a;
+            }
+        }).map(function (ra) {
+            return {
+                uuid: ra.uuid,
+                entity_type_id: ra.properties.referencedEntityTypeId
+            };
+        });
+        return reference_array;
+
+    };
+
     this.processValidationData = function (validation_data, entity) {
         var failed = validation_data.result.filter(function (r) {
             if (!r.result) {

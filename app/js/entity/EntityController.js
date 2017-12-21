@@ -39,12 +39,16 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
             return t;
         }
 
-        function create_q_functions(reference_array) {
+        function create_q_functions(reference_array_attributes, reference_attributes) {
             var q_functions = {},
                 params_string = "propertyName=role&propertyValues=table";
-            reference_array.map(function (ra) {
+            reference_array_attributes.map(function (ra) {
                 q_functions[ra.uuid] = AttributeSetModel.search(ra.entity_type_id, params_string);
-            })
+            });
+            params_string = "propertyName=role&propertyValues=reference_name";
+            reference_attributes.map(function (ra) {
+                q_functions[ra.uuid] = AttributeSetModel.search(ra.entity_type_id, params_string);
+            });
             return q_functions;
         }
 
@@ -55,7 +59,7 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
             if (uuid === "new") {
                 EntityModel.createTemplate(entity_type_uuid).then(function (template) {
                     AttributeSetModel.search(entity_type_uuid, params_string).then(function (tabs) {
-                        var reference_array = EntityService.getReferenceArrayAttributes(tabs);
+                        var reference_array_attributes = EntityService.getReferenceArrayAttributes(tabs);
                         $scope.tabs = order_tabs(tabs);
                         $scope.entity = template;
                     })
@@ -65,8 +69,9 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
 
                 EntityModel.findOne(entity_type_uuid, uuid).then(function (entity) {
                     AttributeSetModel.search(entity_type_uuid, params_string).then(function (tabs) {
-                        var reference_array = EntityService.getReferenceArrayAttributes(tabs);
-                        $q.all(create_q_functions(reference_array)).then(function (promises) {
+                        var reference_array_attributes = EntityService.getReferenceArrayAttributes(tabs);
+                        var reference_attributes = EntityService.getReferenceAttributes(tabs);
+                        $q.all(create_q_functions(reference_array_attributes,reference_attributes)).then(function (promises) {
                             console.log(promises);
                             $scope.reference_tables = promises;
                             $scope.tabs = order_tabs(tabs);
