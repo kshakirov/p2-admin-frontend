@@ -323,7 +323,7 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
             });
             return schema;
         }
-        return {};
+        return [];
     };
 
     function get_entity_type_id(out) {
