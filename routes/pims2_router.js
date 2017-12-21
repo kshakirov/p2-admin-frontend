@@ -1,7 +1,8 @@
 let express = require('express'),
     router = express.Router(),
     rabbit_mq_controller = require("../pims_app/controller/pims_rabbit_mq"),
-    csv_controller = require('../pims_app/controller/csv_writer'),
+    csv_writer = require('../pims_app/controller/csv_writer'),
+    csv_reader = require('../pims_app/controller/csv_reader'),
     auth_controller = require('../pims_app/controller/ldap_auth'),
     excell_controller = require('../pims_app/controller/excell_stream'),
     path = require('path'),
@@ -42,12 +43,16 @@ router.post('/notify/entity', function (req, res) {
 
 
 router.put('/csv/write/:filename/:uuid', function (req, res) {
-    csv_controller.writeCsv(req, res);
+    csv_writer.writeCsv(req, res);
 });
 
 
 router.post('/excel/read/:filename', function (req, res) {
     excell_controller.streamXlxs(req, res);
+});
+
+router.post('/csv/read/:filename', function (req, res) {
+    csv_reader.readCsv(req, res);
 });
 
 router.get('/login', function (req, res) {

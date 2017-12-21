@@ -19,7 +19,7 @@ uib-tabset(active="active", ng-init="init()")
                         div(ng-if="attr.properties.frontendType =='multiselect'")
                             label {{attr.name}}
                             .input-group
-                                input.form-control(data-ng-model="entity.attributes[attr.uuid].value.name")
+                                input.form-control(data-ng-model="entity.attributes[attr.uuid].value.attributes[reference_tables[attr.uuid][0].attributes[0].uuid].value")
                                 span.input-group-addon.pointer-cursor(ng-click="clearStructureReference(attribute)")
                                     span.glyphicon.glyphicon-remove-sign(aria-hidden="true")
                                 span.input-group-btn

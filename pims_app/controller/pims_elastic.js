@@ -147,30 +147,58 @@ function build_msearch_query(reference_query) {
 }
 
 
+function create_bool_should(q) {
+    let bool = {
+        bool: {should : []}
+    };
+    q.map(i =>{
+        let m = {
+            match: {}
+        };
+        let id = i.queryId.toString();
+        m.match[id] = i.id;
+        bool.bool.should.push(m)
+    });
+    return bool;
+}
+
+function create_ref_bool_hash(queries) {
+    let hash = {};
+    queries.map(function (q) {
+        let key = Object.keys(q.bool.should[0].match)[0];
+        hash[key] = q
+    })
+    return hash
+}
+
 function replace_resolved_query(r, references, query) {
     let queries = r.responses.map(r => {
         if (r.hits.hits.length > 0) {
-            let hit = r.hits.hits[0];
-            let queryId = references.find(ref => {
-                if (ref.entityTypeId.toString() == hit['_type'])
-                    return ref;
+            let hits = r.hits.hits.map( hit =>{
+                let queryId = references.find(ref => {
+                    if (ref.entityTypeId.toString() == hit['_type'])
+                        return ref;
+                });
+                if (queryId) {
+                    queryId = queryId.attributeId;
+                }
+                return {
+                    id: hit['_id'],
+                    type: hit['_type'],
+                    queryId: queryId.toString()
+                }
             });
-            if (queryId) {
-                queryId = queryId.attributeId;
-            }
-            return {
-                id: hit['_id'],
-                type: hit['_type'],
-                queryId: queryId.toString()
-            }
+            return hits;
+
         }
     });
     queries = queries.map(q => {
         if (q)
-            return q
+            return create_bool_should(q);
         else
             return "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
     });
+
     queries.map(q => {
         query.bool.must.map(m => {
             if (m.match.hasOwnProperty(q.queryId)) {
@@ -178,6 +206,18 @@ function replace_resolved_query(r, references, query) {
             }
         })
     });
+
+    let ref_bool_hash = create_ref_bool_hash(queries);
+    let must = query.bool.must.map(qq =>{
+        let k =Object.keys(qq.match)[0];
+        if(ref_bool_hash.hasOwnProperty(k)){
+            return ref_bool_hash[k];
+        }else{
+            return qq;
+        }
+    });
+    console.log(must);
+    query.bool.must = must;
     return query;
 
 }
