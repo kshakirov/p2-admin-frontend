@@ -8,6 +8,7 @@ function createValidatorController(attr) {
 
         $scope.search_params = {};
 
+
         $scope.init = function () {
             ConverterModel.findAll().then(function (converters) {
                 $scope.converterTableParams = new NgTableParams({}, {dataset: converters});
@@ -57,8 +58,15 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
         $scope.frontendTypes = ["text", "number", "email", "password",
             "date", "select", "multiselect", "checkbox", "radio", "table", "file", "preview",
         "image_url"];
+        $scope.analyzers = [{name: "Standard", code:"standard"},{name: "Pims Custom", code: "pims_analyzer"}];
         var entity_type_uuid = $rootScope.pims.entities.current.uuid;
         $rootScope.message = MessageService.prepareMessage();
+
+        function set_analyzer(attribute, analyzers) {
+            if(angular.isUndefined(attribute.properties.analyzer) && attribute.valueType.toLowerCase()=='string'){
+                attribute.properties.analyzer = analyzers[1]
+            }
+        }
 
         $scope.init = function () {
             var uuid = $routeParams.uuid;
@@ -78,6 +86,7 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
                             usSpinnerService.stop('spinner-attribute');
                             $scope.entity_types = entity_types;
                             $scope.attribute = AttributeService.dtoAttribute(attribute, converters);
+                            set_analyzer($scope.attribute, $scope.analyzers);
                             usSpinnerService.stop('spinner-attribute');
                         })
                     })
@@ -92,6 +101,7 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
                 AttributeModel.update(entity_type_uuid, attribute_to_save).then(function (response) {
                     usSpinnerService.stop('spinner-attribute');
                     MessageService.setSuccessMessage($rootScope.message, "Attribute Updated");
+
                 })
             } else {
                 AttributeModel.create(entity_type_uuid, attribute_to_save).then(function (response) {
@@ -140,6 +150,22 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
         };
         $scope.deleteValidator = function (index) {
             $scope.attribute.properties.validators.splice(index,1);
+        };
+
+        $scope.updateSearchSettings = function (attribute) {
+            var data = {
+                type: entity_type_uuid,
+                analyzer: attribute.properties.analyzer.code,
+                sorted: attribute.properties.sorted|| false,
+                attribute: attribute.uuid
+            };
+            console.log(attribute.properties.analyzer);
+            console.log(attribute.properties.sorted);
+            AttributeModel.searchUpdate(data).then(function (promise) {
+                console.log(promise)
+            }, function (error) {
+                console.log(error)
+            })
         }
 
     }]);

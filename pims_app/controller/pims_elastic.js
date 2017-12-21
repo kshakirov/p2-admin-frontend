@@ -148,14 +148,14 @@ function build_msearch_query(reference_query) {
 
 
 function replace_resolved_query(r, references, query) {
-    let queries = r.responses.map(r =>{
-        if(r.hits.hits.length> 0){
+    let queries = r.responses.map(r => {
+        if (r.hits.hits.length > 0) {
             let hit = r.hits.hits[0];
-            let queryId = references.find(ref =>{
-                if(ref.entityTypeId.toString() == hit['_type'])
+            let queryId = references.find(ref => {
+                if (ref.entityTypeId.toString() == hit['_type'])
                     return ref;
             });
-            if(queryId){
+            if (queryId) {
                 queryId = queryId.attributeId;
             }
             return {
@@ -166,30 +166,30 @@ function replace_resolved_query(r, references, query) {
         }
     });
     queries = queries.map(q => {
-        if(q)
+        if (q)
             return q
         else
             return "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
     });
-    queries.map(q =>{
-       query.bool.must.map( m => {
-           if(m.match.hasOwnProperty(q.queryId)){
-               m.match[q.queryId] = q.id;
-           }
-       })
+    queries.map(q => {
+        query.bool.must.map(m => {
+            if (m.match.hasOwnProperty(q.queryId)) {
+                m.match[q.queryId] = q.id;
+            }
+        })
     });
     return query;
 
 }
 
 
-function base_find(type, query, from, size, fields, references, names, sort,res) {
-    return elastic_model.findAll(type, query, from * size, size, fields,sort).then((response) => {
+function base_find(type, query, from, size, fields, references, names, sort, res) {
+    return elastic_model.findAll(type, query, from * size, size, fields, sort).then((response) => {
         response = prep_response(response, from, size);
         let refs = resolve_references(response, references);
         return elastic_model.multiGet(refs).then(p => {
             if (p && p.hasOwnProperty('docs')) {
-                response.content= replace_references(response.content, p, names);
+                response.content = replace_references(response.content, p, names);
             }
             res.json(response);
         }, e => {
@@ -220,19 +220,40 @@ function findAll(req, res) {
             let mquery = build_msearch_query(reference_query);
             return elastic_model.multiSearch(mquery).then(r => {
                 let q = replace_resolved_query(r, references, query);
-                base_find(type,q, from , size, fields, references,names,sort, res)
+                base_find(type, q, from, size, fields, references, names, sort, res)
             }, error => {
                 console.log(error)
             })
-        }else {
-            base_find(type,query, from , size, fields, references,names,sort, res)
+        } else {
+            base_find(type, query, from, size, fields, references, names, sort, res)
         }
-    }else{
-        return base_find(type,query, from , size, fields, references,names,sort, res)
+    } else {
+        return base_find(type, query, from, size, fields, references, names, sort, res)
     }
 
 
 }
 
 
+function makeSortable(req, res) {
+    let type = req.body.type.toString(),
+        analyzer = req.body.analyzer.toString(),
+        sorted = req.body.sorted,
+        attribute = req.body.attribute.toString();
+
+    let body = {properties: {}};
+    body.properties[attribute] = {
+        type: "string",
+        fielddata: sorted,
+        analyzer: analyzer
+    };
+    return elastic_model.makeSortable(type, body).then(s => {
+        res.sendStatus(200)
+    }, e => {
+        res.sendStatus(500)
+    })
+
+}
+
 exports.findAll = findAll;
+exports.makeSortable = makeSortable;
