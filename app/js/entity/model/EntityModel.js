@@ -47,17 +47,24 @@ pimsServices.service('EntityModel', ['$http', '$rootScope', function ($http, $ro
     }
     this.attachmentUploadUrl = function (url) {
         var payload = {};
-        return $http.post("/rest/attachment/uploadUrl?url" + url,payload ).then(function (response) {
+        return $http.post("/rest/binary/uploadUrl?url" + url,payload ).then(function (response) {
             return response
         })
     };
 
     this.attachmentUpdateUploadUrl = function (id, url) {
         var payload = {};
-        return $http.put("/rest/attachment/updateUrl/" + id + "?url=" + url,payload ).then(function (response) {
+        return $http.put("/rest/binary/updateUrl/" + id + "?url=" + url,payload ).then(function (response) {
             return response
         })
     }
+    this.getAttachmentInfo = function (uuid) {
+        return $http.get("/rest/binary/info/" + uuid ).then(function (response) {
+            return response.data
+        })
+    };
+
+
 
 
 }]);

@@ -11,13 +11,17 @@ pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
         var handleCallback = function (msg) {
             $scope.$apply(function () {
                 var data = JSON.parse(msg.data);
-                console.log(data);
-                CustomSyncNotificationService.processMessage(data.message)
+                if(data.id== -100){
+
+                }else {
+                    console.log(data);
+                    CustomSyncNotificationService.processMessage(data.message)
+                }
             });
         };
 
         var source = new EventSource('/control/notify');
-        source.addEventListener('connected', handleCallback, true);
+        source.addEventListener('connected', handleCallback, false);
 
         $scope.init = function () {
             var currentEntity = $cookies.getObject("currentEntity");

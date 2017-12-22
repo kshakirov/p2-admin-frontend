@@ -122,6 +122,11 @@ router.get('/notify/', sseExpress, function (req, res) {
                 });
                 counter++
             }else{
+                res.sse('connected', {
+                    message: {},
+                    id: -100
+                });
+                counter++
             }
 
         });
