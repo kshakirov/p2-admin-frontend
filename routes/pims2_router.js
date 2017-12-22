@@ -6,9 +6,12 @@ let express = require('express'),
     auth_controller = require('../pims_app/controller/ldap_auth'),
     excell_controller = require('../pims_app/controller/excell_stream'),
     path = require('path'),
+	sseExpress = require('sse-express'),
     fs = require('fs'),
     elastic_controller = require("../pims_app/controller/pims_elastic"),
-    multer = require('multer');
+    multer = require('multer'),
+   	redis = require("redis"),
+    redisClient = redis.createClient('redis://10.1.3.23');
 
 
 let storage = multer.diskStorage({ //multers disk storage settings
@@ -94,6 +97,38 @@ router.post('/file-download', (req, res) => {
         res.sendStatus(404)
     }
 
+});
+
+router.get('/notify/', sseExpress, function (req, res) {
+
+
+    redisClient.on("error", function (err) {
+        console.log("Error " + err);
+    });
+
+
+
+
+    let counter = 0;
+    function intervalFunc() {
+        redisClient.rpop("notifications", function (err, reply) {
+            if(reply){
+
+                let body = JSON.parse(reply);
+                console.log(body);
+                res.sse('connected', {
+                    message: body,
+                    id: counter
+                });
+                counter++
+            }else{
+            }
+
+        });
+
+    }
+
+    setInterval(intervalFunc, 1500);
 });
 
 module.exports = router;

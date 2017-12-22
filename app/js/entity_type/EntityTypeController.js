@@ -1,10 +1,23 @@
 pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
     'EntityTypeModel', '$cookies', '$location', '$routeParams', '$window',
-    '$uibModal',
+    '$uibModal', 'MessageService', 'CustomSyncNotificationService',
     function ($scope, $rootScope, $http, EntityTypeModel,
-              $cookies, $location, $routeParams, $window, $uibModal) {
+              $cookies, $location, $routeParams, $window, $uibModal,
+              MessageService, CustomSyncNotificationService) {
 
         $rootScope.message = {};
+        $rootScope.message = MessageService.prepareMessage();
+
+        var handleCallback = function (msg) {
+            $scope.$apply(function () {
+                var data = JSON.parse(msg.data);
+                console.log(data);
+                CustomSyncNotificationService.processMessage(data.message)
+            });
+        };
+
+        var source = new EventSource('/control/notify');
+        source.addEventListener('connected', handleCallback, true);
 
         $scope.init = function () {
             var currentEntity = $cookies.getObject("currentEntity");

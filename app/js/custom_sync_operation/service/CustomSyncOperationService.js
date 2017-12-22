@@ -36,3 +36,23 @@ pimsServices.service('CustomSyncOperationService', [
         }
 
     }]);
+
+pimsServices.service('CustomSyncNotificationService', [
+    function () {
+        var operations = {};
+
+        this.processMessage  = function (msg) {
+            console.log(operations);
+            if (operations.hasOwnProperty(msg.operationId)) {
+                operations[msg.operationId]= msg;
+                console.log("Yes")
+
+            } else {
+                operations[msg.operationId] = msg
+                console.log("NO")
+            }
+        };
+        this.getNotifications = function () {
+           return operations;
+        }
+    }]);
