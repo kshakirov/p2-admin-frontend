@@ -117,7 +117,16 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
             $scope.search_query.size = $scope.pageSize || 10;
             $scope.search_query.from = 0;
             $scope.init();
-        })
+        });
+
+        $scope.clear = function (search_params) {
+            console.log(search_params);
+            var keys = Object.keys(search_params);
+            keys.map(function (key) {
+                search_params[key] = "";
+            })
+            $scope.search();
+        }
     }]);
 
 

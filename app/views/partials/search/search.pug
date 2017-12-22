@@ -9,6 +9,8 @@ div(ng-init="init()")
         .col-lg-6
             include pagination
         .col-lg-2
+            button.top-pagination.btn.btn-warning(type="submit",ng-click="clear(search_params)") CLEAR
+        .col-lg-2
             select.top-pagination.form-control(ng-model="pageSize",
             ng-options="size as size for size in pageSizes")
     .row
