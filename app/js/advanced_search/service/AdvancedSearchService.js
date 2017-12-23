@@ -41,4 +41,24 @@ pimsServices.service('AdvancedSearchService', ['$http', function ($http) {
         });
         return r_c_ns;
     }
+    
+    this.prepSearchParams = function (s_p, layout) {
+        var search_params = {};
+        angular.copy(s_p, search_params);
+        var keys = Object.keys(search_params);
+        keys.map(function (key) {
+            var key_type = layout.find(function (l) {
+                if(l.uuid==key){
+                    return l
+                }
+            });
+            key_type = key_type.valueType.toLowerCase();
+            if(key_type=='integer' || key_type=='decimal'){
+
+            }else{
+                search_params[key] = "*" + search_params[key] + "*"
+            }
+        });
+        return search_params;
+    }
 }]);

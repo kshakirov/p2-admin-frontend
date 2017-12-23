@@ -103,7 +103,8 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
         $scope.search = function () {
             usSpinnerService.spin('spinner-2');
             $scope.search_query.from = 0;
-            $scope.search_query.query = $scope.search_params;
+            $scope.search_query.query = AdvancedSearchService
+                .prepSearchParams($scope.search_params, $scope.layout);
             return paginate_entites($scope.search_query).then(function (response) {
                 $scope.entities = response.content;
                 $scope.pagination = new PaginationObject(response);
