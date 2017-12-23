@@ -1,7 +1,7 @@
 .row.top-buffer
     .col-lg-6.col-lg-offset-3
         ul.breadcrumb
-            li Converters
+            li Transformation Schemata
 .row(ng-init="init()")
     .col-lg-2
         button.btn.btn-info(type="submit",ng-click="createSchema()") ADD SCHEMA
@@ -10,4 +10,3 @@
             tr(ng-repeat="schema in $data")
                 td(title="'Name'", filter="{ name: 'text'}",sortable="'name'")
                     a(ng-href="transformation-schemata/{{schema.id}}") {{schema.name}}
-                td(title="'Language'",filter="{ language: 'text'}",sortable="'language'") {{converter.language}}
