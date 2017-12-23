@@ -55,7 +55,13 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
         }
 
         function getSortField(layout) {
-            return layout[0].uuid.toString()
+            var valueType = layout[0].valueType.toLowerCase();
+            if(valueType !='integer' && valueType!='decimal'){
+                return layout[0].uuid.toString() + ".raw"
+            }else{
+                return layout[0].uuid.toString()
+            }
+
         }
 
         $scope.init = function () {
@@ -97,7 +103,8 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
         $scope.search = function () {
             usSpinnerService.spin('spinner-2');
             $scope.search_query.from = 0;
-            $scope.search_query.query = $scope.search_params;
+            $scope.search_query.query = AdvancedSearchService
+                .prepSearchParams($scope.search_params, $scope.layout);
             return paginate_entites($scope.search_query).then(function (response) {
                 $scope.entities = response.content;
                 $scope.pagination = new PaginationObject(response);
@@ -117,7 +124,16 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
             $scope.search_query.size = $scope.pageSize || 10;
             $scope.search_query.from = 0;
             $scope.init();
-        })
+        });
+
+        $scope.clear = function (search_params) {
+            console.log(search_params);
+            var keys = Object.keys(search_params);
+            keys.map(function (key) {
+                search_params[key] = "";
+            })
+            $scope.search();
+        }
     }]);
 
 

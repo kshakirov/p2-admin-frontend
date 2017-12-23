@@ -13,4 +13,4 @@ br
 			tr(ng-repeat="attr_set in $data")
 				td(title="name", filter="{ name: 'text'}",sortable="'name'")
 					a(ng-href="attribute-sets/{{attr_set.uuid}}") {{attr_set.name}}
-				td(title="valueType") {{attr_set.valueType}}
+				td(title="Role", filter="{'properties.role' : 'text'}",sortable="'properties.role'") {{attr_set.properties.role}}

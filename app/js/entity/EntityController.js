@@ -1,7 +1,7 @@
 pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'EntityModel', 'EntityService',
     'AttributeSetModel', 'NotificationModel', 'MessageService', '$uibModal',
-    '$q', 'ConverterModel', 'usSpinnerService', 'Upload',
+    '$q', 'ConverterModel', 'usSpinnerService', 'Upload', 'FileSaver',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -15,7 +15,8 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
               $q,
               ConverterModel,
               usSpinnerService,
-              Upload) {
+              Upload,
+              FileSaver) {
 
         var entity_type_uuid = $rootScope.pims.entities.current.uuid,
             msg = {
@@ -232,6 +233,51 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
                 }
             });
             return $scope.entity.attributes[id.uuid].value;
+        };
+
+        $scope.download = function (uuid) {
+            EntityModel.getAttachmentInfo(uuid).then(function (info) {
+                console.log(info);
+                _download(uuid, info.contentType, info.filename)
+            }, function (errror) {
+                console.log(error)
+            })
+        };
+
+        $scope.preview = function (uuid) {
+            var formats = /jpeg|png|gif/;
+            EntityModel.getAttachmentInfo(uuid).then(function (info) {
+                console.log(info);
+                if(info.contentType.search(formats) >= 0){
+                    $scope.preview_available = true
+                }
+            }, function (errror) {
+                console.log(error)
+            })
+        };
+
+
+        function _download (uuid, fileType, fileName) {
+            console.log(fileName);
+            $http({
+                url: '/rest/binary/'+uuid,
+                method: "GET",
+                data: {
+                    filename: "file"
+                },
+                responseType: 'blob'
+            }).then(function (data) {
+                var blob = new Blob([data.data], {type: fileType});
+
+                FileSaver.saveAs(blob, fileName)
+            }, function (data) {
+                if(data.status==404){
+                    MessageService.setDangerMessage($rootScope.message, "The File '" + fileName+ "' Does Not Exist");
+                }else{
+                    console.log('Unable to download the file')
+                }
+
+            });
         }
 
 

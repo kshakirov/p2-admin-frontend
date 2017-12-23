@@ -57,7 +57,7 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
             "REFERENCE", "ENUM"];
         $scope.frontendTypes = ["text", "number", "email", "password",
             "date", "select", "multiselect", "checkbox", "radio", "table", "file", "preview",
-        "image_url"];
+        "image_url", "download"];
         $scope.analyzers = [{name: "Standard", code:"standard"},{name: "Pims Custom", code: "pims_analyzer"}];
         var entity_type_uuid = $rootScope.pims.entities.current.uuid;
         $rootScope.message = MessageService.prepareMessage();

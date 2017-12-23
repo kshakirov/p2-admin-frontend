@@ -31,9 +31,6 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
                 name: null,
                 pipelineId: null,
                 entityTypeId: null,
-                args:{
-
-                }
             },
             EntityInfo: {
                 id: null,

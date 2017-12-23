@@ -70,7 +70,7 @@ function prep_response(response, from, size) {
 };
 
 
-function build_query(query) {
+function _build_query(query) {
     let bl = {bool: {}},
         keys = Object.keys(query);
     bl.bool.must = keys.map(function (k) {
@@ -80,6 +80,27 @@ function build_query(query) {
         return q
     });
     return bl;
+}
+
+
+function build_query(query) {
+    let qs = {
+            "query_string": {
+                "fields": [],
+                "query": ""
+            }
+        },
+        keys = Object.keys(query);
+
+
+    qs.query_string.fields = keys.map(function (k) {
+        return k
+    });
+    let temp_query = keys.map(function (k) {
+        return query[k]
+    });
+    qs.query_string.query = temp_query.join(" AND ");
+    return qs;
 }
 
 
@@ -132,49 +153,50 @@ function build_msearch_query(reference_query) {
         result.push(
             {index: null, type: r.entityTypeId}
         );
+
         let query = {
-            bool: {
-                must: {
-                    match: {}
-                }
+            "query_string": {
+                "fields": [],
+                "query": ""
             }
         };
-        query.bool.must.match[r.attributeId.toString()] = r.search;
+        query.query_string.fields.push(r.attributeId.toString());
+        query.query_string.query = r.search
         result.push({query: query})
     });
     return result;
 
 }
 
+function is_msearch_id(attributeId, queries) {
+    let result = queries.find(qq => {
+        let found = qq.find(q => {
+            if (q.queryId == attributeId) {
+                return q;
+            }
+        });
+        if (found) {
+            return qq
+        }
 
-function create_bool_should(q) {
-    let bool = {
-        bool: {should : []}
-    };
-    q.map(i =>{
-        let m = {
-            match: {}
-        };
-        let id = i.queryId.toString();
-        m.match[id] = i.id;
-        bool.bool.should.push(m)
     });
-    return bool;
+    return result;
 }
 
-function create_ref_bool_hash(queries) {
-    let hash = {};
-    queries.map(function (q) {
-        let key = Object.keys(q.bool.should[0].match)[0];
-        hash[key] = q
-    })
-    return hash
+function join_or(value) {
+    let or_join = value.map(v => {
+        return v.id;
+    });
+    or_join = or_join.join(" OR ");
+    or_join = `( ${or_join} )`;
+    return or_join
 }
 
 function replace_resolved_query(r, references, query) {
+    let result = query;
     let queries = r.responses.map(r => {
         if (r.hits.hits.length > 0) {
-            let hits = r.hits.hits.map( hit =>{
+            let hits = r.hits.hits.map(hit => {
                 let queryId = references.find(ref => {
                     if (ref.entityTypeId.toString() == hit['_type'])
                         return ref;
@@ -192,33 +214,27 @@ function replace_resolved_query(r, references, query) {
 
         }
     });
-    queries = queries.map(q => {
-        if (q)
-            return create_bool_should(q);
-        else
-            return "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
-    });
 
-    queries.map(q => {
-        query.bool.must.map(m => {
-            if (m.match.hasOwnProperty(q.queryId)) {
-                m.match[q.queryId] = q.id;
+    let query_array = query.query_string.query.split('AND');
+
+    let new_query = query_array.map((f, index) => {
+        let attributeId = query.query_string.fields[index];
+        let value = is_msearch_id(attributeId, queries);
+        if (value) {
+            if (value.length == 1) {
+                return value[0].id
+            } else if (value.length > 1) {
+                return join_or(value)
             }
-        })
-    });
-
-    let ref_bool_hash = create_ref_bool_hash(queries);
-    let must = query.bool.must.map(qq =>{
-        let k =Object.keys(qq.match)[0];
-        if(ref_bool_hash.hasOwnProperty(k)){
-            return ref_bool_hash[k];
-        }else{
-            return qq;
+        } else {
+            return f
         }
     });
-    console.log(must);
-    query.bool.must = must;
-    return query;
+    new_query = new_query.join(" AND ");
+    result.query_string.query = new_query;
+    console.log(result);
+    return result;
+
 
 }
 
