@@ -5,7 +5,7 @@ let elasticsearch = require('elasticsearch'),
 
 let client = new elasticsearch.Client({
     host: pimsConfig.elasticSearch.url,
-    log: 'trace'
+    //log: 'trace'
 });
 
 function findAll(type, query, from, size = 10, fields, sort) {
