@@ -55,7 +55,13 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
         }
 
         function getSortField(layout) {
-            return layout[0].uuid.toString()
+            var valueType = layout[0].valueType.toLowerCase();
+            if(valueType !='integer' && valueType!='decimal'){
+                return layout[0].uuid.toString() + ".raw"
+            }else{
+                return layout[0].uuid.toString()
+            }
+
         }
 
         $scope.init = function () {

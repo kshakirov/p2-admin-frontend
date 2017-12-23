@@ -16,11 +16,10 @@ let elasticsearch = require('elasticsearch'),
 function add_mapping(body, id) {
     let attribute = id.toString();
     body.properties[attribute] = {
-        type: "string",
+        type: "text",
         "fields": {
             "raw": {
-                "type": "string",
-                "index": "not_analyzed"
+                "type": "keyword",
             }
         }
     };
