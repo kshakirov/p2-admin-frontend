@@ -11,38 +11,7 @@
     },
     "elasticSearch": {
       "url": "10.1.3.15:9200",
-      "indexName": "pims-staging",
-      "settings": {
-        "analysis": {
-          "analyzer": {
-            "pims_analyzer": {
-              "type": "custom",
-              "tokenizer": "pims_ngram",
-              "filter": [
-                "lowercase",
-                "english_stop"
-              ]
-            }
-          },
-          "tokenizer": {
-            "pims_ngram": {
-              "type": "ngram",
-              "min_gram": 3,
-              "max_gram": 10,
-              "token_chars": [
-                "letter",
-                "digit"
-              ]
-            }
-          },
-          "filter": {
-            "english_stop": {
-              "type": "stop",
-              "stopwords": "_english_"
-            }
-          }
-        }
-      }
+      "indexName": "pims-staging"
     },
     "ldap": {
       "url": "ldap://ldap.pmdistributing.com",
