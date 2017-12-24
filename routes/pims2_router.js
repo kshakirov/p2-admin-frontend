@@ -1,4 +1,6 @@
 let express = require('express'),
+    config = require('config'),
+    pimsConfig = config.get('config'),
     router = express.Router(),
     rabbit_mq_controller = require("../pims_app/controller/pims_rabbit_mq"),
     csv_writer = require('../pims_app/controller/csv_writer'),
@@ -11,7 +13,7 @@ let express = require('express'),
     elastic_controller = require("../pims_app/controller/pims_elastic"),
     multer = require('multer'),
    	redis = require("redis"),
-    redisClient = redis.createClient('redis://10.1.3.23');
+    redisClient = redis.createClient(pimsConfig.redis.url);
 
 
 let storage = multer.diskStorage({ //multers disk storage settings
