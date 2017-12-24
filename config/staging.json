@@ -30,6 +30,9 @@
       "importOpenerpRoutingKey":"openerpBatch",
       "entityRoutingKey":"entityQueue",
       "pipelineRoutingKey":"pipelineResponseQueue"
+    },
+    "redis":{
+      "url": "redis://172.31.20.97"
     }
   }
 }
