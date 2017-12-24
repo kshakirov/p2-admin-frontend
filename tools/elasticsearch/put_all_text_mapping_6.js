@@ -19,8 +19,9 @@ function add_mapping(body, id) {
         type: "text",
         "fields": {
             "raw": {
-                "type": "keyword",
-                "analyzer": "lowercase_keyword"
+                "type": "string",
+                "analyzer": "lowercase_keyword",
+		"fielddata": true
             }
         }
     };
