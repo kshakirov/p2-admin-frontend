@@ -1,12 +1,22 @@
 let elasticsearch = require('elasticsearch'),
     config = require('config'),
     pimsConfig = config.get('config'),
-    settings = pimsConfig.elasticSearch.settings,
     elastic_index = pimsConfig.elasticSearch.indexName;
 client = new elasticsearch.Client({
     host: pimsConfig.elasticSearch.url,
     log: 'trace'
 });
+
+let analyzer = {
+
+    "analyzer": {
+        "lowercase_keyword": {
+            "filter": "lowercase",
+            "type": "custom",
+            "tokenizer": "keyword"
+        }
+    }
+}
 
 let indexParams = {
     index: elastic_index,
@@ -14,7 +24,9 @@ let indexParams = {
 
 let requestParams = {
     index: elastic_index,
-    settings
+    body: {
+        analysis: analyzer
+    }
 
 };
 
@@ -36,3 +48,4 @@ client.indices.exists(indexParams).then((r) => {
 }, (e) => {
     console.log(error)
 });
+

@@ -20,6 +20,7 @@ function add_mapping(body, id) {
         "fields": {
             "raw": {
                 "type": "keyword",
+                "analyzer": "lowercase_keyword"
             }
         }
     };

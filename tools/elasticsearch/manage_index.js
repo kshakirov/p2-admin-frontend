@@ -8,15 +8,32 @@ let elasticsearch = require('elasticsearch'),
         log: 'trace'
     });
 
+let analyzer = {
+
+    "analyzer": {
+        "lowercase_keyword": {
+            "filter": "lowercase",
+            "type": "custom",
+            "tokenizer": "keyword"
+        }
+    }
+}
+
 let indexParams = {
     index: elastic_index,
+    body: {
+        settings: {
+            analysis: analyzer
+        }
+    }
 };
 
 
-
 function set_window_size(size) {
-    client.indices.putSettings({body: {
-        "index.max_result_window" : `${size}`}
+    client.indices.putSettings({
+        body: {
+            "index.max_result_window": `${size}`
+        }
     }).then(function (promise) {
         console.log(`Window Size Set To ${size}`);
     });
