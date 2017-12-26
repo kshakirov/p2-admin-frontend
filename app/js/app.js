@@ -126,10 +126,15 @@ pimsApp.config(["$routeProvider", "$locationProvider", "ChartJsProvider",
                 templateUrl: 'partial/resource/resource',
                 controller: 'ResourceController'
             })
+            .when('/operation-logs', {
+                templateUrl: 'partial/operation_log/operation_log',
+                controller: 'OperationLogController'
+            })
             .when('/', {
                 templateUrl: 'partial/dashboard/dashboard',
                 controller: 'DashboardController'
             });
+
 
 
         // configure html5 to get links working on jsfiddle

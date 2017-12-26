@@ -311,5 +311,26 @@ function makeSortable(req, res) {
 
 }
 
+function findOperations(req, res) {
+    let query = {"match_all": {}},
+        type = req.body.type,
+        from = req.body.from,
+        size = req.body.size,
+        fields = req.body.fields,
+        sort = req.body.sort;
+    let compacted_query = compact_query(req.body.query);
+    if(compacted_query){
+        query = build_query(compacted_query);
+    }
+    return elastic_model.findAll(type, query, from * size, size, fields, sort).then((r) => {
+        let response = prep_response(r,from,size);
+        res.json(response)
+
+    }, function (error) {
+        res.sendStatus(400, error)
+    })
+}
+
 exports.findAll = findAll;
 exports.makeSortable = makeSortable;
+exports.findOperations = findOperations;

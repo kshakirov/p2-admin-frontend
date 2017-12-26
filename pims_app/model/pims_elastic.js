@@ -1,6 +1,7 @@
 let elasticsearch = require('elasticsearch'),
     config = require('config'),
     pimsConfig = config.get('config'),
+    operatiionLogType = "operations",
     elastic_index = pimsConfig.elasticSearch.indexName;
 
 let client = new elasticsearch.Client({
@@ -69,7 +70,20 @@ function makeSortable(type, body) {
     return client.indices.putMapping(requestParams);
 }
 
+function addLogEntry(id,body) {
+    //console.log("Adding log entry");
+    return client.index({
+        index: elastic_index,
+        type: operatiionLogType,
+        id: id,
+         body
+    }, function (error, response) {
+        //console.log("response")
+    });
+}
+
 exports.findAll = findAll;
 exports.multiGet = multiGet;
 exports.multiSearch = multiSearch;
 exports.makeSortable = makeSortable;
+exports.addLogEntry = addLogEntry;

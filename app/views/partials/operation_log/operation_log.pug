@@ -1,0 +1,55 @@
+.row.top-buffer
+    .col-lg-6.col-lg-offset-3
+        ul.breadcrumb
+            li Operatons
+.row
+    .col-lg-2
+        button.btn.btn-info(type="submit", ng-click="search()") SEARCH
+    .col-lg-6
+        include pagination
+    .col-lg-2
+        button.top-pagination.btn.btn-warning(type="submit",ng-click="clear(search_params)") CLEAR
+    .col-lg-2
+        select.top-pagination.form-control(ng-model="pageSize",
+        ng-options="size as size for size in pageSizes")
+.row.top-buffer(ng-init="init()")
+    .col-lg-11
+        table.table
+            thead
+                tr
+                    th Started
+                    th Name
+                    th Entyty Type
+                    th Submitted
+                    th Processed
+                    th Failed
+                    th LastUpdated
+                    th Completed
+            tbody
+                tr
+                    td
+                    td
+                        form(role="form")
+                            input.form-control(type="text",
+                            ng-keypress="($event.which === 13)?search():0",
+                            data-ng-model="search_params.customOperationName")
+                    td
+                    td
+                    td
+                    td
+                    td
+                tr(ng-repeat="op in operations")
+                    td {{op.startedAt | date:'yyyy-MM-dd HH:mm:ss Z'}}
+                    td {{op.customOperationName}}
+                    td {{op.entityTypeId}}
+                    td {{op.submittedEntities}}
+                    td {{op.processedEntities}}
+                    td {{op.failedEntities}}
+                    td {{op.lastUpdatedAt | date:'yyyy-MM-dd HH:mm:ss Z'}}
+                    td {{op.completedAt | date:'yyyy-MM-dd HH:mm:ss Z'}}
+.row
+    .col-lg-6.col-lg-offset-2
+        include pagination
+    .col-lg-2
+        select.top-pagination.form-control(ng-model="pageSize",
+        ng-options="size as size for size in pageSizes")

@@ -14,6 +14,7 @@ let express = require('express'),
     userManagementProxy = require('./pims_app/proxy/user_management'),
     redis = require("redis"),
     redisClient = redis.createClient(pimsConfig.redis.url),
+    operationLog = require('./pims_app/controller/operation_log'),
     syncModuleProxy = require('./pims_app/proxy/sync_module');
 
 
@@ -113,3 +114,4 @@ function intervalFunc() {
 }
 
 setInterval(intervalFunc, 1500);
+setInterval(operationLog.syncLog, 5000);
