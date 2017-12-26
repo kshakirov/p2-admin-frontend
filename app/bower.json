@@ -29,7 +29,10 @@
     "angular-cookies": "^1.6.6",
     "angular-ui-ace": "bower",
     "ng-file-upload": "^12.2.13",
-    "angular-file-saver": "^1.1.3"
+    "angular-file-saver": "^1.1.3",
+    "angular-socket-io": "^0.7.0",
+    "socket-io-client": "^1.4.5",
+    "socket.io-client": "^2.0.4"
   },
   "devDependencies": {
     "angular-bootstrap-multiselect": "https://github.com/bentorfs/angular-bootstrap-multiselect.git#^1.1.11"

@@ -101,41 +101,6 @@ router.post('/file-download', (req, res) => {
 
 });
 
-router.get('/notify/', sseExpress, function (req, res) {
 
-
-    redisClient.on("error", function (err) {
-        console.log("Error " + err);
-    });
-
-
-
-
-    let counter = 0;
-    function intervalFunc() {
-        redisClient.rpop("notifications", function (err, reply) {
-            if(reply){
-
-                let body = JSON.parse(reply);
-                console.log(body);
-                res.sse('connected', {
-                    message: body,
-                    id: counter
-                });
-                counter++
-            }else{
-                res.sse('connected', {
-                    message: {},
-                    id: -100
-                });
-                counter++
-            }
-
-        });
-
-    }
-
-    setInterval(intervalFunc, 1500);
-});
 
 module.exports = router;

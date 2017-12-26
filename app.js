@@ -1,5 +1,5 @@
 let config = require('config');
-let  pimsConfig = config.get('config');
+let pimsConfig = config.get('config');
 let express = require('express'),
     routes = require('./routes'),
     express_proxy = require('express-http-proxy'),
@@ -12,6 +12,8 @@ let express = require('express'),
     pug = require('pug'),
     metadataProxy = require('./pims_app/proxy/metadata'),
     userManagementProxy = require('./pims_app/proxy/user_management'),
+    redis = require("redis"),
+    redisClient = redis.createClient('redis://10.1.3.23'),
     syncModuleProxy = require('./pims_app/proxy/sync_module');
 
 
@@ -25,9 +27,9 @@ app.use(methodOverride());
 
 
 app.use('/rest',
-     express_proxy(pimsConfig.metadataServer.url, {
-         proxyReqPathResolver: metadataProxy.proxyReqPathResolver
-     })
+    express_proxy(pimsConfig.metadataServer.url, {
+        proxyReqPathResolver: metadataProxy.proxyReqPathResolver
+    })
 );
 
 app.use('/management',
@@ -36,7 +38,7 @@ app.use('/management',
     })
 );
 
-app.use('/sync-module', express_proxy(pimsConfig.syncModule.url,{
+app.use('/sync-module', express_proxy(pimsConfig.syncModule.url, {
     proxyReqPathResolver: syncModuleProxy.proxyReqPathResolver
 }));
 
@@ -46,7 +48,7 @@ app.use(bodyParser.urlencoded(
         parameterLimit: 100000,
         limit: '50mb'
     }
-    ));            // parse application/x-www-form-urlencoded
+));            // parse application/x-www-form-urlencoded
 app.use(bodyParser.json(
     {
         parameterLimit: 100000,
@@ -67,6 +69,44 @@ app.get('/', routes.index);
 app.get('/partial/:type/:name', routes.partial);
 app.get('*', routes.index);
 
-http.createServer(app).listen(app.get('port'), function () {
+let server = http.createServer(app).listen(app.get('port'), function () {
     console.log('Express server listening on port ' + app.get('port'));
+});
+
+let io = require('socket.io')(server);
+
+let counter = 0;
+io.on('connection', function (client) {
+    console.log("connnected");
+    client.on('event', function (data) {
+        console.log("fucked")
+    });
+    client.on('disconnect', function () {
+        console.log("disconnected")
+    });
+
+    redisClient.on("error", function (err) {
+        console.log("Error " + err);
+    });
+
+
+    let counter = 0;
+
+    function intervalFunc() {
+        redisClient.rpop("notifications", function (err, reply) {
+            if (reply) {
+                let body = JSON.parse(reply),
+                    msg = {
+                        message: body,
+                        id: counter
+                    };
+                client.emit('log', msg);
+                console.log(msg);
+                counter++
+            }
+        });
+
+    }
+
+    setInterval(intervalFunc, 1500)
 });

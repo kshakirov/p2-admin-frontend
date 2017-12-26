@@ -1,7 +1,8 @@
 'use strict';
 
 var pimsApp = angular.module('PimsApp', ['ngRoute', 'ui.sortable', 'PimsApp.services', 'ngTable', 'chart.js', 'ui.bootstrap',
-    'angularSpinner','ngCookies','ui.ace','ngFileUpload','btorfs.multiselect','ngFileSaver']);
+    'angularSpinner','ngCookies','ui.ace','ngFileUpload','btorfs.multiselect','ngFileSaver','btford.socket-io']);
+
 
 
 pimsApp.config(["$routeProvider", "$locationProvider", "ChartJsProvider",
@@ -145,6 +146,7 @@ pimsApp.config(['$httpProvider', function($httpProvider) {
 }]);
 
 
+
 pimsApp.factory('sessionInjector', ['$cookies','$window', function($cookies,$window) {
     var sessionInjector = {
         request: function(config) {
@@ -164,3 +166,11 @@ pimsApp.factory('sessionInjector', ['$cookies','$window', function($cookies,$win
 pimsApp.config(['$httpProvider', function($httpProvider) {
     $httpProvider.interceptors.push('sessionInjector');
 }]);
+
+
+
+pimsApp.factory('socket', [function (socketFactory) {
+    var myIoSocket = io.connect("http://10.1.1.125:3004");
+
+    return myIoSocket;
+}])

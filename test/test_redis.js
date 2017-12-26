@@ -64,7 +64,6 @@ function createMessage () {
             "lastUpdatedAt": new Date().getTime(),
             "completedAt": null
     };
-    console.log(message);
     return message;
 }
 

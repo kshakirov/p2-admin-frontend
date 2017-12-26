@@ -1,27 +1,13 @@
 pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
     'EntityTypeModel', '$cookies', '$location', '$routeParams', '$window',
-    '$uibModal', 'MessageService', 'CustomSyncNotificationService',
+    '$uibModal', 'MessageService', 'CustomSyncNotificationService','socket',
     function ($scope, $rootScope, $http, EntityTypeModel,
               $cookies, $location, $routeParams, $window, $uibModal,
-              MessageService, CustomSyncNotificationService) {
+              MessageService, CustomSyncNotificationService,socket) {
 
         $rootScope.message = {};
         $rootScope.message = MessageService.prepareMessage();
 
-        var handleCallback = function (msg) {
-            $scope.$apply(function () {
-                var data = JSON.parse(msg.data);
-                if(data.id== -100){
-
-                }else {
-                    console.log(data);
-                    CustomSyncNotificationService.processMessage(data.message)
-                }
-            });
-        };
-
-        var source = new EventSource('/control/notify');
-        source.addEventListener('connected', handleCallback, false);
 
         $scope.init = function () {
             var currentEntity = $cookies.getObject("currentEntity");
@@ -96,5 +82,23 @@ pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
             });
 
         };
+
+        socket.on('log', function (data) {
+            if(Object.keys(data).length > 0) {
+                $scope.$apply(function () {
+                    console.log("after");
+                    console.log(data);
+                    CustomSyncNotificationService.processMessage(data.message)
+                });
+            }
+        });
+
+        socket.on('connection', function (data) {
+            console.log("Connected")
+        });
+
+        socket.on('disconnect', function (data) {
+            console.log("Disonnected")
+        })
     }]);
 

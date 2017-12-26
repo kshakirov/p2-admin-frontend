@@ -43,6 +43,7 @@
 		"promisify-node": "^0.4.0",
 		"pug": "^2.0.0-rc.3",
 		"redis": "^2.8.0",
+		"socket.io": "^2.0.4",
 		"sse-express": "^1.0.2",
 		"xlsx": "^0.11.7"
 	},
