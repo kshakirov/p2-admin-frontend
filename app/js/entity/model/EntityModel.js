@@ -53,8 +53,8 @@ pimsServices.service('EntityModel', ['$http', '$rootScope', function ($http, $ro
     };
 
     this.attachmentUpdateUploadUrl = function (id, url) {
-        var payload = {};
-        return $http.put("/rest/binary/updateUrl/" + id + "?url=" + url,payload ).then(function (response) {
+        var payload = url;
+        return $http.post("/rest/binary/url/" + id,payload ).then(function (response) {
             return response
         })
     }

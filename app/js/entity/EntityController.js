@@ -1,7 +1,7 @@
 pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'EntityModel', 'EntityService',
     'AttributeSetModel', 'NotificationModel', 'MessageService', '$uibModal',
-    '$q', 'ConverterModel', 'usSpinnerService', 'Upload', 'FileSaver',
+    '$q', 'ConverterModel', 'usSpinnerService', 'Upload', 'FileSaver', 'AttachmentService',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -16,7 +16,8 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
               ConverterModel,
               usSpinnerService,
               Upload,
-              FileSaver) {
+              FileSaver,
+              AttachmentService) {
 
         var entity_type_uuid = $rootScope.pims.entities.current.uuid,
             msg = {
@@ -50,6 +51,7 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
             reference_attributes.map(function (ra) {
                 q_functions[ra.uuid] = AttributeSetModel.search(ra.entity_type_id, params_string);
             });
+
             return q_functions;
         }
 
@@ -72,12 +74,18 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
                     AttributeSetModel.search(entity_type_uuid, params_string).then(function (tabs) {
                         var reference_array_attributes = EntityService.getReferenceArrayAttributes(tabs);
                         var reference_attributes = EntityService.getReferenceAttributes(tabs);
-                        $q.all(create_q_functions(reference_array_attributes,reference_attributes)).then(function (promises) {
-                            console.log(promises);
-                            $scope.reference_tables = promises;
-                            $scope.tabs = order_tabs(tabs);
-                            $scope.entity = entity;
-                            usSpinnerService.stop('spinner-entity');
+                        $q.all(create_q_functions(reference_array_attributes, reference_attributes)).then(function (promises) {
+                            EntityModel.getAttachmentInfo(uuid).then(function (info) {
+                                console.log(info);
+                                if (info) {
+                                    $scope.preview_available = AttachmentService.preview(info);
+                                }
+                                $scope.reference_tables = promises;
+                                $scope.tabs = order_tabs(tabs);
+                                $scope.entity = entity;
+                                usSpinnerService.stop('spinner-entity');
+                            })
+
                         });
 
                     })
@@ -184,56 +192,25 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
             return ConverterModel.validate(attrs_to_validate);
         }
 
-        $scope.upload = function (file) {
-            if ($scope.entity.name) {
-                var id = EntityService.getAttributeValueByName($scope.entity, $scope.tabs,"Id");
-                var url = '/rest/attachment/uploadFile';
-                if(id){
-                    url = "/rest/attachment/updateFile/" + id;
-                }
-                Upload.upload({
-                    url: url,
-                    data: {file: file, 'username': $scope.username}
-                }).then(function (resp) {
-                    console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);
-                    console.log(resp);
-                    EntityService.fillAttachmentData(resp, $scope.entity, $scope.tabs);
-                    $scope.updateEntity($scope.entity);
-                }, function (resp) {
-                    console.log('Error status: ' + resp.status);
-                }, function (evt) {
-                    var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                    console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
-                });
-            } else {
-                MessageService.setDangerMessage($rootScope.message,
-                    "Cannot be loaded without name");
-            }
+
+        $scope.uploadFile = function (file) {
+            AttachmentService.upload(file, $scope.entity.uuid).then(function () {
+                MessageService.setSuccessMessage($rootScope.message,
+                    "File  is loaded");
+            })
         };
 
-        $scope.postAttachmentUrl = function (url) {
-            var id = EntityService.getAttributeValueByName($scope.entity, $scope.tabs,"Id");
+        $scope.uploadFromUrl = function (url, id) {
             if (id) {
                 EntityModel.attachmentUpdateUploadUrl(id, url).then(function (resp) {
-                    EntityService.fillAttachmentData(resp, $scope.entity, $scope.tabs);
-                    $scope.updateEntity($scope.entity);
+                    MessageService.setSuccessMessage($rootScope.message,
+                        "Attachment is loaded")
                 })
             } else {
-                EntityModel.attachmentUploadUrl(url).then(function (resp) {
-                    EntityService.fillAttachmentData(resp, $scope.entity, $scope.tabs);
-                    $scope.updateEntity($scope.entity);
-                })
+                MessageService.setDangerMessage($rootScope.message, "You must first create the attachment");
             }
         };
 
-        $scope.getImageId = function (attributes) {
-            var id = attributes.find(function (a) {
-                if (a.name == 'Id') {
-                    return a
-                }
-            });
-            return $scope.entity.attributes[id.uuid].value;
-        };
 
         $scope.download = function (uuid) {
             EntityModel.getAttachmentInfo(uuid).then(function (info) {
@@ -244,23 +221,11 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
             })
         };
 
-        $scope.preview = function (uuid) {
-            var formats = /jpeg|png|gif/;
-            EntityModel.getAttachmentInfo(uuid).then(function (info) {
-                console.log(info);
-                if(info.contentType.search(formats) >= 0){
-                    $scope.preview_available = true
-                }
-            }, function (errror) {
-                console.log(error)
-            })
-        };
 
-
-        function _download (uuid, fileType, fileName) {
+        function _download(uuid, fileType, fileName) {
             console.log(fileName);
             $http({
-                url: '/rest/binary/'+uuid,
+                url: '/rest/binary/' + uuid,
                 method: "GET",
                 data: {
                     filename: "file"
@@ -271,9 +236,9 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
 
                 FileSaver.saveAs(blob, fileName)
             }, function (data) {
-                if(data.status==404){
-                    MessageService.setDangerMessage($rootScope.message, "The File '" + fileName+ "' Does Not Exist");
-                }else{
+                if (data.status == 404) {
+                    MessageService.setDangerMessage($rootScope.message, "The File '" + fileName + "' Does Not Exist");
+                } else {
                     console.log('Unable to download the file')
                 }
 

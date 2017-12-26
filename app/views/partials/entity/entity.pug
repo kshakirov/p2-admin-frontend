@@ -11,8 +11,6 @@ uib-tabset(active="active", ng-init="init()")
             .col-lg-6.col-lg
                 form( role="form")
                     div.form-group(ng-repeat="attr in tab.attributes")
-                        div.top-small-buffer(ng-if="attr.properties.frontendType =='file'", class="button", ngf-select="upload($file)")
-                            button.btn.btn-info(type="submit", ng-if="!schema.customAttributes.export")    UPLOAD FILE
                         div(ng-if="attr.properties.frontendType !='multiselect' && attr.properties.frontendType !='select' && attr.properties.frontendType !='table' && attr.properties.frontendType !='file' && attr.properties.frontendType !='preview' && attr.properties.frontendType !='image_url' && attr.properties.frontendType !='download'" )
                             label {{attr.name}}
                             input.form-control(type="{{attr.properties.frontendType}}", data-ng-model="entity.attributes[attr.uuid].value")
@@ -44,8 +42,10 @@ uib-tabset(active="active", ng-init="init()")
                                         td
                                             button.btn.btn-danger.btn-xs(type="submit", ng-if="!schema.customAttributes.export", ng-click="removeReference(attr, $index)")
                                                 span.glyphicon.glyphicon-remove
-                        div(ng-if="attr.properties.frontendType =='preview'")
-                            button.btn.btn-warning(type="submit", ng-click="preview(entity.uuid)")    {{attr.name}}
+                        div.top-small-buffer(ng-if="attr.properties.frontendType =='file'", class="button", ngf-select="uploadFile($file)")
+                            button.btn.btn-info(type="submit", ng-if="!schema.customAttributes.export")    UPLOAD FILE
+                        div(ng-if="attr.properties.frontendType =='preview' && preview_available")
+                            img(ng-src="/rest/binary/thumbnail/{{entity.uuid}}",width=100)
                         div(ng-if="attr.properties.frontendType =='download'")
                             button.btn.btn-info(type="submit", ng-click="download(entity.uuid)")    {{attr.name}}
                         div(ng-if="attr.properties.frontendType =='image_url'")
@@ -53,11 +53,10 @@ uib-tabset(active="active", ng-init="init()")
                             .input-group
                                 input.form-control.input(type="text", data-ng-model="entity.attributes[attr.uuid].value")
                                 span.input-group-btn
-                                    button.btn.btn-secondary(type="button", ng-click="postAttachmentUrl(entity.attributes[attr.uuid].value)") GO
+                                    button.btn.btn-secondary(type="button", ng-click="uploadFromUrl(entity.attributes[attr.uuid].value, entity.uuid)") GO
             .col-lg-4.col-lg.col-lg-offset-2
                 form( role="form")
-                    div(ng-if="preview_available")
-                        img(ng-src="/rest/binary/thumbnail/{{entity.uuid}}",width=100)
+
     uib-tab(heading="System")
         .row.top-buffer
             .col-lg-6.col-lg
