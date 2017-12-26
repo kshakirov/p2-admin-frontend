@@ -56,7 +56,7 @@ gulp.task('scripts', function() {
         'app/bower_components/chart.js/dist/Chart.js',
         'app/bower_components/angular-chart.js/angular-chart.js',
         'app/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
-        'app/bower_components/angular-spinner/angular-spinner.js',
+        'app/bower_components/angular-spinner/dist/angular-spinner.js',
         'app/bower_components/angular-cookies/angular-cookies.js',
         'app/bower_components/ng-file-upload/ng-file-upload.js',
         'app/bower_components/angular-bootstrap-multiselect/dist/angular-bootstrap-multiselect.js',
