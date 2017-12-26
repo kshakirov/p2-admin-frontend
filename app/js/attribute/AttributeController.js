@@ -72,11 +72,13 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
             var uuid = $routeParams.uuid;
 
             if (uuid === "new") {
-                $timeout(function () {
-                    usSpinnerService.stop('spinner-attribute');
-                    console.log("Spin must stop")
-                },200)
-
+                ConverterModel.findAll().then(function (converters) {
+                    EntityTypeModel.findAll().then(function (entity_types) {
+                        $scope.attribute = {};
+                        $scope.entity_types = entity_types;
+                        usSpinnerService.stop('spinner-attribute');
+                    })
+                });
             } else {
 
 
@@ -130,7 +132,7 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
         $scope.addValidator = function () {
             var attr = attr;
             var $uibModalInstance = modalInstance = $uibModal.open({
-                templateUrl: 'partial/attribute/modal_validato',
+                templateUrl: 'partial/attribute/modal_validator',
                 controller: createValidatorController(attr),
                 resolve: {
                     user: function () {
@@ -140,7 +142,10 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
             });
             $uibModalInstance.result.then(function (selectedItem) {
                 console.log(selectedItem);
-                if (!$scope.attribute.properties.validators) {
+                if (!$scope.attribute.properties) {
+                    $scope.attribute.properties = {};
+                }
+                else if (!$scope.attribute.properties.validators) {
                     $scope.attribute.properties.validators = [];
                 }
                 $scope.attribute.properties.validators.push(selectedItem.converter);
