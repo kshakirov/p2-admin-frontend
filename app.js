@@ -13,7 +13,7 @@ let express = require('express'),
     metadataProxy = require('./pims_app/proxy/metadata'),
     userManagementProxy = require('./pims_app/proxy/user_management'),
     redis = require("redis"),
-    redisClient = redis.createClient('redis://10.1.3.23'),
+    redisClient = redis.createClient(pimsConfig.redis.url),
     syncModuleProxy = require('./pims_app/proxy/sync_module');
 
 
@@ -79,7 +79,7 @@ let counter = 0;
 io.on('connection', function (client) {
     console.log("connnected");
     client.on('event', function (data) {
-        console.log("fucked")
+        console.log("Event")
     });
     client.on('disconnect', function () {
         console.log("disconnected")
@@ -92,7 +92,11 @@ io.on('connection', function (client) {
 
     let counter = 0;
 
-    function intervalFunc() {
+
+});
+
+function intervalFunc() {
+    if(io) {
         redisClient.rpop("notifications", function (err, reply) {
             if (reply) {
                 let body = JSON.parse(reply),
@@ -100,13 +104,12 @@ io.on('connection', function (client) {
                         message: body,
                         id: counter
                     };
-                client.emit('log', msg);
+                io.emit('log', msg);
                 console.log(msg);
                 counter++
             }
         });
-
     }
+}
 
-    setInterval(intervalFunc, 1500)
-});
+setInterval(intervalFunc, 1500);

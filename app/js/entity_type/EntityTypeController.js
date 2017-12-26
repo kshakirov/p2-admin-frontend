@@ -86,8 +86,6 @@ pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
         socket.on('log', function (data) {
             if(Object.keys(data).length > 0) {
                 $scope.$apply(function () {
-                    console.log("after");
-                    console.log(data);
                     CustomSyncNotificationService.processMessage(data.message)
                 });
             }

@@ -36,6 +36,7 @@ let counter = 1,
 
 function sendToRedis() {
     let message = createMessage();
+    console.log(message);
     client.rpush(["notifications", JSON.stringify(message)] , function (err, reply) {
     if(err){
         console.log("Error");

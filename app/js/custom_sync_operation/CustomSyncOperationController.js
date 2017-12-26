@@ -100,8 +100,8 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
             message.EntityInfo.entityTypeId = custom_sync_operation.customAttributes.entityTypeId.uuid;
             message.PipelineInfo.transformationSchemata = custom_sync_operation.customAttributes.transformationSchema;
             NotificationModel.notifyBatch(message, queue_prefix).then(function (response) {
-                //$rootScope.message.success = true;
-                //MessageService.setInfoMessage($rootScope.message, "Your Operation Has Just Scheduled for Run")
+                $rootScope.message.success = true;
+                MessageService.setInfoMessage($rootScope.message, "Your Operation Has Just Scheduled for Run")
             })
 
         }

@@ -11,9 +11,7 @@ let express = require('express'),
 	sseExpress = require('sse-express'),
     fs = require('fs'),
     elastic_controller = require("../pims_app/controller/pims_elastic"),
-    multer = require('multer'),
-   	redis = require("redis"),
-    redisClient = redis.createClient(pimsConfig.redis.url);
+    multer = require('multer');
 
 
 let storage = multer.diskStorage({ //multers disk storage settings
