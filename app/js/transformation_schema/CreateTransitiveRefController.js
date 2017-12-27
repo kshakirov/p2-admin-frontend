@@ -19,7 +19,7 @@ function createTransitiveRefController(item, entity_types) {
         }
 
         function find_reference_name(attribute) {
-            if (attribute.hasOwnProperty('properties')
+            if (attribute && attribute.hasOwnProperty('properties')
                 && attribute.properties.hasOwnProperty('referencedEntityTypeId')) {
                 var id = attribute.properties.referencedEntityTypeId;
                 var entity = entity_types.find(function (et) {
@@ -200,9 +200,9 @@ function createTransitiveRefController(item, entity_types) {
             }
         };
 
-        function create_reference_name(searchEntityTypeId, referenceAttribute,  chained_references) {
+        function create_reference_name(searchEntityTypeId, referenceAttribute, chained_references) {
             var name = entity_types.find(function (et) {
-                if(et.uuid==searchEntityTypeId)
+                if (et.uuid == searchEntityTypeId)
                     return et
             });
             name = name.name;
@@ -212,6 +212,17 @@ function createTransitiveRefController(item, entity_types) {
                 !chained_references[chained_references.length - 1].hasOwnProperty('attributes'))
                 return name + "> " + second_name;
             return name + " > " + chained_references[chained_references.length - 1].attributes[0].attribute.name;
+
+        }
+
+        function create_simple_name(searchEntityTypeId) {
+            var name = entity_types.find(function (et) {
+                if (et.uuid == searchEntityTypeId)
+                    return et
+            });
+            name = name.name;
+
+            return name + " > " + "pimsId";
 
         }
 
@@ -229,21 +240,31 @@ function createTransitiveRefController(item, entity_types) {
         };
 
         $scope.ok = function () {
-            var projections = $scope.referenceAttribute.uuid;
-            if ($scope.transitive_reference_attributes.length > 0
-                && $scope.transitive_reference_attributes[0].hasOwnProperty('attribute')) {
-                projections = projections + "." + $scope.transitive_reference_attributes[0].attribute.uuid;
+            var result = {};
+            if ($scope.referenceAttribute && $scope.referenceAttribute.uuid) {
+                var projections = $scope.referenceAttribute.uuid;
+                if ($scope.transitive_reference_attributes.length > 0
+                    && $scope.transitive_reference_attributes[0].hasOwnProperty('attribute')) {
+                    projections = projections + "." + $scope.transitive_reference_attributes[0].attribute.uuid;
+                }
+                projections = projections + "." + prep_projections($scope.chained_references);
+                result = {
+                    entityTypeId: $scope.searchEntityTypeId,
+                    key: prep_keys($scope.transitive_search_attributes, $scope.search_attributes),
+                    projections: [projections],
+                    name: create_reference_name($scope.searchEntityTypeId, $scope.referenceAttribute, $scope.chained_references)
+                };
+            } else {
+                result = {
+                    entityTypeId: $scope.searchEntityTypeId,
+                    key: prep_keys($scope.transitive_search_attributes, $scope.search_attributes),
+                    projections: ['uuid'],
+                    name: create_simple_name($scope.searchEntityTypeId)
+                };
             }
-            projections = projections + "." + prep_projections($scope.chained_references);
-            console.log($scope.chained_references);
 
-            var result = {
-                entityTypeId: $scope.searchEntityTypeId,
-                key: prep_keys($scope.transitive_search_attributes, $scope.search_attributes),
-                projections: [projections],
-                name: create_reference_name($scope.searchEntityTypeId, $scope.referenceAttribute, $scope.chained_references)
-            };
             $uibModalInstance.close(result);
+
         };
 
         $scope.cancel = function () {
