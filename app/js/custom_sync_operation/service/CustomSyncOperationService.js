@@ -14,21 +14,34 @@ pimsServices.service('CustomSyncOperationService', [
             return custom_operation.name.toLowerCase().search(search_word) >= 0;
         };
 
+        this.guessCsvExport = function (custom_operation) {
+            if (!custom_operation.customAttributes.import) {
+                var filename = custom_operation.customAttributes.filename;
+                if (filename && filename.length > 0)
+                    return true
+            }
+            return false;
+        };
+
+        this.getFilename = function (custom_operation) {
+            return custom_operation.customAttributes.filename;
+        };
+
         this.getDownloadFileName = function (custom_operation, pipes, external_systems) {
-            if(!custom_operation.import){
+            if (!custom_operation.import) {
                 var entity_type_id = custom_operation.customAttributes.entityTypeId.uuid;
                 console.log(external_systems);
                 console.log(pipes);
                 var pipe_id = custom_operation.customAttributes.pipe.id;
                 var pipe = pipes.find(function (p) {
-                    if(p.id==pipe_id)
+                    if (p.id == pipe_id)
                         return p
                 });
                 var ext_system = pipe.targetSystem;
                 var entity_type = ext_system.customAttributes.entities[entity_type_id];
                 var url = entity_type.write.url;
                 url = url.split("/");
-                if(url.length > 0)
+                if (url.length > 0)
                     return url[2];
                 return "No File Is Configured";
 
@@ -41,10 +54,10 @@ pimsServices.service('CustomSyncNotificationService', [
     function () {
         var operations = {};
 
-        this.processMessage  = function (msg) {
+        this.processMessage = function (msg) {
             console.log(operations);
             if (operations.hasOwnProperty(msg.operationId)) {
-                operations[msg.operationId]= msg;
+                operations[msg.operationId] = msg;
                 console.log("Yes")
 
             } else {
@@ -53,6 +66,6 @@ pimsServices.service('CustomSyncNotificationService', [
             }
         };
         this.getNotifications = function () {
-           return operations;
+            return operations;
         }
     }]);

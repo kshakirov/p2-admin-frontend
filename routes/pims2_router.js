@@ -52,6 +52,9 @@ router.post('/notify/entity', function (req, res) {
 router.put('/csv/write/:filename/:uuid', function (req, res) {
     csv_writer.writeCsv(req, res);
 });
+router.delete('/csv/file/:filename', function (req, res) {
+    csv_writer.deleteCsv(req, res);
+});
 
 
 router.post('/excel/read/:filename', function (req, res) {

@@ -43,4 +43,19 @@ function writeCsv(req, res) {
     res.json({result: true})
 }
 
+function deleteCsv(req, res) {
+    let fileName = req.params.filename;
+    fileName = pimsConfig.filesFolder.path + "/" + fileName;
+    if (fs.existsSync(fileName)) {
+        console.log(`File Exists ${fileName}`);
+        fs.unlinkSync(fileName);
+    } else {
+        console.log(`File  ${fileName} Does Not Exist`);
+
+    }
+    res.sendStatus(200);
+
+}
+
 exports.writeCsv = writeCsv;
+exports.deleteCsv = deleteCsv;

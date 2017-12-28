@@ -34,6 +34,13 @@ pimsServices.service('CustomSyncOperationModel', ['$http', '$rootScope', '$timeo
                 .then(function (response) {
                     return response.data
                 })
+        };
+
+        this.deleteFile = function (filename) {
+            return $http.delete("/control/csv/file/" + filename)
+                .then(function (response) {
+                    return response.data
+                })
         }
 
 
