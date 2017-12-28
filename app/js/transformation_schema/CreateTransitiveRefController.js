@@ -53,15 +53,27 @@ function createTransitiveRefController(item, entity_types) {
         }
 
 
+        function get_attribute_value_type(id, search_attributes) {
+                var attribute = search_attributes.find(function (sa) {
+                    if(sa.uuid==id){
+                        return sa;
+                    }
+                })
+            return attribute.valueType;
+        }
+
         function prep_keys(transitive_search_attributes, search_attributes) {
             var key = {};
             transitive_search_attributes.map(function (ta) {
                 key[ta.attribute] = {};
-                if (ta.type == 'path')
+                if (ta.type == 'path') {
                     key[ta.attribute][ta.type] = ta.value;
+                    key[ta.attribute].type = get_attribute_value_type(ta.attribute, search_attributes);
+                }
                 else if (ta.type == 'default') {
                     key[ta.attribute][ta.type] = coerce_const_type(ta.value, ta.attribute, search_attributes);
                 }
+
             });
             return key;
         }
