@@ -1,7 +1,7 @@
 pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'CustomSyncOperationModel', 'NotificationModel',
     '$q', 'ExternalOperationModel', 'TransformationSchemaModel', 'EntityTypeModel',
-    'MessageService', 'ExternalSystemModel', 'Upload','FileSaver', 'CustomSyncOperationService',
+    'MessageService', 'ExternalSystemModel', 'Upload', 'FileSaver', 'CustomSyncOperationService',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -53,11 +53,11 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
                 } else {
                     CustomSyncOperationModel.findOne(id).then(function (custom_sync_operation) {
                         $scope.custom_sync_operation = custom_sync_operation;
-                        if(angular.isUndefined(custom_sync_operation.import)){
+                        if (angular.isUndefined(custom_sync_operation.import)) {
                             $scope.custom_sync_operation.customAttributes.import = CustomSyncOperationService
                                 .guessImport(custom_sync_operation);
                         }
-                        if(angular.isUndefined(custom_sync_operation.hasAttachments)){
+                        if (angular.isUndefined(custom_sync_operation.hasAttachments)) {
                             $scope.custom_sync_operation.customAttributes.hasAttachments = CustomSyncOperationService
                                 .guessFileFormat(custom_sync_operation);
                             $scope.downloadFilename = CustomSyncOperationService
@@ -99,12 +99,19 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
             message.CustomOperation.entityTypeId = custom_sync_operation.customAttributes.entityTypeId.uuid;
             message.EntityInfo.entityTypeId = custom_sync_operation.customAttributes.entityTypeId.uuid;
             message.PipelineInfo.transformationSchemata = custom_sync_operation.customAttributes.transformationSchema;
+            if (CustomSyncOperationService.guessCsvExport(custom_sync_operation)) {
+                CustomSyncOperationModel.deleteFile($scope.downloadFilename).then(function () {
+                    console.log("File Deleted")
+                }, function (error) {
+                    console.log("Problems Deleting file")
+                })
+            }
             NotificationModel.notifyBatch(message, queue_prefix).then(function (response) {
                 $rootScope.message.success = true;
                 MessageService.setInfoMessage($rootScope.message, "Your Operation Has Just Scheduled for Run")
             })
 
-        }
+        };
 
         $scope.upload = function (file) {
 
@@ -139,9 +146,9 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
                 var fileName = filename;
                 FileSaver.saveAs(blob, fileName)
             }, function (data) {
-                if(data.status==404){
+                if (data.status == 404) {
                     MessageService.setDangerMessage($rootScope.message, "The File '" + filename + "' Does Not Exist");
-                }else{
+                } else {
                     console.log('Unable to download the file')
                 }
 
