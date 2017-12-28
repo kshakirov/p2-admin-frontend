@@ -99,7 +99,7 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
             message.CustomOperation.entityTypeId = custom_sync_operation.customAttributes.entityTypeId.uuid;
             message.EntityInfo.entityTypeId = custom_sync_operation.customAttributes.entityTypeId.uuid;
             message.PipelineInfo.transformationSchemata = custom_sync_operation.customAttributes.transformationSchema;
-            if (CustomSyncOperationService.guessCsvExport(custom_sync_operation)) {
+            if ($scope.downloadFilename) {
                 CustomSyncOperationModel.deleteFile($scope.downloadFilename).then(function () {
                     console.log("File Deleted")
                 }, function (error) {
