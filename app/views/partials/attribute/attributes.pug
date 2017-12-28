@@ -10,5 +10,5 @@
             tr(ng-repeat="attr in $data")
               td(title="name", filter="{ name: 'text'}",sortable="'name'")
                 a(ng-href="attributes/{{attr.uuid}}") {{attr.name}}
-              td(title="valueType") {{attr.valueType}}
+              td(title="valueType",filter="{valueType: 'text'}",sortable="'valueType'") {{attr.valueType}}
 
