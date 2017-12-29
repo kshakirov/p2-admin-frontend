@@ -15,6 +15,7 @@ let express = require('express'),
     redis = require("redis"),
     redisClient = redis.createClient(pimsConfig.redis.url),
     operationLog = require('./pims_app/controller/operation_log'),
+    pimsRabbit = require('./pims_app/controller/pims_rabbit_mq'),
     syncModuleProxy = require('./pims_app/proxy/sync_module');
 
 
@@ -113,5 +114,7 @@ function intervalFunc() {
     }
 }
 
-setInterval(intervalFunc, 1500);
+//setInterval(intervalFunc, 1500);
 setInterval(operationLog.syncLog, 5000);
+
+pimsRabbit.startConnenction(io);

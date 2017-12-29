@@ -18,6 +18,9 @@ uib-tabset(active="active", ng-init="init()")
                 select.form-control(id="targetSystem",
                 ng-model="external_operation.targetSystem.frontendInfo.selected.id",
                 ng-options="sys.id as sys.name  for sys in external_operation.targetSystem.frontendInfo.options")
+            div.form-group
+                label(for="externalOperationName") Immediate
+                input.form-control(type="checkbox",id="immediate", data-ng-model="external_operation.customAttributes.immediate")
             div.btn-group
                 button.btn.btn-default(type="submit", ng-click="updateExternalOperation(external_operation)") APPLY
                 button.btn.btn-danger(type="submit", ng-click="deleteExternalOperation(external_operation.id)", ng-disabled="!external_operation.id") DELETE

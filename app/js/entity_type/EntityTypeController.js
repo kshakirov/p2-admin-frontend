@@ -91,6 +91,10 @@ pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
             }
         });
 
+        socket.on('individual', function (data) {
+            console.log(data);
+        });
+
         socket.on('connection', function (data) {
             console.log("Connected")
         });

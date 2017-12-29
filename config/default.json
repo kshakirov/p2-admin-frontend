@@ -21,7 +21,7 @@
         "password": "6AMPWVhDobB2"
       },
       "secret": "pims_resurrected",
-      "tokenExpiration": "1d"
+      "tokenExpiration": "60d"
     },
     "rabbitMq": {
       "url": "10.1.3.23",
@@ -29,7 +29,8 @@
       "batchRoutingKey": "batchQueue",
       "importOpenerpRoutingKey": "openerpBatch",
       "entityRoutingKey": "entityQueue",
-      "pipelineRoutingKey": "pipelineResponseQueue"
+      "pipelineRoutingKey": "pipelineResponseQueue",
+      "individualTopologyResultQueue": "entityResultQueue"
     },
     "filesFolder": {
       "path": "files",

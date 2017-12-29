@@ -13,10 +13,8 @@ redisClient.on("error", function (err) {
 
 function syncLog() {
     redisClient.hgetall("operations", function (err, reply) {
-        //console.log(reply);
         Object.keys(reply).map(e =>{
             let data = JSON.parse(reply[e]);
-            //console.log(`\n ${e} => `);
             elasticModel.addLogEntry(e,data);
         });
     });
