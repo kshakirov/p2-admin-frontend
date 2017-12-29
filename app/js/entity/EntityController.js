@@ -2,6 +2,7 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'EntityModel', 'EntityService',
     'AttributeSetModel', 'NotificationModel', 'MessageService', '$uibModal',
     '$q', 'ConverterModel', 'usSpinnerService', 'Upload', 'FileSaver', 'AttachmentService',
+    'ngNotify',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -17,7 +18,8 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
               usSpinnerService,
               Upload,
               FileSaver,
-              AttachmentService) {
+              AttachmentService,
+              ngNotify) {
 
         var entity_type_uuid = $rootScope.pims.entities.current.uuid,
             msg = {
@@ -106,16 +108,17 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
                         EntityModel.update(entity_type_uuid, entity_copy).then(function (response) {
                             EntityService.prepMsg(msg, entity, entity_type_uuid);
                             NotificationModel.notifyEntity(msg).then(function () {
-                                MessageService.setSuccessMessage($rootScope.message,
-                                    "Entity Updated")
+                                ngNotify.set("Entity Updated", 'success');
                             })
                         }, function (error) {
+                            ngNotify.set("Entity Is Not Updated" + error.msg, 'error');
                         })
                     } else {
                         EntityModel.create(entity_type_uuid, entity_copy).then(function (response) {
                             EntityService.prepMsg(msg, entity, entity_type_uuid);
-                            MessageService.setSuccessMessage($rootScope.message,
-                                "Entity Created ")
+                            ngNotify.set("Entity Created", 'success');
+                        }, function (error) {
+                            ngNotify.set("Entity Is Not Created" + error.msg, 'error');
                         });
                     }
                 } else {

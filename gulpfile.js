@@ -63,6 +63,7 @@ gulp.task('scripts', function() {
         'app/bower_components/angular-file-saver/dist/angular-file-saver.bundle.js',
         'app/bower_components/socket.io-client/dist/socket.io.js',
         'app/bower_components/angular-socket-io/socket.js',
+        'app/bower_components/ng-notify/src/scripts/ng-notify.js',
         'app/js/app.js',
         'app/js/services.js',
         'app/js/**/*.js'

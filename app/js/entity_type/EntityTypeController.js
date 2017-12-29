@@ -1,9 +1,10 @@
 pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
     'EntityTypeModel', '$cookies', '$location', '$routeParams', '$window',
     '$uibModal', 'MessageService', 'CustomSyncNotificationService','socket',
+    'ngNotify',
     function ($scope, $rootScope, $http, EntityTypeModel,
               $cookies, $location, $routeParams, $window, $uibModal,
-              MessageService, CustomSyncNotificationService,socket) {
+              MessageService, CustomSyncNotificationService,socket,ngNotify) {
 
         $rootScope.message = {};
         $rootScope.message = MessageService.prepareMessage();
@@ -92,7 +93,8 @@ pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
         });
 
         socket.on('individual', function (data) {
-            console.log(data);
+
+            ngNotify.set('Entity [' + data.pimsId + "] synced To External System [" + data.extSysId + "]");
         });
 
         socket.on('connection', function (data) {
