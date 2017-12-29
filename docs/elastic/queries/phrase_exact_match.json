@@ -1,0 +1,13 @@
+{
+  "query": {
+    "query_string": {
+      "fields": [
+        "70"
+      ],
+      "query": "*\"tyr sport\"*"
+    }
+  },
+  "sort": {
+    "70.raw": "asc"
+  }
+}
