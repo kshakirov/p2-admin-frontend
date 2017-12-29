@@ -1,7 +1,8 @@
 pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'CustomSyncOperationModel', 'NotificationModel',
     '$q', 'ExternalOperationModel', 'TransformationSchemaModel', 'EntityTypeModel',
-    'MessageService', 'ExternalSystemModel', 'Upload', 'FileSaver', 'CustomSyncOperationService',
+     'ExternalSystemModel', 'Upload', 'FileSaver', 'CustomSyncOperationService',
+    'ngNotify',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -12,11 +13,11 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
               ExternalOperationModel,
               TransformationSchemaModel,
               EntityTypeModel,
-              MessageService,
               ExternalSystemModel,
               Upload,
               FileSaver,
-              CustomSyncOperationService) {
+              CustomSyncOperationService,
+              ngNotify) {
 
         var loads = [
             ExternalOperationModel.findAll(),
@@ -24,7 +25,6 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
             EntityTypeModel.findAll(),
             ExternalSystemModel.findAll()
         ];
-        $rootScope.message = MessageService.prepareMessage();
 
         var message = {
             CustomOperation: {
@@ -73,18 +73,18 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
         $scope.saveCustomSyncOperation = function (custom_sync_operaton) {
             if (custom_sync_operaton.id) {
                 CustomSyncOperationModel.update(custom_sync_operaton).then(function (promise) {
-                    MessageService.setSuccessMessage($rootScope.message, "Your Custom Operation Saved!")
+                    ngNotify.set('Your Custom Operation Saved!', 'success');
                 })
             } else {
                 CustomSyncOperationModel.create(custom_sync_operaton).then(function (promise) {
-                    MessageService.setSuccessMessage($rootScope.message, "Your Custom Operation Started!")
+                    ngNotify.set('Your Custom Operation Created','success');
                 })
             }
         };
 
         $scope.deleteCustomSyncOperation = function (id) {
             CustomSyncOperationModel.delete(id).then(function (promise) {
-                MessageService.setDangerMessage($rootScope.message, "Your Custom Operation Deleted!")
+                ngNotify.set('Your Custom Operation Deleted!', 'success');
             })
         };
 
@@ -107,8 +107,7 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
                 })
             }
             NotificationModel.notifyBatch(message, queue_prefix).then(function (response) {
-                $rootScope.message.success = true;
-                MessageService.setInfoMessage($rootScope.message, "Your Operation Has Just Scheduled for Run")
+                ngNotify.set('Your Operation Has Just Scheduled for Run');
             })
 
         };
@@ -147,7 +146,7 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
                 FileSaver.saveAs(blob, fileName)
             }, function (data) {
                 if (data.status == 404) {
-                    MessageService.setDangerMessage($rootScope.message, "The File '" + filename + "' Does Not Exist");
+                    ngNotify.set("The File '" + filename + "' Does Not Exist", 'error');
                 } else {
                     console.log('Unable to download the file')
                 }

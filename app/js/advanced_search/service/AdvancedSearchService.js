@@ -1,4 +1,5 @@
 pimsServices.service('AdvancedSearchService', ['$http', function ($http) {
+    var empty_space_regexp = /\s+/;
     this.getReferences = function (attributes) {
         var keys = Object.keys(attributes);
         var references = keys.filter(function (key) {
@@ -40,6 +41,25 @@ pimsServices.service('AdvancedSearchService', ['$http', function ($http) {
             }
         });
         return r_c_ns;
+    };
+
+    function is_phrase(query_string) {
+        var match = query_string.match(empty_space_regexp);
+        return match !== null;
+    }
+
+    function prep_phrase(query_string) {
+        return "\"" + query_string + "\"";
+    }
+
+    function prep_wildcard(query_string) {
+        return "*" + query_string + "*"
+    }
+
+    function is_not_empty(query_string) {
+        if (query_string)
+            return query_string.length > 0;
+        return false;
     }
 
     this.prepSearchParams = function (s_p, layout) {
@@ -56,8 +76,12 @@ pimsServices.service('AdvancedSearchService', ['$http', function ($http) {
             if (key_type == 'integer' || key_type == 'decimal') {
 
             } else {
-                if (search_params[key] && search_params[key].length > 0) {
-                    search_params[key] = "*" + search_params[key] + "*"
+                var query_string = search_params[key];
+                if (is_not_empty(query_string)) {
+                    if (is_phrase(query_string))
+                        search_params[key] = prep_phrase(query_string);
+                    else
+                        search_params[key] = prep_wildcard(query_string)
                 }
             }
         });

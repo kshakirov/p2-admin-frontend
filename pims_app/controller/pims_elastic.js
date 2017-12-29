@@ -33,9 +33,11 @@ function resolve_references(response, references) {
 function replace_references(content, docs, names) {
     let docs_hash = {};
     docs.docs.map(doc => {
-        docs_hash[doc._id] = {
-            type: doc._type,
-            name: doc._source[names[doc._type]]
+        if(doc.found) {
+            docs_hash[doc._id] = {
+                type: doc._type,
+                name: doc._source[names[doc._type]]
+            }
         }
     });
 
