@@ -49,7 +49,7 @@ pimsApp.controller('EntityListController', ['$scope', '$route', '$routeParams',
                     return k;
             });
             keys = keys.map(function (k) {
-                return "attributeId=" + k + "&attributeValue=" + search_params[k];
+                return "attributeId=" + k + "&attributeValue=" + "%25" + search_params[k] + "%25";
             });
             if (keys.length==0)
                 return false
