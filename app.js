@@ -107,7 +107,6 @@ function intervalFunc() {
                         id: counter
                     };
                 io.emit('log', msg);
-                console.log(msg);
                 counter++
             }
         });
