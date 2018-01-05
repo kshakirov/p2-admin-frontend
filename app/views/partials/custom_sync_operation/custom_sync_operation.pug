@@ -27,6 +27,13 @@ uib-tabset(active="active", ng-init="init()")
                             ng-model="custom_sync_operation.customAttributes.entityTypeId.uuid",
                             ng-options="et.uuid as et.name  for et in entityTypes")
                     div.form-group
+                        label Batch Size
+                        input.form-control(type="number", data-ng-model="custom_sync_operation.customAttributes.batchSize")
+                    div.form-group
+                        label Date
+                        datepicker(date-format="yyyy-MM-dd HH:mm:ss")
+                            input.form-control(type="text", ng-model="date")
+                    div.form-group
                         label Filter
                         input.form-control(type="text", data-ng-model="custom_sync_operation.filter")
                     div.form-group
@@ -37,7 +44,8 @@ uib-tabset(active="active", ng-init="init()")
                         input.form-control(type="checkbox", data-ng-model="custom_sync_operation.customAttributes.hasAttachments")
                     div.btn-group
                         button.btn.btn-default(type="submit", ng-click="saveCustomSyncOperation(custom_sync_operation)") APPLY
-                        button.btn.btn-default(type="submit", ng-click="runCustomSyncOperation(custom_sync_operation)") RUN
+                        button.btn.btn-default(type="submit", ng-click="runFull(custom_sync_operation)") RUN FULL
+                        button.btn.btn-default(type="submit", ng-click="runIncremental(custom_sync_operation,date)") RUN INCR
                         button.btn.btn-danger(type="submit", ng-click="deleteCustomSyncOperation(custom_sync_operation.id)", ng-disabled="!custom_sync_operation.id") DELETE
                         button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL
     uib-tab(heading="Attachments" )

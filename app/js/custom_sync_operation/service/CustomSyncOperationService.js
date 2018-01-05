@@ -40,9 +40,11 @@ pimsServices.service('CustomSyncOperationService', [
                 var ext_system = pipe.targetSystem;
                 var entity_type = ext_system.customAttributes.entities[entity_type_id];
                 var url = entity_type.write.url;
-                url = url.split("/");
-                if (url.length > 0)
-                    return url[2];
+                if (url) {
+                    url = url.split("/");
+                    if (url.length > 0)
+                        return url[2];
+                }
                 return "No File Is Configured";
 
             }
@@ -53,6 +55,26 @@ pimsServices.service('CustomSyncOperationService', [
 pimsServices.service('CustomSyncNotificationService', [
     function () {
         var operations = {};
+        var message = {
+            CustomOperation: {
+                name: null,
+                id: null,
+                pipelineId: null,
+                entityTypeId: null,
+                batchSize: null,
+                args: {
+                    "incremental": true,
+                    "lastModifiedAfter": "1970-01-01 15:45:20"
+                }
+            },
+            EntityInfo: {
+                id: null,
+                entityTypeId: null
+            },
+            PipelineInfo: {
+                transformationSchemata: []
+            }
+        };
 
         this.processMessage = function (msg) {
             console.log(operations);
@@ -61,11 +83,33 @@ pimsServices.service('CustomSyncNotificationService', [
                 console.log("Yes")
 
             } else {
-                operations[msg.operationId] = msg
+                operations[msg.operationId] = msg;
                 console.log("NO")
             }
         };
         this.getNotifications = function () {
             return operations;
+        };
+        this.prepMessage = function (custom_sync_operation) {
+            var m = {};
+            angular.copy(message, m);
+            m.CustomOperation.name = custom_sync_operation.name;
+            m.CustomOperation.pipelineId = custom_sync_operation.customAttributes.pipe.id;
+            m.CustomOperation.id = custom_sync_operation.id;
+            m.CustomOperation.batchSize = custom_sync_operation.customAttributes.batchSize || 1500;
+            m.CustomOperation.entityTypeId = custom_sync_operation.customAttributes.entityTypeId.uuid;
+            m.EntityInfo.entityTypeId = custom_sync_operation.customAttributes.entityTypeId.uuid;
+            m.PipelineInfo.transformationSchemata = custom_sync_operation.customAttributes.transformationSchema;
+            return m;
+        };
+
+        this.makeFull = function (m) {
+            m.CustomOperation.args.incremental = false;
+            return m;
+        };
+
+        this.addDate = function (m, date) {
+            m.CustomOperation.args.lastModifiedAfter = date || message.CustomOperation.args.lastModifiedAfter;
+            return m;
         }
     }]);

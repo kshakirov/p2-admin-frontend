@@ -67,7 +67,7 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
     };
 
     function is_reference(i, regexp) {
-        if(i.hasOwnProperty('path')) {
+        if (i.hasOwnProperty('path')) {
             var match = i.path.match(regexp);
             if (match)
                 return true;
@@ -81,7 +81,7 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
     }
 
     function get_parent_attr_from_path(i) {
-        if(i.hasOwnProperty('path') && i.path) {
+        if (i.hasOwnProperty('path') && i.path) {
             var segs = i.path.split('.');
             return segs[0];
         }
@@ -122,7 +122,7 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
     };
 
     function check_empty_default(def) {
-        if(def) {
+        if (def) {
             return def.find(function (d) {
                 if (d)
                     return d;
@@ -225,6 +225,8 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
         }
         if (attr_type.toLowerCase() === 'integer') {
             return parseInt(c)
+        } else if (attr_type.toLowerCase() === 'reference') {
+            return parseInt(c)
         } else if (attr_type.toLowerCase() === 'decimal') {
             return parseFloat(c)
         } else if (attr_type.toLowerCase() === 'boolean') {
@@ -298,7 +300,7 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
     function save_entity_types(preproc_schema) {
         if (preproc_schema) {
             var entity_type_eds = preproc_schema.filter(function (i) {
-                if(i.out.entityTypeId)
+                if (i.out.entityTypeId)
                     return i;
             });
             return entity_type_eds.map(function (ps) {
@@ -345,7 +347,7 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
     this.preprocSchema = function (preproc_schema) {
         var schema = preproc_schema || [];
         schema = schema.map(function (s) {
-            if(s.in) {
+            if (s.in) {
                 var def = s.in.map(function (sd) {
                     return sd.default
                 });

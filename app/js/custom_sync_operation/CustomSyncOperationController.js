@@ -1,8 +1,8 @@
 pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'CustomSyncOperationModel', 'NotificationModel',
     '$q', 'ExternalOperationModel', 'TransformationSchemaModel', 'EntityTypeModel',
-     'ExternalSystemModel', 'Upload', 'FileSaver', 'CustomSyncOperationService',
-    'ngNotify',
+    'ExternalSystemModel', 'Upload', 'FileSaver', 'CustomSyncOperationService',
+    'ngNotify', 'CustomSyncNotificationService', 'uibDateParser','$filter',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -17,7 +17,9 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
               Upload,
               FileSaver,
               CustomSyncOperationService,
-              ngNotify) {
+              ngNotify,
+              CustomSyncNotificationService,
+              uibDateParser, $filter ) {
 
         var loads = [
             ExternalOperationModel.findAll(),
@@ -25,21 +27,7 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
             EntityTypeModel.findAll(),
             ExternalSystemModel.findAll()
         ];
-
-        var message = {
-            CustomOperation: {
-                name: null,
-                pipelineId: null,
-                entityTypeId: null,
-            },
-            EntityInfo: {
-                id: null,
-                entityTypeId: null
-            },
-            PipelineInfo: {
-                transformationSchemata: []
-            }
-        };
+        $scope.date =  $filter('date')(Date.now(),'yyyy-MM-dd HH:mm:ss');
 
         $scope.init = function () {
             var id = $routeParams.id;
@@ -63,6 +51,9 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
                             $scope.downloadFilename = CustomSyncOperationService
                                 .getDownloadFileName($scope.custom_sync_operation, promises[0], promises[3])
                         }
+                        if (angular.isUndefined(custom_sync_operation.customAttributes.batchSize)) {
+                            $scope.custom_sync_operation.customAttributes.batchSize = 1500;
+                        }
 
                     })
                 }
@@ -77,7 +68,7 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
                 })
             } else {
                 CustomSyncOperationModel.create(custom_sync_operaton).then(function (promise) {
-                    ngNotify.set('Your Custom Operation Created','success');
+                    ngNotify.set('Your Custom Operation Created', 'success');
                 })
             }
         };
@@ -92,13 +83,7 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
             $location.path("/custom-sync-operations");
         };
 
-        $scope.runCustomSyncOperation = function (custom_sync_operation) {
-            var queue_prefix = custom_sync_operation.customAttributes.queuePrefix;
-            message.CustomOperation.name = custom_sync_operation.name;
-            message.CustomOperation.pipelineId = custom_sync_operation.customAttributes.pipe.id;
-            message.CustomOperation.entityTypeId = custom_sync_operation.customAttributes.entityTypeId.uuid;
-            message.EntityInfo.entityTypeId = custom_sync_operation.customAttributes.entityTypeId.uuid;
-            message.PipelineInfo.transformationSchemata = custom_sync_operation.customAttributes.transformationSchema;
+        function runCustomSyncOperation(message, queue_prefix, downloadFilename) {
             if ($scope.downloadFilename) {
                 CustomSyncOperationModel.deleteFile($scope.downloadFilename).then(function () {
                     console.log("File Deleted")
@@ -106,10 +91,25 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
                     console.log("Problems Deleting file")
                 })
             }
+            console.log(message);
             NotificationModel.notifyBatch(message, queue_prefix).then(function (response) {
                 ngNotify.set('Your Operation Has Just Scheduled for Run');
             })
 
+        }
+
+        $scope.runFull = function (custom_sync_operation) {
+            var message = CustomSyncNotificationService.prepMessage(custom_sync_operation),
+                queue_prefix = custom_sync_operation.customAttributes.queuePrefix;
+            message = CustomSyncNotificationService.makeFull(message);
+            runCustomSyncOperation(message, queue_prefix, $scope.downloadFilename)
+        };
+        $scope.runIncremental = function (custom_sync_operation, date) {
+            var message = CustomSyncNotificationService.prepMessage(custom_sync_operation),
+                queue_prefix = custom_sync_operation.customAttributes.queuePrefix;
+            console.log(date);
+            message = CustomSyncNotificationService.addDate(message,date);
+            runCustomSyncOperation(message, queue_prefix, $scope.downloadFilename)
         };
 
         $scope.upload = function (file) {
