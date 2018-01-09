@@ -32,13 +32,20 @@ function readCsv(req, res) {
                 pagination.next = rowNum - 1;
             }
 
+            if(rowNum>=start + pageSize + 1){
+                //console.log(`Ready to exit ${rowNum} `);
+                stream.destroy();
+                this.emit("end");
+            }
+
             rowNum = rowNum + 1;
         })
         .on("end", function () {
-            console.log("done");
-            res.json(pagination)
+            console.log("End is caught");
+            stream.destroy();
+            res.json(pagination);
+            console.log("Life after death")
         });
-
 
 }
 
