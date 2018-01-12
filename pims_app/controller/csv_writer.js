@@ -21,25 +21,42 @@ function get_fields(body) {
 }
 
 
+function merge_entities_with_headers(headers, entities) {
+    let merged_entities = entities.map(e => {
+        let item = {};
+        headers.map(h => {
+            item[h] = "";
+        });
+        let keys = Object.keys(e);
+        keys.map(k => {
+            item[k] = e[k];
+        });
+        return item
+    });
+    return merged_entities;
+}
+
 function writeCsv(req, res) {
     let fileName = req.params.filename,
-        data = req.body;
+        headers = req.body.headers,
+        entities = req.body.entities;
     fileName = pimsConfig.filesFolder.path + "/" + fileName;
-    let fields = get_fields(req.body);
+    let merged_entities = merge_entities_with_headers(headers, entities);
     if (!fs.existsSync(fileName)) {
         console.log(`Created Filename ${fileName}`);
-        writer = csvWriter({headers: fields});
+        writer = csvWriter({headers: headers});
         writer = csvWriter({sendHeaders: true});
     } else {
         console.log(`Appended Filename ${fileName}`);
         writer = csvWriter({sendHeaders: false});
     }
-
     writer.pipe(fs.createWriteStream(fileName, {flags: 'a'}));
-    data.map(function (d) {
+    merged_entities.map(function (d) {
         writer.write(d);
     });
     writer.end();
+
+
     res.json({result: true})
 }
 

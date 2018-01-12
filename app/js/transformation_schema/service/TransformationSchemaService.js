@@ -371,7 +371,7 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
         var attribute = attributes.find(function (a) {
             return a.uuid === id
         });
-        if (attribute.valueType === "REFERENCE")
+        if (attribute.valueType === "REFERENCE" || attribute.valueType === "ARRAY")
             return attribute.properties.referencedEntityTypeId;
         else
             return false
@@ -379,7 +379,7 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
 
     this.getReferencedAttributes = function (attributes) {
         var ref_attrs = attributes.filter(function (a) {
-            return a.valueType === "REFERENCE";
+            return (a.valueType === "REFERENCE" || a.valueType === "ARRAY");
         });
         return ref_attrs.map(function (ra) {
             return ra.properties.referencedEntityTypeId;

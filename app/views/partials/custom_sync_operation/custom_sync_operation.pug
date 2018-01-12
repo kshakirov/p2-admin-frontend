@@ -20,7 +20,7 @@ uib-tabset(active="active", ng-init="init()")
                         ng-options="pipe.id  as pipe.name  for pipe in pipes")
                     div.form-group(ng-if="transformationSchemata")
                         label Transformation Schema
-                        multiselect(ng-model="custom_sync_operation.customAttributes.transformationSchema", options="transformationSchemata" id-prop="id" display-prop="name")
+                        multiselect(ng-model="custom_sync_operation.customAttributes.transformationSchema", options="transformationSchemata" id-prop="id" display-prop="name" show-search="true")
                     div.form-group
                         label Entity Type
                         select.form-control(id="entityType",
