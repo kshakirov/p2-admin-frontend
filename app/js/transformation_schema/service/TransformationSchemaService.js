@@ -83,7 +83,7 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
     function get_parent_attr_from_path(i) {
         if (i.hasOwnProperty('path') && i.path) {
             var segs = i.path.split('.');
-            return segs[0];
+            return segs[1];
         }
     }
 
@@ -104,6 +104,7 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
                     }
                     return {
                         uuid: parseInt(get_parent_attr_from_path(i)),
+                        root: get_root_dto(i),
                         path: i.path
                     }
                 });
@@ -161,6 +162,7 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
                 var inn = s.in.map(function (i) {
                     return {
                         uuid: parseInt(i.uuid),
+                        root: get_root(i),
                         path: selectPath(i)
                     }
                 });
@@ -179,13 +181,55 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
     };
 
 
+    function get_root(i) {
+        var segments = i.path.split('.');
+        if (segments && segments.length > 0) {
+            return segments[0];
+        }
+    }
+
+    function get_root_dto(i) {
+        var segments = i.path.split('.');
+        if (segments && segments.length > 0) {
+            return segments[0];
+        }
+    }
+
+    function get_uuid_dto(uuid) {
+        if(angular.isUndefined(uuid) || isNaN(uuid)){
+            return null;
+        }else{
+            return parseInt(uuid)
+        }
+    }
+
+    function get_path_dto(i) {
+        if(angular.isUndefined(i.uuid) || isNaN(i.uuid)){
+            return i.root;
+        }else{
+            return i.root + "." + i.uuid + ".value";
+        }
+
+
+
+    }
+
     function selectPath(i, dto) {
-        if (angular.isUndefined(i.uuid)) {
+        if (angular.isUndefined(i.uuid) && !i.hasOwnProperty('root')) {
             return i.path
+        }
+        if (i.hasOwnProperty('root')) {
+            if (angular.isUndefined(i.uuid) || isNaN(i.uuid)) {
+                return i.root;
+            }
+            else {
+                return i.root + '.' + i.uuid;
+            }
         }
         if (dto) {
             return i.uuid + ".value";
         }
+
         return i.uuid;
     }
 
@@ -242,9 +286,18 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
     this.prepTransformationSchema = function (transformation_schema, dto, attributes) {
         return transformation_schema.map(function (schema) {
             var inn = schema.in.map(function (i) {
-                if (i.hasOwnProperty('ref')) {
-                    return {
-                        ref: i.ref
+                if (dto) {
+                    if (schema.reference) {
+
+                        return {
+                            uuid: i.uuid,
+                            path: i.root + "." + i.uuid  + ".value." + schema.reference.uuid + ".value"
+                        }
+                    } else {
+                        return {
+                            uuid: get_uuid_dto(i.uuid),
+                            path: get_path_dto(i)
+                        }
                     }
                 } else {
                     return {
@@ -253,15 +306,6 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
                     }
                 }
             });
-
-            if (dto && schema.reference) {
-                inn = inn.map(function (i) {
-                    return {
-                        uuid: i.uuid,
-                        path: i.path + ".attributes." + schema.reference.uuid + ".value"
-                    }
-                });
-            }
 
 
             var converters = schema.converters;

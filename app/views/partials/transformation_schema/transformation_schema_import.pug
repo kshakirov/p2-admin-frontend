@@ -7,17 +7,23 @@
                     a.pull-right.btn.btn-success.btn-xs(ng-click="addItemAttribute(item)")
                         span.glyphicon.glyphicon-plus
         .row(ng-repeat="attribute in item.in")
-            .col-sm-10
-                .input-group.small
-                    select.form-control.input-sm(ng-model="attribute.uuid",
-                    ng-options=" a.uuid as a.name for a in attributes", ng-change="checkReference(attribute, item)")
-                    span.input-group-addon.pointer-cursor
-                        span.glyphicon.glyphicon-remove
-                .input-group.small(ng-if="item.reference")
-                    select.form-control.input-sm(ng-model="item.reference.uuid",
-                    ng-options=" a.uuid as a.name for a in item.reference.attributes")
-                    span.input-group-addon.pointer-cursor
-                        span.glyphicon.glyphicon-remove(ng-click="removeInPathItem(item, $index)")
+            .row
+                .col-sm-10
+                    .input-group.small
+                        input.form-control.input-sm(type="text", data-ng-model="attribute.root")
+                        span.input-group-addon.small.pointer-cursor PATH
+            .row.top-small-buffer
+                .col-sm-10
+                    .input-group.small
+                        select.form-control.input-sm(ng-model="attribute.uuid",
+                        ng-options=" a.uuid as a.name for a in attributes", ng-change="checkReference(attribute, item)")
+                        span.input-group-addon.pointer-cursor
+                            span.glyphicon.glyphicon-remove
+                    .input-group.small(ng-if="item.reference")
+                        select.form-control.input-sm(ng-model="item.reference.uuid",
+                        ng-options=" a.uuid as a.name for a in item.reference.attributes")
+                        span.input-group-addon.pointer-cursor
+                            span.glyphicon.glyphicon-remove(ng-click="removeInPathItem(item, $index)")
     .col-lg-2
         .row
             .row

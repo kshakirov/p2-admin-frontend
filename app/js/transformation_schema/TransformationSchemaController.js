@@ -177,6 +177,7 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
 
         $scope.checkReference = function (value, item) {
             var reference_id = TransformationSchemaService.getReferencedEntity(value.uuid, $scope.attributes);
+            value.root = 'attributes';
             if (reference_id) {
                 console.log(reference_id);
                 AttributeModel.findAll(reference_id).then(function (attributes) {
