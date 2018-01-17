@@ -17,7 +17,7 @@ let analyzer = {
             "tokenizer": "keyword"
         }
     }
-}
+};
 
 let indexParams = {
     index: elastic_index,
@@ -26,7 +26,10 @@ let indexParams = {
             analysis: analyzer
         }
     }
-};
+},
+    indexDelete = {
+    index: elastic_index
+    };
 
 
 function set_window_size(size) {
@@ -39,11 +42,12 @@ function set_window_size(size) {
     });
 }
 
+console.log(`Checking Index [${elastic_index}] Existence`);
 
-client.indices.exists(indexParams).then((r) => {
+client.indices.exists(indexDelete).then((r) => {
     if (r) {
         console.log("Index  Exists ...");
-        client.indices.delete(indexParams).then(() => {
+        client.indices.delete(indexDelete).then(() => {
             console.log("Index Successfully Deleted")
         })
 
