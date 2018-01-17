@@ -1,5 +1,6 @@
 let amqp = require('amqplib/callback_api'),
     config = require('config'),
+    csvProcessor = require('./csv_reader_redis'),
     amqpConn = null;
     pimsConfig = config.get('config');
 
@@ -40,12 +41,13 @@ function startConnenction(websocket_io) {
         console.log("[AMQP] connected");
         amqpConn = conn;
         startListener(websocket_io);
+        startFileReaderQueueListener();
     });
 }
 
 function processMsg(msg) {
-    console.log(msg.content.toString())
-    console.log()
+    console.log(msg.content.toString());
+    console.log();
 }
 
 function closeOnErr(err) {
@@ -75,6 +77,28 @@ function startListener(websocket_io) {
                 }
             }, { noAck: true });
             console.log("Listener is started");
+        });
+    });
+}
+
+function startFileReaderQueueListener() {
+    amqpConn.createChannel(function(err, ch) {
+        if (closeOnErr(err)) return;
+        ch.on("error", function(err) {
+            console.error("[AMQP] channel error", err.message);
+        });
+        ch.on("close", function() {
+            console.log("[AMQP] channel closed");
+        });
+
+        ch.prefetch(10);
+        ch.assertQueue(pimsConfig.rabbitMq.fleReaderQueue, { durable: false }, function(err, _ok) {
+            if (closeOnErr(err)) return;
+            ch.consume(pimsConfig.rabbitMq.fleReaderQueue, function (msg) {
+                console.log("Request To Process File Received");
+                csvProcessor.processCsv(msg);
+            }, { noAck: true });
+            console.log("FileReadeкQueue Listener is started");
         });
     });
 }

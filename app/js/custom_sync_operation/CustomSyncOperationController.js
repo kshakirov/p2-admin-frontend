@@ -84,8 +84,8 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
         };
 
         function runCustomSyncOperation(message, queue_prefix, downloadFilename) {
-            if ($scope.downloadFilename) {
-                CustomSyncOperationModel.deleteFile($scope.downloadFilename).then(function () {
+            if (downloadFilename) {
+                CustomSyncOperationModel.deleteFile(downloadFilename).then(function () {
                     console.log("File Deleted")
                 }, function (error) {
                     console.log("Problems Deleting file")
@@ -102,6 +102,7 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
             var message = CustomSyncNotificationService.prepMessage(custom_sync_operation),
                 queue_prefix = custom_sync_operation.customAttributes.queuePrefix;
             message = CustomSyncNotificationService.makeFull(message);
+            message = CustomSyncNotificationService.addFile(message, $scope.custom_sync_operation.customAttributes.filename);
             runCustomSyncOperation(message, queue_prefix, $scope.downloadFilename)
         };
         $scope.runIncremental = function (custom_sync_operation, date) {

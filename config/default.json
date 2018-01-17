@@ -30,7 +30,8 @@
       "importOpenerpRoutingKey": "openerpBatch",
       "entityRoutingKey": "entityQueue",
       "pipelineRoutingKey": "pipelineResponseQueue",
-      "individualTopologyResultQueue": "entityResultQueue"
+      "individualTopologyResultQueue": "entityResultQueue",
+      "fleReaderQueue": "fileQueue"
     },
     "filesFolder": {
       "path": "files",

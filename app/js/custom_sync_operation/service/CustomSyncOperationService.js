@@ -112,4 +112,11 @@ pimsServices.service('CustomSyncNotificationService', [
             m.CustomOperation.args.lastModifiedAfter = date || message.CustomOperation.args.lastModifiedAfter;
             return m;
         }
+
+        this.addFile = function (m, downloadFilename) {
+            if(downloadFilename){
+                m.CustomOperation.args.filename = downloadFilename
+            }
+            return m;
+        }
     }]);

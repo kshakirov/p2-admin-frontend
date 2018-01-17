@@ -1,16 +1,19 @@
 let restClient = require('node-rest-client-promise').Client(),
-    metadata_base_url = "http://10.1.3.23:8080",
-    waterfall = require("promise-waterfall"),
-    sync_base_url = "http://10.1.2.117:4567";
+    config = require('config'),
+    pimsConfig = config.get('config'),
+    pipe_relative_url = "/sync-module/external-operations/",
+    attribute_relative_url = "/rest/entity-types/1/attributes/",
+    metadata_base_url = pimsConfig.metadataServer.url,
+    sync_base_url = pimsConfig.syncModule.url;
 
 
 let attributes_regex = /.*attributes\.\d+/;
 
 function get_attributes_ids(schemata) {
     let attrbiutes= schemata.schema.filter(s =>{
-            if(s.out.match(attributes_regex)){
-                return s;
-            }
+        if(s.out.match(attributes_regex)){
+            return s;
+        }
     });
     return attrbiutes.map(a => {
         let parts = a.out.split(".");
@@ -23,13 +26,13 @@ function get_attributes_ids(schemata) {
 }
 
 let get_pipeline = function  (pipeline_id, entity_type_id) {
-    let url = sync_base_url + "/sync-module/external-operations/" + pipeline_id;
+    let url = sync_base_url + pipe_relative_url + pipeline_id;
     return restClient.getPromise(url).then((data)=>{
         let schemata = data.data.externalOperation.transformationSchemata;
         if(schemata.hasOwnProperty(entity_type_id)){
             return get_attributes_ids(schemata[entity_type_id].schema);
         }else{
-          return false;
+            return false;
         }
     },(e)=>{
         console.log(e)
@@ -43,7 +46,7 @@ let get_attribute = function (url) {
 };
 
 let get_attributes = function (ids) {
-    let  url = metadata_base_url + "/rest/entity-types/1/attributes/";
+    let  url = metadata_base_url + attribute_relative_url;
     let actions = ids.map(i =>{
         return get_attribute(url +i)
     });
@@ -74,15 +77,23 @@ function get_array_out_attributes(id_objs, array_ids) {
     return out_array_names.map(o => {return o.out})
 }
 
-get_pipeline(23, 19).then(id_objs =>{
-    let ids = id_objs.map(io =>{return io.id});
-     get_attributes(ids).then(atts =>{
-         let array_ids =get_array_attributes(atts);
-         let names  = get_array_out_attributes(id_objs,array_ids);
-         console.log(names);
-         return names;
-     });
 
 
- });
+function  resolveArrayAttributes(pipelineId, entityTypeId ) {
+    return get_pipeline(pipelineId,entityTypeId).then(id_objs =>{
+        let ids = id_objs.map(io =>{return io.id});
+        return get_attributes(ids).then(atts =>{
+            let array_ids =get_array_attributes(atts);
+            let array_names  = get_array_out_attributes(id_objs,array_ids);
+            console.log(array_names);
+            return {
+                arrayNames: array_names,
+                primaryKey: "id"
+            };
+        });
 
+
+    });
+}
+
+exports.resolveArrayAttributes = resolveArrayAttributes;
