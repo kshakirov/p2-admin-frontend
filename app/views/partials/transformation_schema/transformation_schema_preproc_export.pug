@@ -1,0 +1,68 @@
+.row.top-buffer(ng-repeat="item in preprocSchema", ng-if="!schema.customAttributes.export")
+    hr
+    .col-lg-3
+        .row(ng-repeat="attribute in item.in")
+            .row
+                .col-sm-10
+                    .input-group.small
+                        select.form-control.input-sm(ng-model="attribute.entityTypeId",
+                        ng-options=" et.uuid as et.name for et in entity_types", ng-change="preprocEntityTypeChange(item, attribute.entityTypeId)")
+                        span.input-group-addon.pointer-cursor
+                            span.glyphicon.glyphicon-remove
+            .row.top-small-buffer
+                .col-sm-10
+                    .input-group.small
+                        input.form-control.input-sm(type="text", data-ng-model="attribute.root")
+                        span.input-group-addon.small.pointer-cursor PATH
+            .row.top-small-buffer(ng-if="attribute.entityTypeId")
+                .col-sm-10
+                    .input-group.small
+                        select.form-control.input-sm(ng-model="attribute.uuid",
+                        ng-options=" a.uuid as a.name for a in preproc_entity_type_attrs[attribute.entityTypeId]")
+                        span.input-group-addon.pointer-cursor
+                            span.glyphicon.glyphicon-remove
+    .col-lg-2
+        .row
+            .row
+                .col-sm-2
+                    .form-group.pull-right
+                        a.pull-right.btn.btn-info.btn-xs(ng-click="addItemConst(item)")
+                            span.glyphicon.glyphicon-minus-sign
+            .row(ng-repeat="i in item.default track by $index")
+                .col-sm-10
+                    .input-group.small
+                        input.form-control.input-sm(type="text", data-ng-model="item.default[$index]")
+                        span.input-group-addon.pointer-cursor
+                            span.glyphicon.glyphicon-remove(ng-click="removeItemConst(item, $index)")
+
+    .col-lg-3
+        .row
+            .col-sm-2
+                .form-group.pull-right
+                    a.pull-right.btn.btn-warning.btn-xs(ng-click="addItemConverter(item)")
+                        span.glyphicon.glyphicon-plus
+        .row(ng-repeat="converter in item.converters")
+            .col-sm-10
+                .input-group
+                    select.form-control.input-sm(ng-model="converter.id",
+                    ng-options="c.id as c.name for c in converters")
+                    span.input-group-addon.pointer-cursor
+                        span.glyphicon.glyphicon-remove(ng-click="removeItemConverter(item)")
+    .col-lg-3
+        .row
+            .col-sm-10
+                .input-group
+                    select.form-control.input-sm(ng-model="item.out.entityTypeId",
+                    ng-options=" et.uuid as et.name for et in entity_types")
+                    span.input-group-addon.pointer-cursor
+                        span.glyphicon.glyphicon-remove
+        .row.top-small-buffer
+            .col-sm-10
+                .input-group.small
+                    input.form-control.input-sm(type="text", data-ng-model="item.out.path")
+                    span.input-group-addon.small.pointer-cursor PATH
+    .col-lg-1
+        form(role="form")
+            .form-group
+                a.btn.btn-danger.btn-xs(ng-click="removePreProcSchemaItem($index)")
+                    span.glyphicon.glyphicon-remove

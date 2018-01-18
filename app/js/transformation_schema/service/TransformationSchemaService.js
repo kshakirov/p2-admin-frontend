@@ -1,4 +1,5 @@
 pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', function ($http, $rootScope) {
+    var d_regex = /\d+/;
     function getPath(out) {
         if (out) {
             var paths = out.split(".");
@@ -77,7 +78,7 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
 
     function get_child_attr_from_path(i) {
         var segs = i.path.split('.');
-        return segs[3];
+        return segs[4];
     }
 
     function get_parent_attr_from_path(i) {
@@ -301,6 +302,7 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
                     }
                 } else {
                     return {
+                        ref: i.ref,
                         uuid: parseInt(i.uuid),
                         path: selectPath(i, dto)
                     }
@@ -355,10 +357,35 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
 
     }
 
-    this.prepPreProcSchema = function (preproc_schema) {
+    function is_import_schema(schema) {
+        return schema.customAttributes.hasOwnProperty('export') &&
+            schema.customAttributes.export;
+    }
+
+    function  get_entity_in_id(preproc_schema) {
+        if(preproc_schema && preproc_schema.length > 0){
+            return preproc_schema[0].in[0].entityTypeId;
+        }
+        return false
+    }
+
+    function prep_preproc_schema_export(preproc_schema, dto, self) {
+        var entity_in_id = get_entity_in_id(preproc_schema);
+        var schema = prep_preproc_schema_import(preproc_schema,dto,self);
+        schema = schema.map(function (s) {
+            s.in.map(function (si) {
+                si.entityTypeId = entity_in_id;
+                return si
+            });
+            return s
+        });
+        return schema;
+    }
+
+    function prep_preproc_schema_import(preproc_schema, dto, self) {
         var entity_type_ids = save_entity_types(preproc_schema);
         if (entity_type_ids.length > 0) {
-            var schema = this.prepTransformationSchema(preproc_schema, false);
+            var schema = self.prepTransformationSchema(preproc_schema, dto);
             entity_type_ids.map(function (id, index) {
                 var p = schema[index].out;
                 if (p && p.length > 0) {
@@ -370,6 +397,15 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
             return schema;
         }
         return [];
+    }
+
+    this.prepPreProcSchema = function (preproc_schema, schema) {
+        if(is_import_schema(schema)){
+            return prep_preproc_schema_import(preproc_schema, false, this)
+        }else{
+            return prep_preproc_schema_export(preproc_schema, true, this)
+        }
+
     };
 
     function get_entity_type_id(out) {
@@ -383,14 +419,18 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
     function get_out_path(out) {
         if (out) {
             var path = out.split(".");
-            return path[1];
+            if(path[2] && !path[2].match(d_regex)){
+                return path[1] + "." + path[2]
+            }else{
+                return path[1];
+            }
+
         }
         return null;
     }
 
-    this.preprocSchema = function (preproc_schema) {
-        var schema = preproc_schema || [];
-        schema = schema.map(function (s) {
+    function prep_import_preproc(schema) {
+        return schema.map(function (s) {
             if (s.in) {
                 var def = s.in.map(function (sd) {
                     return sd.default
@@ -399,16 +439,56 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
             if (!check_empty_default(def)) {
                 def = null;
             }
+            var converters = s.converters;
+            if (converters) {
+                converters = s.converters.map(function (c) {
+                    return {
+                        id: c.id,
+                        params: c.params
+                    }
+                });
+            }
             return {
                 in: s.in,
                 default: def,
+                converters: converters,
                 out: {
                     entityTypeId: get_entity_type_id(s.out),
                     path: get_out_path(s.out)
                 }
             }
-        })
-        return schema;
+        });
+    }
+
+    function get_in_path(inn) {
+        if(inn.hasOwnProperty('path')) {
+            var segments = inn.path.split('.');
+            if (segments.length > 0) {
+                return segments[0];
+            }
+        }
+        return ''
+    }
+
+    function prep_export_preproc(schema) {
+        var es = schema.map(function (s) {
+            s.in.map(function (i) {
+                i.root =  get_in_path(i);
+                i.path = get_parent_attr_from_path(i);
+                return i
+            });
+            return s
+        });
+        return es;
+    }
+
+    this.preprocSchema = function (preproc_schema, schema) {
+        var preproc_schema = preproc_schema || [];
+        preproc_schema = prep_import_preproc(preproc_schema);
+        if(!is_import_schema(schema)){
+            preproc_schema = prep_export_preproc(preproc_schema);
+        }
+        return preproc_schema;
     };
 
     this.getReferencedEntity = function (id, attributes) {
