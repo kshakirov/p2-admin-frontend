@@ -6,23 +6,23 @@ let fs = require('fs'),
     syncModuleTools = require('../controller/sync_module_tools'),
     currentRow = false,
     uuidv1 = require('uuid/v1');
-    csv = require("fast-csv");
+csv = require("fast-csv");
 
 
 function push_batch_to_redis(batch, content) {
     console.log(`Pushed to Redis ${batch.length} rows`);
     content.Entities = batch;
-    redisClient.rpush(["fileList", JSON.stringify(content)], function (err, reply) {
-        if (err) {
-            console.log("Error");
-            console.log(err)
-        }
-        if (reply) {
-            console.log(JSON.parse(reply));
-        } else {
-            console.log("undefined reply");
-        }
-    })
+    // redisClient.rpush(["fileList", JSON.stringify(content)], function (err, reply) {
+    //     if (err) {
+    //         console.log("Error");
+    //         console.log(err)
+    //     }
+    //     if (reply) {
+    //         console.log(JSON.parse(reply));
+    //     } else {
+    //         console.log("undefined reply");
+    //     }
+    // })
 }
 
 
@@ -33,8 +33,10 @@ function has_array_attributes(attributesData) {
 
 function set_current_row(row, attributesData) {
     currentRow = JSON.parse(JSON.stringify(row));
-    attributesData.arrayNames.map(a => {
-        currentRow[a] = [];
+    attributesData.arrayNames.map(aa => {
+        aa.map(a =>{
+            currentRow[a] = [];
+        })
     })
 }
 
@@ -43,18 +45,27 @@ function get_current_row() {
 }
 
 function release_current_row(batch) {
-    if(currentRow)
+    if (currentRow)
         batch.push(currentRow);
     return batch;
 }
 
 function update_current_row(attributesData, row) {
-    let not_empty_key = attributesData.arrayNames.find(a => {
-        if (row.hasOwnProperty(a) && row[a].length > 0) {
-            return a
-        }
+    let not_empty_keys = attributesData.arrayNames.filter(a => {
+        let found = a.find(f=>{
+            if(row.hasOwnProperty(f) && row[f].length > 0){
+                return f;
+            }
+        });
+        if(found)
+            return a;
+        return false;
     });
-    currentRow[not_empty_key].push(row[not_empty_key]);
+    not_empty_keys.map(kk =>{
+        kk.map(k=>{
+            currentRow[k].push(row[k]);
+        })
+    });
 }
 
 
@@ -121,16 +132,29 @@ function read_csv(content, attributes_data) {
 }
 
 
+function has_schamata(content) {
+    let schemata = content.PipelineInfo.transformationSchemata;
+    if (schemata && schemata.length > 0)
+        return true;
+    return false;
+}
+
 function processCsv(message) {
     let content = JSON.parse(message.content.toString()),
         pipelineId = content.CustomOperation.pipelineId,
         operationId = uuidv1(),
         entityTypeId = content.CustomOperation.entityTypeId;
     content.CustomOperation.operationId = operationId;
-    syncModuleTools.resolveArrayAttributes(pipelineId, entityTypeId).then(attributes_data => {
-        console.log(attributes_data);
-        read_csv(content, attributes_data)
-    })
+    if (has_schamata(content)) {
+        syncModuleTools.resolveArrayAttributesBySchemata(content).then(attributes_data=>{
+            read_csv(content, attributes_data);
+        })
+    } else {
+        syncModuleTools.resolveArrayAttributes(pipelineId, entityTypeId).then(attributes_data => {
+            console.log(attributes_data);
+            read_csv(content, attributes_data)
+        })
+    }
 
 
 }
