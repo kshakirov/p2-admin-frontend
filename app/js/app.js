@@ -126,6 +126,14 @@ pimsApp.config(["$routeProvider", "$locationProvider", "ChartJsProvider",
                 templateUrl: 'partial/resource/resource',
                 controller: 'ResourceController'
             })
+            .when('/filters', {
+                templateUrl: 'partial/filter/filters',
+                controller: 'FilterListController'
+            })
+            .when('/filters/:id', {
+                templateUrl: 'partial/filter/filter',
+                controller: 'FilterController'
+            })
             .when('/operation-logs', {
                 templateUrl: 'partial/operation_log/operation_log',
                 controller: 'OperationLogController'

@@ -96,6 +96,7 @@ pimsServices.service('CustomSyncNotificationService', [
             m.CustomOperation.name = custom_sync_operation.name;
             m.CustomOperation.pipelineId = custom_sync_operation.customAttributes.pipe.id;
             m.CustomOperation.id = custom_sync_operation.id;
+            m.CustomOperation.filters = custom_sync_operation.customAttributes.filters;
             m.CustomOperation.batchSize = custom_sync_operation.customAttributes.batchSize || 1500;
             m.CustomOperation.entityTypeId = custom_sync_operation.customAttributes.entityTypeId.uuid;
             m.EntityInfo.entityTypeId = custom_sync_operation.customAttributes.entityTypeId.uuid;

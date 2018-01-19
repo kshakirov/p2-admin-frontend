@@ -2,7 +2,7 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
     '$location', '$http', '$rootScope', 'CustomSyncOperationModel', 'NotificationModel',
     '$q', 'ExternalOperationModel', 'TransformationSchemaModel', 'EntityTypeModel',
     'ExternalSystemModel', 'Upload', 'FileSaver', 'CustomSyncOperationService',
-    'ngNotify', 'CustomSyncNotificationService', 'uibDateParser','$filter',
+    'ngNotify', 'CustomSyncNotificationService', 'uibDateParser','$filter','FilterModel',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -19,13 +19,14 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
               CustomSyncOperationService,
               ngNotify,
               CustomSyncNotificationService,
-              uibDateParser, $filter ) {
+              uibDateParser, $filter,FilterModel ) {
 
         var loads = [
             ExternalOperationModel.findAll(),
             TransformationSchemaModel.findAll(),
             EntityTypeModel.findAll(),
-            ExternalSystemModel.findAll()
+            ExternalSystemModel.findAll(),
+            FilterModel.findAll()
         ];
         $scope.date =  $filter('date')(Date.now(),'yyyy-MM-dd HH:mm:ss');
 
@@ -36,6 +37,7 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
                 $scope.pipes = promises[0];
                 $scope.entityTypes = promises[2];
                 $scope.external_sytems = promises[3];
+                $scope.filters = promises[4];
                 if (id === "new") {
                     $scope.custom_sync_operation = {}
                 } else {

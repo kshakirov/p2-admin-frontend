@@ -35,7 +35,7 @@ uib-tabset(active="active", ng-init="init()")
                             input.form-control(type="text", ng-model="date")
                     div.form-group
                         label Filter
-                        input.form-control(type="text", data-ng-model="custom_sync_operation.filter")
+                        multiselect(ng-model="custom_sync_operation.customAttributes.filters", options="filters" id-prop="id" display-prop="name" show-search="true")
                     div.form-group
                         label Import
                         input.form-control(type="checkbox", data-ng-model="custom_sync_operation.customAttributes.import")
