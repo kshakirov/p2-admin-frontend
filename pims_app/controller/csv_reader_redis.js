@@ -12,17 +12,17 @@ csv = require("fast-csv");
 function push_batch_to_redis(batch, content) {
     console.log(`Pushed to Redis ${batch.length} rows`);
     content.Entities = batch;
-    // redisClient.rpush(["fileList", JSON.stringify(content)], function (err, reply) {
-    //     if (err) {
-    //         console.log("Error");
-    //         console.log(err)
-    //     }
-    //     if (reply) {
-    //         console.log(JSON.parse(reply));
-    //     } else {
-    //         console.log("undefined reply");
-    //     }
-    // })
+    redisClient.rpush(["fileList", JSON.stringify(content)], function (err, reply) {
+        if (err) {
+            console.log("Error");
+            console.log(err)
+        }
+        if (reply) {
+            console.log(JSON.parse(reply));
+        } else {
+            console.log("undefined reply");
+        }
+    })
 }
 
 
