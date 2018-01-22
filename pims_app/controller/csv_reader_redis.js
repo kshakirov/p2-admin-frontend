@@ -136,10 +136,10 @@ function read_csv(content, attributes_data) {
         rowNum = 0,
         batch = [];
 
-    try {
+
+    if (fs.existsSync(fileName)) {
         let stream = fs.createReadStream(fileName);
         console.log(`Parsing CSV  from ${fileName} started`);
-
         csv
             .fromStream(stream, {headers: true})
             .on("data", function (row) {
@@ -149,8 +149,10 @@ function read_csv(content, attributes_data) {
                     push_batch_to_redis(cloned_batch, content);
                     batch = [];
                 }
-
                 rowNum = rowNum + 1;
+            })
+            .on("error", function (error) {
+                console.log(error)
             })
             .on("end", function () {
                 console.log(`Parsing Finished, Pushing Remains of Data To Redis: ${batch.length} `);
@@ -158,10 +160,10 @@ function read_csv(content, attributes_data) {
                 push_batch_to_redis(batch, content);
                 batch = [];
             });
-    } catch (e) {
-        console.log(e.message)
-    }
 
+    }else {
+        console.log(`${fileName} Does Not Exist`)
+    }
 }
 
 
