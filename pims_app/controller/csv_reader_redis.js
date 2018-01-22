@@ -34,7 +34,7 @@ function has_array_attributes(attributesData) {
 function set_current_row(row, attributesData) {
     currentRow = JSON.parse(JSON.stringify(row));
     attributesData.arrayNames.map(aa => {
-        aa.map(a =>{
+        aa.map(a => {
             currentRow[a] = [];
         })
     })
@@ -48,10 +48,10 @@ function get_current_row() {
 function create_objs_from_cols(row, attributes_data) {
     let current_row = JSON.parse(JSON.stringify(row));
     let binding = attributes_data.binding;
-    Object.keys(binding).map(bb=>{
-        let t_objs =current_row[binding[bb][0]].map((cr,i)=>{
+    Object.keys(binding).map(bb => {
+        let t_objs = current_row[binding[bb][0]].map((cr, i) => {
             let t_obj = {};
-            binding[bb].map(b=>{
+            binding[bb].map(b => {
                 t_obj[b] = current_row[b][i]
             });
             return t_obj;
@@ -62,9 +62,9 @@ function create_objs_from_cols(row, attributes_data) {
     return current_row;
 }
 
-function release_current_row(batch,attributesData) {
+function release_current_row(batch, attributesData) {
     if (get_current_row()) {
-        let obj_row =create_objs_from_cols(get_current_row(),attributesData);
+        let obj_row = create_objs_from_cols(get_current_row(), attributesData);
         batch.push(obj_row);
         unser_current_row();
     }
@@ -73,17 +73,17 @@ function release_current_row(batch,attributesData) {
 
 function update_current_row(attributesData, row) {
     let not_empty_keys = attributesData.arrayNames.filter(a => {
-        let found = a.find(f=>{
-            if(row.hasOwnProperty(f) && row[f].length > 0){
+        let found = a.find(f => {
+            if (row.hasOwnProperty(f) && row[f].length > 0) {
                 return f;
             }
         });
-        if(found)
+        if (found)
             return a;
         return false;
     });
-    not_empty_keys.map(kk =>{
-        kk.map(k=>{
+    not_empty_keys.map(kk => {
+        kk.map(k => {
             currentRow[k].push(row[k]);
         })
     });
@@ -105,7 +105,7 @@ function fold_tree(batch, row, attributesData) {
                 update_current_row(attributesData, row)
             } else {
                 console.log("Row Ids Differ, Releasing The Container, keeping current");
-                let obj_row =create_objs_from_cols(get_current_row(),attributesData);
+                let obj_row = create_objs_from_cols(get_current_row(), attributesData);
                 batch.push(obj_row);
                 set_current_row(row, attributesData);
             }
@@ -115,7 +115,7 @@ function fold_tree(batch, row, attributesData) {
                 update_current_row(attributesData, row)
             } else {
                 console.log("Row Ids Differ, Releasing The Container, keeping current");
-                let obj_row =create_objs_from_cols(get_current_row(),attributesData);
+                let obj_row = create_objs_from_cols(get_current_row(), attributesData);
                 batch.push(obj_row);
                 set_current_row(row, attributesData);
             }
@@ -134,10 +134,12 @@ function read_csv(content, attributes_data) {
         batch_size = content.CustomOperation.batchSize || 1500,
         fileName = pimsConfig.filesFolder.uploadPath + "/" + filename,
         rowNum = 0,
-        batch = [],
-        stream = fs.createReadStream(fileName);
-    console.log(`Parsing CSV  from ${fileName} started`);
+        batch = [];
+
     try {
+        let stream = fs.createReadStream(fileName);
+        console.log(`Parsing CSV  from ${fileName} started`);
+
         csv
             .fromStream(stream, {headers: true})
             .on("data", function (row) {
@@ -156,13 +158,11 @@ function read_csv(content, attributes_data) {
                 push_batch_to_redis(batch, content);
                 batch = [];
             });
-    }catch (e){
+    } catch (e) {
         console.log(e.message)
     }
 
 }
-
-
 
 
 function has_schemata(content) {
@@ -179,7 +179,7 @@ function processCsv(message) {
         entityTypeId = content.CustomOperation.entityTypeId;
     content.CustomOperation.operationId = operationId;
     if (has_schemata(content)) {
-        syncModuleTools.resolveArrayAttributesBySchemata(content).then(attributes_data=>{
+        syncModuleTools.resolveArrayAttributesBySchemata(content).then(attributes_data => {
             read_csv(content, attributes_data);
         })
     } else {
