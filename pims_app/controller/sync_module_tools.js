@@ -138,21 +138,67 @@ function get_main_entity_rules(schemata, entity_type_id) {
     return get_attributes_ids(main_schema.schema)
 }
 
+function bind_array_cols_2_new_cols(attributes, new_csv_cols) {
+    let binding = {},
+        i = 0;
+    new_csv_cols.map(n => {
+        binding[n] = attributes[i];
+        i = i + 1;
+    });
+    return binding;
+}
+
+
+function get_referenced_entity_rules(schemata, entity_type_id) {
+    let rows = flatten(schemata.filter(s => {
+        if (s.schema.entityTypeId != entity_type_id) {
+            console.log(`Referenced entity ${s.name} of entity type ${s.schema.entityTypeId}`);
+            return s;
+        }
+    }));
+    return  rows.map(r => {
+        return r.schema.schema.map(p => {
+            return p.in.map(pi => {
+                return pi.path
+            })
+        })
+    })
+        .map(rr=>{
+            return flatten(rr,2);
+        })
+        .map(rr=>{
+            return rr.filter(r=>{if(r) return r})
+        })
+
+}
+
+
 
 function resolveArrayAttributesBySchemata(content) {
     let schemata = content.PipelineInfo.transformationSchemata,
-        entity_type_id = content.CustomOperation.entityTypeId;
-    let attributes = get_schema_rows(schemata,entity_type_id);
-    let obj_ids = get_main_entity_rules(schemata,entity_type_id);
-    let ids = obj_ids.map(io =>{return io.id});
-    return get_attributes(ids).then(atts =>{
-        let array_ids =get_array_attributes(atts);
-        let names  = get_array_out_attributes(obj_ids,array_ids);
-        names = names.map(n=>{return [n]});
+        entity_type_id = content.CustomOperation.entityTypeId,
+        attributes = get_referenced_entity_rules(schemata, entity_type_id),
+        new_csv_cols = flatten(get_schema_rows(schemata, entity_type_id)),
+        binding = bind_array_cols_2_new_cols(attributes, new_csv_cols);
+
+
+    //let attributes = get_schema_rows(schemata,entity_type_id);
+    let obj_ids = get_main_entity_rules(schemata, entity_type_id);
+    let ids = obj_ids.map(io => {
+        return io.id
+    });
+    return get_attributes(ids).then(atts => {
+        let array_ids = get_array_attributes(atts);
+        let names = get_array_out_attributes(obj_ids, array_ids);
+        names = names.map(n => {
+            return [n]
+        });
         console.log(names);
         return {
             arrayNames: attributes.concat(names),
-            primaryKey: "id"
+            primaryKey: "id",
+            new_csv_cols: new_csv_cols,
+            binding: binding
         };
     });
 

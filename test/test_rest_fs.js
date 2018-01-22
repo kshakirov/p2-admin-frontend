@@ -11,7 +11,7 @@ let content = {
         "pipelineId": 23,
         "entityTypeId": 19,
         "batchSize": 1500,
-        "args": {"incremental": false, "lastModifiedAfter": "1970-01-01 15:45:20"}
+        "args": {"incremental": false, "lastModifiedAfter": "1970-01-01 15:45:20", "filename": "file-1515778162086.csv"}
     },
     "EntityInfo": {"id": null, "entityTypeId": 19},
     "PipelineInfo": {
@@ -54,19 +54,9 @@ let content = {
             "name": "Csv 2 Pims Test Entity (Brand Array)",
             "schema": {
                 "entityTypeId": 14,
-                "outputAttributes": [70, 78],
-                "preprocSchema": [{
-                    "out": "14",
-                    "converters": [{
-                        "id": 34,
-                        "name": "create_brand",
-                        "language": "javascript",
-                        "code": "function create_brand(name_array, id_array){\n    var length = name_array.length;\n    var brands = [];\n    \n    for(var i=0;i<length;i++){\n        var brand = {};\n        brand.name = name_array[i];\n        brand.id = id_array[i];\n        brands.push(brand);\n    }\n    return brands;\n}",
-                        "customAttributes": {"type": "Converter"}
-                    }],
-                    "in": [{"path": "b_name"}, {"path": "b_external_id"}]
-                }],
-                "schema": [{"out": "attributes.70", "in": [{"path": "name"}]}, {
+                "outputAttributes": [70, 78, 72, 78],
+                "preprocSchema": [{"out": "14", "in": [{"path": "brands"}]}],
+                "schema": [{"out": "attributes.70", "in": [{"path": "brand_name"}]}, {
                     "out": "attributes.78",
                     "in": [{
                         "ref": {
@@ -78,6 +68,9 @@ let content = {
                             "projections": ["uuid"]
                         }
                     }]
+                }, {"out": "attributes.72", "in": [{"path": "b_description"}]}, {
+                    "out": "attributes.78",
+                    "in": [{"path": "b_external_id"}]
                 }]
             },
             "customAttributes": {"entity": {"uuid": 14}, "export": true}
@@ -86,18 +79,8 @@ let content = {
             "name": "Csv 2 Pims Test Entity (Product Array)",
             "schema": {
                 "entityTypeId": 4,
-                "outputAttributes": [43, 42],
-                "preprocSchema": [{
-                    "out": "19",
-                    "converters": [{
-                        "id": 35,
-                        "name": "create_product",
-                        "language": "javascript",
-                        "code": "function create_product(name_array, internal_reference_array){\n    var length = name_array.length;\n    var products = [];\n\n    for(var i=0;i<length;i++){\n        var product = {};\n        product.name = name_array[i];\n        product.internal_reference = internal_reference_array[i];\n        products.push(product);\n    }\n    return products;\n}",
-                        "customAttributes": {"type": "Converter"}
-                    }],
-                    "in": [{"path": "p_name"}, {"path": "p_internal_reference"}]
-                }],
+                "outputAttributes": [43, 42, 43],
+                "preprocSchema": [{"out": "19", "in": [{"path": "products"}]}],
                 "schema": [{
                     "out": "attributes.43",
                     "in": [{
@@ -110,12 +93,15 @@ let content = {
                             "projections": ["uuid"]
                         }
                     }]
-                }, {"out": "attributes.42", "in": [{"path": "name"}]}]
+                }, {"out": "attributes.42", "in": [{"path": "p_name"}]}, {
+                    "out": "attributes.43",
+                    "in": [{"path": "p_internal_reference"}]
+                }]
             },
             "customAttributes": {"entity": {"uuid": 4}, "export": true}
         }]
     }
-}
+};
 
 
 let attributes_regex = /.*attributes\.\d+/;
@@ -213,15 +199,40 @@ function get_schema_rows(schemata, entity_type_id) {
         }
     });
     rows = flatten(rows);
-    return flatten( rows.map(r => {
-        return r.schema.preprocSchema.map(p => {
+    return flatten(rows.map(r => {
+            return r.schema.preprocSchema.map(p => {
+                return p.in.map(pi => {
+                    return pi.path
+                })
+            })
+        }), 1
+    )
+}
+
+
+function get_referenced_entity_rules(schemata, entity_type_id) {
+    let rows = flatten(schemata.filter(s => {
+        if (s.schema.entityTypeId != entity_type_id) {
+            console.log(`Referenced entity ${s.name} of entity type ${s.schema.entityTypeId}`);
+            return s;
+        }
+    }));
+    return  rows.map(r => {
+        return r.schema.schema.map(p => {
             return p.in.map(pi => {
                 return pi.path
             })
         })
-    }),1
-    )
+    })
+    .map(rr=>{
+        return flatten(rr,2);
+    })
+    .map(rr=>{
+        return rr.filter(r=>{if(r) return r})
+    })
+
 }
+
 
 function get_main_entity_rules(schemata, entity_type_id) {
     let main_schema = schemata.find(s => {
@@ -230,27 +241,40 @@ function get_main_entity_rules(schemata, entity_type_id) {
             return s;
         }
     });
-   return get_attributes_ids(main_schema.schema)
+    return get_attributes_ids(main_schema.schema)
 }
 
-function run(c) {
+function run2(c) {
     let schemata = c.PipelineInfo.transformationSchemata,
         entity_type_id = c.CustomOperation.entityTypeId;
 
     let schema_rows = get_schema_rows(schemata, entity_type_id);
     //console.log(schema_rows)
-    let obj_ids = get_main_entity_rules(schemata,entity_type_id);
-    let ids = obj_ids.map(io =>{return io.id});
+    let obj_ids = get_main_entity_rules(schemata, entity_type_id);
+    let ids = obj_ids.map(io => {
+        return io.id
+    });
     console.log(ids);
-         get_attributes(ids).then(atts =>{
-         let array_ids =get_array_attributes(atts);
-         let names  = get_array_out_attributes(obj_ids,array_ids);
-         names = names.map(n=>{return [n]});
-         console.log(names);
-         return names;
-     });
+    get_attributes(ids).then(atts => {
+        let array_ids = get_array_attributes(atts);
+        let names = get_array_out_attributes(obj_ids, array_ids);
+        names = names.map(n => {
+            return [n]
+        });
+        console.log(names);
+        return names;
+    });
 
 
+}
+
+function run(c) {
+    let schemata = c.PipelineInfo.transformationSchemata,
+        entity_type_id = c.CustomOperation.entityTypeId;
+    let ref_rules = get_referenced_entity_rules(schemata, entity_type_id);
+    console.log(ref_rules);
+    let new_csv_cols = flatten(get_schema_rows(schemata, entity_type_id));
+    console.log(new_csv_cols);
 }
 
 run(content);

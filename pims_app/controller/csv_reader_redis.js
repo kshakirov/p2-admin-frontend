@@ -44,9 +44,30 @@ function get_current_row() {
     return currentRow;
 }
 
-function release_current_row(batch) {
-    if (currentRow)
-        batch.push(currentRow);
+
+function create_objs_from_cols(row, attributes_data) {
+    let current_row = JSON.parse(JSON.stringify(row));
+    let binding = attributes_data.binding;
+    Object.keys(binding).map(bb=>{
+        let t_objs =current_row[binding[bb][0]].map((cr,i)=>{
+            let t_obj = {};
+            binding[bb].map(b=>{
+                t_obj[b] = current_row[b][i]
+            });
+            return t_obj;
+        });
+
+        current_row[bb] = t_objs;
+    });
+    return current_row;
+}
+
+function release_current_row(batch,attributesData) {
+    if (get_current_row()) {
+        let obj_row =create_objs_from_cols(get_current_row(),attributesData);
+        batch.push(obj_row);
+        unser_current_row();
+    }
     return batch;
 }
 
@@ -68,6 +89,10 @@ function update_current_row(attributesData, row) {
     });
 }
 
+function unser_current_row() {
+    currentRow = false;
+}
+
 
 function fold_tree(batch, row, attributesData) {
     if (has_array_attributes(attributesData)) {
@@ -80,7 +105,8 @@ function fold_tree(batch, row, attributesData) {
                 update_current_row(attributesData, row)
             } else {
                 console.log("Row Ids Differ, Releasing The Container, keeping current");
-                batch.push(get_current_row());
+                let obj_row =create_objs_from_cols(get_current_row(),attributesData);
+                batch.push(obj_row);
                 set_current_row(row, attributesData);
             }
         } else if (batch.length > 0) {
@@ -89,7 +115,8 @@ function fold_tree(batch, row, attributesData) {
                 update_current_row(attributesData, row)
             } else {
                 console.log("Row Ids Differ, Releasing The Container, keeping current");
-                batch.push(get_current_row());
+                let obj_row =create_objs_from_cols(get_current_row(),attributesData);
+                batch.push(obj_row);
                 set_current_row(row, attributesData);
             }
         }
@@ -110,29 +137,35 @@ function read_csv(content, attributes_data) {
         batch = [],
         stream = fs.createReadStream(fileName);
     console.log(`Parsing CSV  from ${fileName} started`);
-    csv
-        .fromStream(stream, {headers: true})
-        .on("data", function (row) {
-            batch = fold_tree(batch, row, attributes_data);
-            if (batch.length >= batch_size) {
-                let cloned_batch = JSON.parse(JSON.stringify(batch));
-                push_batch_to_redis(cloned_batch, content);
-                batch = [];
-            }
+    try {
+        csv
+            .fromStream(stream, {headers: true})
+            .on("data", function (row) {
+                batch = fold_tree(batch, row, attributes_data);
+                if (batch.length >= batch_size) {
+                    let cloned_batch = JSON.parse(JSON.stringify(batch));
+                    push_batch_to_redis(cloned_batch, content);
+                    batch = [];
+                }
 
-            rowNum = rowNum + 1;
-        })
-        .on("end", function () {
-            console.log(`Parsing Finished, Pushing Remains of Data To Redis: ${batch.length} `);
-            batch = release_current_row(batch);
-            push_batch_to_redis(batch, content);
-            batch = [];
-        });
+                rowNum = rowNum + 1;
+            })
+            .on("end", function () {
+                console.log(`Parsing Finished, Pushing Remains of Data To Redis: ${batch.length} `);
+                batch = release_current_row(batch, attributes_data);
+                push_batch_to_redis(batch, content);
+                batch = [];
+            });
+    }catch (e){
+        console.log(e.message)
+    }
 
 }
 
 
-function has_schamata(content) {
+
+
+function has_schemata(content) {
     let schemata = content.PipelineInfo.transformationSchemata;
     if (schemata && schemata.length > 0)
         return true;
@@ -145,7 +178,7 @@ function processCsv(message) {
         operationId = uuidv1(),
         entityTypeId = content.CustomOperation.entityTypeId;
     content.CustomOperation.operationId = operationId;
-    if (has_schamata(content)) {
+    if (has_schemata(content)) {
         syncModuleTools.resolveArrayAttributesBySchemata(content).then(attributes_data=>{
             read_csv(content, attributes_data);
         })
