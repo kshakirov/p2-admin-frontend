@@ -156,22 +156,41 @@ function get_referenced_entity_rules(schemata, entity_type_id) {
             return s;
         }
     }));
-    return  rows.map(r => {
+    return rows.map(r => {
         return r.schema.schema.map(p => {
             return p.in.map(pi => {
                 return pi.path
             })
         })
     })
-        .map(rr=>{
-            return flatten(rr,2);
+        .map(rr => {
+            return flatten(rr, 2);
         })
-        .map(rr=>{
-            return rr.filter(r=>{if(r) return r})
+        .map(rr => {
+            return rr.filter(r => {
+                if (r) return r
+            })
         })
 
 }
 
+function get_headers(schemata) {
+    let attrs = flatten(schemata.map(s => {
+            return s.schema.schema.map(ss => {
+                return ss;
+            })
+        }).map(s => {
+            return s.map(ss => {
+                return ss.in[0].path
+            })
+        })
+    ).filter(s => {
+        if (s)
+            return s;
+    });
+
+    return attrs
+}
 
 
 function resolveArrayAttributesBySchemata(content) {
@@ -179,6 +198,7 @@ function resolveArrayAttributesBySchemata(content) {
         entity_type_id = content.CustomOperation.entityTypeId,
         attributes = get_referenced_entity_rules(schemata, entity_type_id),
         new_csv_cols = flatten(get_schema_rows(schemata, entity_type_id)),
+        excel_headers = get_headers(schemata),
         binding = bind_array_cols_2_new_cols(attributes, new_csv_cols);
 
 
@@ -190,15 +210,14 @@ function resolveArrayAttributesBySchemata(content) {
     return get_attributes(ids).then(atts => {
         let array_ids = get_array_attributes(atts);
         let names = get_array_out_attributes(obj_ids, array_ids);
-        names = names.map(n => {
-            return [n]
-        });
+        names = names.filter(n => { if(n) return true;}).map(n=>{return [n]});
         console.log(names);
         return {
             arrayNames: attributes.concat(names),
             primaryKey: "id",
             new_csv_cols: new_csv_cols,
-            binding: binding
+            binding: binding,
+            excel_headers: excel_headers
         };
     });
 

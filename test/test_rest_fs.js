@@ -6,12 +6,16 @@ let restClient = require('node-rest-client-promise').Client(),
 
 let content = {
     "CustomOperation": {
-        "name": "Import Csv Test Entity",
-        "id": 42,
-        "pipelineId": 23,
+        "name": "Import Excel Test Entity",
+        "id": 45,
+        "pipelineId": 24,
         "entityTypeId": 19,
         "batchSize": 1500,
-        "args": {"incremental": false, "lastModifiedAfter": "1970-01-01 15:45:20", "filename": "file-1515778162086.csv"}
+        "args": {
+            "incremental": false,
+            "lastModifiedAfter": "1970-01-01 15:45:20",
+            "filename": "file-1516700587910.xlsx"
+        }
     },
     "EntityInfo": {"id": null, "entityTypeId": 19},
     "PipelineInfo": {
@@ -20,7 +24,7 @@ let content = {
             "name": "Csv 2 Pims Test Entity (Array)",
             "schema": {
                 "entityTypeId": 19,
-                "outputAttributes": [99, 100, 98],
+                "outputAttributes": [99, 100, 98, 95, 97, 96],
                 "schema": [{
                     "out": "attributes.99",
                     "converters": [{
@@ -46,6 +50,33 @@ let content = {
                             "projections": ["uuid"]
                         }
                     }]
+                }, {"out": "attributes.95", "in": [{"path": "name"}]}, {
+                    "out": "name",
+                    "in": [{"path": "name"}]
+                }, {
+                    "out": "attributes.97",
+                    "in": [{
+                        "ref": {
+                            "name": "Product Brand > pimsId",
+                            "isEntityKey": false,
+                            "projection": ["uuid"],
+                            "entityTypeId": 14,
+                            "key": {"78": {"path": "brands[*].b_external_id", "type": "INTEGER"}},
+                            "projections": ["uuid"]
+                        }
+                    }]
+                }, {
+                    "out": "attributes.96",
+                    "in": [{
+                        "ref": {
+                            "name": "Product > pimsId",
+                            "isEntityKey": false,
+                            "projection": ["uuid"],
+                            "entityTypeId": 4,
+                            "key": {"43": {"path": "products[*].p_internal_reference", "type": "STRING"}},
+                            "projections": ["uuid"]
+                        }
+                    }]
                 }]
             },
             "customAttributes": {"entity": {"uuid": 19}, "export": true}
@@ -54,23 +85,30 @@ let content = {
             "name": "Csv 2 Pims Test Entity (Brand Array)",
             "schema": {
                 "entityTypeId": 14,
-                "outputAttributes": [70, 78, 72, 78],
+                "outputAttributes": [70, 78, 72],
                 "preprocSchema": [{"out": "14", "in": [{"path": "brands"}]}],
                 "schema": [{"out": "attributes.70", "in": [{"path": "brand_name"}]}, {
                     "out": "attributes.78",
+                    "converters": [{
+                        "id": 16,
+                        "name": "str_to_int",
+                        "language": "javascript",
+                        "code": "function str_to_int(value) {\n    return parseInt(value)\n}",
+                        "customAttributes": {"type": "Converter"}
+                    }],
+                    "in": [{"path": "b_external_id"}]
+                }, {"out": "attributes.72", "in": [{"path": "b_description"}]}, {
+                    "out": "uuid",
                     "in": [{
                         "ref": {
                             "name": "Product Brand > pimsId",
                             "isEntityKey": false,
                             "projection": ["uuid"],
                             "entityTypeId": 14,
-                            "key": {"78": {"path": "id", "type": "STRING"}},
+                            "key": {"78": {"path": "b_external_id", "type": "STRING"}},
                             "projections": ["uuid"]
                         }
                     }]
-                }, {"out": "attributes.72", "in": [{"path": "b_description"}]}, {
-                    "out": "attributes.78",
-                    "in": [{"path": "b_external_id"}]
                 }]
             },
             "customAttributes": {"entity": {"uuid": 14}, "export": true}
@@ -79,23 +117,23 @@ let content = {
             "name": "Csv 2 Pims Test Entity (Product Array)",
             "schema": {
                 "entityTypeId": 4,
-                "outputAttributes": [43, 42, 43],
-                "preprocSchema": [{"out": "19", "in": [{"path": "products"}]}],
-                "schema": [{
+                "outputAttributes": [42, 43],
+                "preprocSchema": [{"out": "4", "in": [{"path": "products"}]}],
+                "schema": [{"out": "attributes.42", "in": [{"path": "p_name"}]}, {
                     "out": "attributes.43",
+                    "in": [{"path": "p_internal_reference"}]
+                }, {
+                    "out": "uuid",
                     "in": [{
                         "ref": {
                             "name": "Product > pimsId",
                             "isEntityKey": false,
                             "projection": ["uuid"],
                             "entityTypeId": 4,
-                            "key": {"43": {"path": "internal_reference", "type": "STRING"}},
+                            "key": {"43": {"path": "p_internal_reference", "type": "STRING"}},
                             "projections": ["uuid"]
                         }
                     }]
-                }, {"out": "attributes.42", "in": [{"path": "p_name"}]}, {
-                    "out": "attributes.43",
-                    "in": [{"path": "p_internal_reference"}]
                 }]
             },
             "customAttributes": {"entity": {"uuid": 4}, "export": true}
@@ -217,19 +255,21 @@ function get_referenced_entity_rules(schemata, entity_type_id) {
             return s;
         }
     }));
-    return  rows.map(r => {
+    return rows.map(r => {
         return r.schema.schema.map(p => {
             return p.in.map(pi => {
                 return pi.path
             })
         })
     })
-    .map(rr=>{
-        return flatten(rr,2);
-    })
-    .map(rr=>{
-        return rr.filter(r=>{if(r) return r})
-    })
+        .map(rr => {
+            return flatten(rr, 2);
+        })
+        .map(rr => {
+            return rr.filter(r => {
+                if (r) return r
+            })
+        })
 
 }
 
@@ -268,13 +308,29 @@ function run2(c) {
 
 }
 
+
+function get_headers(schemata, entity_type_id) {
+    let attrs = flatten( schemata.map(s=>{
+            return s.schema.schema.map(ss=>{
+                return ss;
+            })
+    }).map(s=>{
+            return s.map(ss=>{
+                    return ss.in[0].path
+            })
+        })
+    ).filter(s=>{
+        if(s)
+            return s;
+    });
+
+    console.log(attrs)
+}
+
 function run(c) {
     let schemata = c.PipelineInfo.transformationSchemata,
         entity_type_id = c.CustomOperation.entityTypeId;
-    let ref_rules = get_referenced_entity_rules(schemata, entity_type_id);
-    console.log(ref_rules);
-    let new_csv_cols = flatten(get_schema_rows(schemata, entity_type_id));
-    console.log(new_csv_cols);
+    get_referenced_entity_attr_ids(schemata, entity_type_id)
 }
 
 run(content);
