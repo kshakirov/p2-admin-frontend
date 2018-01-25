@@ -193,6 +193,13 @@ function get_headers(schemata) {
 }
 
 
+function remove_duplicates(attributes, names) {
+    names = attributes.concat(names);
+    return names.map(n=>{
+        return Array.from(new Set(n))
+    })
+}
+
 function resolveArrayAttributesBySchemata(content) {
     let schemata = content.PipelineInfo.transformationSchemata,
         entity_type_id = content.CustomOperation.entityTypeId,
@@ -211,9 +218,10 @@ function resolveArrayAttributesBySchemata(content) {
         let array_ids = get_array_attributes(atts);
         let names = get_array_out_attributes(obj_ids, array_ids);
         names = names.filter(n => { if(n) return true;}).map(n=>{return [n]});
+
         console.log(names);
         return {
-            arrayNames: attributes.concat(names),
+            arrayNames: remove_duplicates(attributes,names),
             primaryKey: "id",
             new_csv_cols: new_csv_cols,
             binding: binding,
