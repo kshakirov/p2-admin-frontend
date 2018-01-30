@@ -1,7 +1,10 @@
 .row.top-buffer
     .col-lg-6.col-lg-offset-3
         ul.breadcrumb
-            li Entity Types
+            ul.breadcrumb
+                li
+                    a(ng-href="/entity-types/") Entities
+                li {{entityType.name}}
 .row(ng-init="initialize()")
     .col-lg-6
         form(name="EntityTypeForm", role="form", id="EntityTypeForm")

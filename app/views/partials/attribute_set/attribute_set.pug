@@ -2,7 +2,9 @@ div(ng-init="init()")
     .row.top-buffer
         .col-lg-6.col-lg-offset-3
             ul.breadcrumb
-                li Attribute Sets
+                li
+                    a(ng-href="/attribute-sets/") Attribute Sets
+                li {{attribute_set.name}}
     .row
         .col-lg-6
             form(name="AttributeSetForm", role="form", id="AttributeSetForm")
