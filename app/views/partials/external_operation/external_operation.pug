@@ -50,6 +50,11 @@ uib-tabset(active="active", ng-init="init()")
                                     ng-model="item.mapping.id",
                                     ng-options="mapping.id as mapping.name  for mapping in transformation_schemata")
                         td(align="right")
+                            form(role="form")
+                                .form-group
+                                    a.btn.btn-info.btn-xs(ng-href="/transformation-schemata/{{item.mapping.id}}")
+                                        span.glyphicon.glyphicon-link
+                        td(align="right")
                            form(role="form")
                                .form-group
                                    a.btn.btn-danger.btn-xs(ng-click="removeSchemaItem(key)")
