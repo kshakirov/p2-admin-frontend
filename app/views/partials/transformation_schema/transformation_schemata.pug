@@ -10,5 +10,9 @@
             tr(ng-repeat="schema in $data")
                 td(title="'Name'", filter="{ name: 'text'}",sortable="'name'")
                     a(ng-href="transformation-schemata/{{schema.id}}") {{schema.name}}
+                td(title="'Entity Type'", filter="{'customAttributes.entity.name': 'text'}",sortable="'customAttributes.entity.name'")
+                    b {{schema.customAttributes.entity.name}}
                 td(title="'Import'", filter="{'customAttributes.export': 'text'}",sortable="'customAttributes.export'")
                     b {{schema.customAttributes.export}}
+                td(title="'DTO'", filter="{'customAttributes.dto': 'text'}",sortable="'customAttributes.dto'")
+                    b {{schema.customAttributes.dto}}
