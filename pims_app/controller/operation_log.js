@@ -13,10 +13,12 @@ redisClient.on("error", function (err) {
 
 function syncLog() {
     redisClient.hgetall("operations", function (err, reply) {
-        Object.keys(reply).map(e =>{
-            let data = JSON.parse(reply[e]);
-            elasticModel.addLogEntry(e,data);
-        });
+        if(reply) {
+            Object.keys(reply).map(e => {
+                let data = JSON.parse(reply[e]);
+                elasticModel.addLogEntry(e, data);
+            });
+        }
     });
 }
 
