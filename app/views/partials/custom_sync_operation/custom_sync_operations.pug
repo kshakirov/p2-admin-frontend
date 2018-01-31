@@ -13,7 +13,10 @@ uib-tabset(active="active", ng-init="init()")
                     tr(ng-repeat="cso in $data")
                         td(title="'Name'", filter="{ name: 'text'}",sortable="'name'")
                             a(ng-href="custom-sync-operations/{{cso.id}}") {{cso.name}}
-                        td(title="'CODE'",filter="{ code: 'text'}",sortable="'code'") {{cso.code}}
+                        td(title="'Pipe'",filter="{pipeName: 'text'}",sortable="'pipeName'") {{cso.pipeName}}
+                        td(title="'Entity Type'",filter="{'entityTypeName' : 'text'}",sortable="'entityTypeName'") {{cso.entityTypeName}}
+                        td(title="'Import'",filter="{'customAttributes.import': 'text'}",sortable="'customAttributes.import'") {{cso.customAttributes.import | TrueOrFalse}}
+                        td(title="'Date'",sortable="'lastRun'", width="15%") {{cso.lastRun | date : format : timezone}}
     uib-tab(heading="ONLINE LOG" )
         .row
             .col-lg-10

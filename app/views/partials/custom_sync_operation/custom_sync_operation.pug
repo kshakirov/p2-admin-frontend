@@ -1,7 +1,10 @@
 .row.top-buffer
     .col-lg-6.col-lg-offset-3
         ul.breadcrumb
-            li Custom Sync Operation
+            li
+                a(ng-href="/custom-sync-operations/") Custom Sync Operation
+            li {{custom_sync_operation.name}}
+
 uib-tabset(active="active", ng-init="init()")
     uib-tab(heading="Main" )
         .row
