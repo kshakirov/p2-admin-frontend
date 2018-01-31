@@ -56,15 +56,6 @@ uib-tabset(active="active", ng-init="init()")
                                     button.btn.btn-secondary(type="button", ng-click="uploadFromUrl(entity.attributes[attr.uuid].value, entity.uuid)") GO
             .col-lg-4.col-lg.col-lg-offset-2
                 form( role="form")
-
-    uib-tab(heading="System")
-        .row.top-buffer
-            .col-lg-6.col-lg
-                form( role="form")
-                    div
-                        label System Name
-                        input.form-control(type="text", data-ng-model="entity.name")
-        .row-top-buffer
 .row.top-buffer
     form(role="form")
         div.btn-group
