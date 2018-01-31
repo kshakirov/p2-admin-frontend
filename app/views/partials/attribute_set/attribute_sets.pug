@@ -8,6 +8,6 @@
 	.col-lg-10
 		table.table(ng-table="attrSetTableParams", show-filter="true")
 			tr(ng-repeat="attr_set in $data")
-				td(title="name", filter="{ name: 'text'}",sortable="'name'")
+				td(title="'Name'", filter="{ name: 'text'}",sortable="'name'")
 					a(ng-href="attribute-sets/{{attr_set.uuid}}") {{attr_set.name}}
-				td(title="Role", filter="{'properties.role' : 'text'}",sortable="'properties.role'") {{attr_set.properties.role}}
+				td(title="'Role'", filter="{'properties.role' : 'text'}",sortable="'properties.role'") {{attr_set.properties.role}}

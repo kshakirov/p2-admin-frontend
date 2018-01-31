@@ -8,6 +8,5 @@
     .col-lg-10
         table.table(ng-table="tableParams", show-filter="true")
             tr(ng-repeat="resource in $data")
-                td(title="name", filter="{ name: 'text'}",sortable="'name'")
+                td(title="'Name'", filter="{ name: 'text'}",sortable="'name'")
                     a(ng-href="resources/{{resource.id}}") {{resource.name}}
-                td(title="valueType") {{resource.deleted}}

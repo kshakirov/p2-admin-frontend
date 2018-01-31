@@ -8,7 +8,7 @@
     .col-lg-10
         table.table(ng-table="tableParams", show-filter="true")
             tr(ng-repeat="entityType in $data")
-                td(title="name", filter="{ name: 'text'}",sortable="'name'")
+                td(title="'Name'", filter="{ name: 'text'}",sortable="'name'")
                     a(ng-href="entity-types/{{entityType.uuid}}") {{entityType.name}}
-                td(title="valueType") {{entityType.deleted}}
-                td(title="valueType") {{entityType.defaultType}}
+                td(title="'Deleted'",filter="{ 'deleted': 'text'}") {{entityType.deleted}}
+                td(title="'Default Type'",filter="{ 'defaultType': 'text'}") {{entityType.defaultType}}

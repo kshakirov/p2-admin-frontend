@@ -8,5 +8,5 @@
     .col-lg-10
         table.table(ng-table="tableParams", show-filter="true")
             tr(ng-repeat="role in $data")
-                td(title="name", filter="{ name: 'text'}",sortable="'name'")
+                td(title="'Name'", filter="{ name: 'text'}",sortable="'name'")
                     a(ng-href="roles/{{role.id}}") {{role.name}}

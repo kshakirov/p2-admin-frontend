@@ -1,7 +1,9 @@
 .row.top-buffer
     .col-lg-6.col-lg-offset-5
         ul.breadcrumb
-            li Roles
+            li
+                a(ng-href="/roles/") Roles
+            li {{role.name}}
 
 uib-tabset(active="active", ng-init="init()")
     uib-tab(heading="Main")

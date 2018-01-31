@@ -8,12 +8,12 @@
     .col-lg-10
         table.table(ng-table="tableParams", show-filter="true")
             tr(ng-repeat="user in $data")
-                td(title="login", filter="{ login: 'text'}",sortable="'login'")
+                td(title="'Login'", filter="{ login: 'text'}",sortable="'login'")
                     a(ng-href="users/{{user.id}}") {{user.login}}
-                td(title="firstname", filter="{ firstname: 'text'}",sortable="'firstname'")
+                td(title="'Firstname'", filter="{ firstname: 'text'}",sortable="'firstname'")
                    b {{user.firstname}}
-                td(title="lastname", filter="{ lastname: 'text'}",sortable="'lastname'")
+                td(title="'Lastname'", filter="{ lastname: 'text'}",sortable="'lastname'")
                    b {{user.lastname}}
-                td(title="email", filter="{ email: 'text'}",sortable="'email'")
+                td(title="'Email'", filter="{ email: 'text'}",sortable="'email'")
                     b {{user.email}}
 
