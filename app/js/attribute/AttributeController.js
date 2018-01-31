@@ -39,7 +39,8 @@ function createValidatorController(attr) {
 
 pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'AttributeModel', 'MessageService', 'usSpinnerService',
-    '$uibModal', 'AttributeService','ConverterModel','EntityTypeModel','$timeout',
+    '$uibModal', 'AttributeService', 'ConverterModel', 'EntityTypeModel', '$timeout',
+    'ngNotify', '$ngConfirm',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -51,19 +52,21 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
               AttributeService,
               ConverterModel,
               EntityTypeModel,
-              $timeout) {
+              $timeout,
+              ngNotify,
+              $ngConfirm) {
 
         $scope.valueTypes = ["STRING", "ARRAY", "DECIMAL", "INTEGER", "BOOLEAN",
             "REFERENCE", "ENUM"];
         $scope.frontendTypes = ["text", "number", "email", "password",
             "date", "select", "multiselect", "checkbox", "radio", "table", "file", "preview",
-        "image_url", "download"];
-        $scope.analyzers = [{name: "Standard", code:"standard"},{name: "Pims Custom", code: "pims_analyzer"}];
+            "image_url", "download"];
+        $scope.analyzers = [{name: "Standard", code: "standard"}, {name: "Pims Custom", code: "pims_analyzer"}];
         var entity_type_uuid = $rootScope.pims.entities.current.uuid;
         $rootScope.message = MessageService.prepareMessage();
 
         function set_analyzer(attribute, analyzers) {
-            if(angular.isUndefined(attribute.properties.analyzer) && attribute.valueType.toLowerCase()=='string'){
+            if (angular.isUndefined(attribute.properties.analyzer) && attribute.valueType.toLowerCase() == 'string') {
                 attribute.properties.analyzer = analyzers[1]
             }
         }
@@ -102,19 +105,48 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
             if (attribute.uuid) {
                 AttributeModel.update(entity_type_uuid, attribute_to_save).then(function (response) {
                     usSpinnerService.stop('spinner-attribute');
-                    MessageService.setSuccessMessage($rootScope.message, "Attribute Updated");
+                    ngNotify.set("Attribute Updated", 'success');
 
                 })
             } else {
                 AttributeModel.create(entity_type_uuid, attribute_to_save).then(function (response) {
                     usSpinnerService.stop('spinner-attribute');
-                    MessageService.setSuccessMessage($rootScope.message, "Attribute Created");
+                    ngNotify.set("Attribute Created", 'success');
                 })
             }
         };
 
-        $scope.deleteAttribute = function (uuid) {
+        $scope.deleteAttribute = function (uuid, attribute) {
+            //var decision = $ngConfirm('Content here', 'Title here', $scope);
+            $ngConfirm({
+                title: 'Are You Sure?',
+                content: '',
+                autoClose: 'cancel|8000',
+                buttons: {
+                    deleteUser: {
+                        text: 'YES',
+                        btnClass: 'btn-red',
+                        action: function () {
+                            AttributeModel.delete(entity_type_uuid, uuid).then(function (response) {
+                                attribute.deleted = true;
+                                ngNotify.set("Attribute Deleted", 'success');
+                            })
+                        }
+                    },
+                    cancel: function () {
+                        $ngConfirm('CANCELED');
+                    }
+                }
+            });
+
+        };
+
+        $scope.restoreAttribute = function (uuid, attribute) {
+            attribute.deleted = false;
+            $ngConfirm('Content here', 'Title here', $scope);
             AttributeModel.delete(entity_type_uuid, uuid).then(function (response) {
+                attribute.deleted = true;
+                ngNotify.set("Attribute Restored", 'success');
             })
         };
 
@@ -154,14 +186,14 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
 
         };
         $scope.deleteValidator = function (index) {
-            $scope.attribute.properties.validators.splice(index,1);
+            $scope.attribute.properties.validators.splice(index, 1);
         };
 
         $scope.updateSearchSettings = function (attribute) {
             var data = {
                 type: entity_type_uuid,
                 analyzer: attribute.properties.analyzer.code,
-                sorted: attribute.properties.sorted|| false,
+                sorted: attribute.properties.sorted || false,
                 attribute: attribute.uuid
             };
             console.log(attribute.properties.analyzer);

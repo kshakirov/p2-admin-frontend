@@ -65,6 +65,7 @@ gulp.task('scripts', function() {
         'app/bower_components/angular-socket-io/socket.js',
         'app/bower_components/ng-notify/src/scripts/ng-notify.js',
         'app/bower_components/angularjs-datepicker/dist/angular-datepicker.js',
+        'app/bower_components/angular-confirm/js/angular-confirm.js',
         'app/js/app.js',
         'app/js/services.js',
         'app/js/**/*.js'

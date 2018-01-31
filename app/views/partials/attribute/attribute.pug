@@ -33,7 +33,8 @@ uib-tabset(active="active", ng-init="init()")
                         input.form-control(type="checkbox",id="indexed", data-ng-model="attribute.properties.indexed")
                     div.btn-group
                         button.btn.btn-default(type="submit", ng-click="updateAttribute(attribute)") APPLY
-                        button.btn.btn-danger(type="submit", ng-click="deleteAttribute(attribute.uuid)", ng-disabled="!attribute.uuid") DELETE
+                        button.btn.btn-danger(type="submit", ng-if="!attribute.deleted", ng-click="deleteAttribute(attribute.uuid, attribute)", ng-disabled="!attribute.uuid") DELETE
+                        button.btn.btn-danger(type="submit",ng-if="attribute.deleted", ng-click="deleteAttribute(attribute.uuid, attribute)", ng-disabled="!attribute.uuid")  RESTORE
                         button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL
             .col-lg-5.col-lg-offset-1
                 .row
