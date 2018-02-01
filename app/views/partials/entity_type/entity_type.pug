@@ -13,11 +13,12 @@
                 input.form-control(type="text",id="entityTypeName", data-ng-model="entityType.name")
             div.form-group
                 label Deleted
-                input.form-control(type="checkbox", data-ng-model="entityType.deleted")
+                input.form-control(type="checkbox", data-ng-model="entityType.deleted", disabled="true")
             div.form-group
                 label Default Type
                 input.form-control(type="checkbox", data-ng-model="entityType.defaultType")
             div.btn-group
                 button.btn.btn-default(type="submit", ng-click="updateEntityType(entityType)") APPLY
-                button.btn.btn-danger(type="submit", ng-click="deleteEntityType(entityType.uuid)", ng-disabled="!entityType.uuid") DELETE
+                button.btn.btn-danger(type="submit", ng-if="!entityType.deleted", ng-click="deleteEntityType(entityType.uuid, entityType)", ng-disabled="!entityType.uuid") DELETE
+                button.btn.btn-danger(type="submit",ng-if="entityType.deleted", ng-click="deleteEntityType(entityType.uuid,entityType)", ng-disabled="!entityType.uuid")  RESTORE
                 button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL

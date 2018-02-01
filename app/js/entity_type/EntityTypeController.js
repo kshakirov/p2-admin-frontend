@@ -7,7 +7,6 @@ pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
               MessageService, CustomSyncNotificationService,socket,ngNotify) {
 
         $rootScope.message = {};
-        $rootScope.message = MessageService.prepareMessage();
 
 
         $scope.init = function () {
@@ -44,13 +43,20 @@ pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
         $scope.updateEntityType = function (entityType) {
             if (entityType.uuid) {
                 EntityTypeModel.update(entityType).then(function () {
-
+                    ngNotify.set("Entity Type Updated", 'success');
                 })
             } else {
                 EntityTypeModel.create(entityType).then(function () {
-
+                    ngNotify.set("Entity Type Created", 'success');
                 })
             }
+        };
+
+        $scope.deleteEntityType = function (uuid, entity_type) {
+            EntityTypeModel.delete(uuid).then(function () {
+                entity_type.deleted = true;
+                ngNotify.set("Entity Type Marked Ad 'DELETED'", 'success');
+            })
         };
 
         $scope.logout = function () {

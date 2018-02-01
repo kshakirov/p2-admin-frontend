@@ -1,6 +1,6 @@
 pimsApp.controller('EntityListController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'EntityModel', 'NgTableParams', 'usSpinnerService',
-    'MessageService', 'AttributeSetModel',
+    'MessageService', 'AttributeSetModel', 'ngNotify',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -9,7 +9,8 @@ pimsApp.controller('EntityListController', ['$scope', '$route', '$routeParams',
               NgTableParams,
               usSpinnerService,
               MessageService,
-              AttributeSetModel) {
+              AttributeSetModel,
+              ngNotify) {
 
         var entity_type_uuid = $rootScope.pims.entities.current.uuid,
             pageSize = 10,
@@ -58,21 +59,38 @@ pimsApp.controller('EntityListController', ['$scope', '$route', '$routeParams',
         }
 
 
+        function has_attribute_set(attributes_set) {
+            if(attributes_set && attributes_set.length > 0)
+                return true;
+            return false
+        }
+
         $scope.init = function () {
             usSpinnerService.spin('spinner-1');
             AttributeSetModel.search(entity_type_uuid, query).then(function (attribute_set) {
-                $scope.layout = attribute_set[0].attributes;
-                return paginate_entites(0, pageSize).then(function (response) {
-                    $scope.entities = response.content;
-                    $scope.pagination = new PaginationObject(response);
-                    usSpinnerService.stop('spinner-1');
+                if(has_attribute_set(attribute_set)) {
+                    $scope.layout = attribute_set[0].attributes;
+                    return paginate_entites(0, pageSize).then(function (response) {
+                        $scope.entities = response.content;
+                        $scope.pagination = new PaginationObject(response);
+                        usSpinnerService.stop('spinner-1');
 
-                }, function (error) {
-                    MessageService.setDangerMessage($rootScope.message,
-                        "You are not authorized");
+                    }, function (error) {
+                        MessageService.setDangerMessage($rootScope.message,
+                            "You are not authorized");
+                        usSpinnerService.stop('spinner-1');
+                        console.log(error);
+                    })
+                }else{
                     usSpinnerService.stop('spinner-1');
-                    console.log(error);
-                })
+                    ngNotify.set("No Fields To Render. Please, Create Attribute Set with Role 'base_search'" +
+                        "and Add Attributes as Columns", {
+                        position: 'top',
+                        type: 'error',
+                        duration: 20000,
+                        sticky: true
+                    });
+                }
             })
         };
 

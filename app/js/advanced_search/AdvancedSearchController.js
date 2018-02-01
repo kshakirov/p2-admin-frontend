@@ -1,6 +1,6 @@
 pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'AdvancedSearchModel', 'AttributeSetModel',
-    'AttributeModel', 'usSpinnerService', 'AdvancedSearchService', '$q',
+    'AttributeModel', 'usSpinnerService', 'AdvancedSearchService', '$q', 'ngNotify',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -10,7 +10,8 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
               AttributeModel,
               usSpinnerService,
               AdvancedSearchService,
-              $q) {
+              $q,
+              ngNotify) {
         var entity_type_uuid = $rootScope.pims.entities.current.uuid,
             references = null,
             query = 'propertyName=role&propertyValues=search';
@@ -61,29 +62,45 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
             }else{
                 return layout[0].uuid.toString()
             }
+        }
 
+        function has_attribute_set(attributes_set) {
+            if(attributes_set && attributes_set.length > 0)
+                return true;
+            return false
         }
 
         $scope.init = function () {
             usSpinnerService.spin('spinner-2');
             AttributeSetModel.search(entity_type_uuid, query).then(function (attribute_set) {
-                $scope.layout = attribute_set[0].attributes;
-                $scope.search_query.references = AdvancedSearchService.getReferences(attribute_set[0].attributes);
-                $scope.search_query.fields = AdvancedSearchService.getFields(attribute_set[0].attributes);
-                $scope.search_query.sort = getSortField($scope.layout) ;
-                getReferenceNameSets($scope.search_query.references).then(function (referencesName) {
-                    $scope.search_query.referenceNames = AdvancedSearchService.prepReferencesName(referencesName);
-                    console.log($scope.search_query.referenceNames);
-                    return paginate_entites($scope.search_query).then(function (response) {
-                        $scope.entities = response.content;
-                        $scope.pagination = new PaginationObject(response);
-                        usSpinnerService.stop('spinner-2');
+                if(has_attribute_set(attribute_set)) {
+                    $scope.layout = attribute_set[0].attributes;
+                    $scope.search_query.references = AdvancedSearchService.getReferences(attribute_set[0].attributes);
+                    $scope.search_query.fields = AdvancedSearchService.getFields(attribute_set[0].attributes);
+                    $scope.search_query.sort = getSortField($scope.layout);
+                    getReferenceNameSets($scope.search_query.references).then(function (referencesName) {
+                        $scope.search_query.referenceNames = AdvancedSearchService.prepReferencesName(referencesName);
+                        console.log($scope.search_query.referenceNames);
+                        return paginate_entites($scope.search_query).then(function (response) {
+                            $scope.entities = response.content;
+                            $scope.pagination = new PaginationObject(response);
+                            usSpinnerService.stop('spinner-2');
 
-                    },function (error) {
-                        console.log(error);
-                        usSpinnerService.stop('spinner-2');
+                        }, function (error) {
+                            console.log(error);
+                            usSpinnerService.stop('spinner-2');
+                        })
                     })
-                })
+                }else{
+                    usSpinnerService.stop('spinner-2');
+                    ngNotify.set("No Fields To Render. Please, Create Attribute Set with Role 'search'" +
+                        "and Add Attributes as Columns", {
+                        position: 'top',
+                        type: 'error',
+                        duration: 20000,
+                        sticky: true
+                    });
+                }
             })
 
         };
