@@ -1,7 +1,4 @@
-br
-br
-br
-.row
+.row.top-buffer
     .col-lg-6.col-lg-offset-3
         ul.breadcrumb
             li Pipelines
@@ -10,7 +7,10 @@ br
         button.btn.btn-info(type="submit",ng-click="createExternalOperation()") ADD PIPELINE
     .col-lg-10
         table.table(ng-table="externalOperationsTableParams", show-filter="true")
-            tr(ng-repeat="opr in $data")
+            tr(ng-repeat="opr in $data track by $index")
                 td(title="'Name'", filter="{ name: 'text'}",sortable="'name'")
                     a(ng-href="external-operations/{{opr.id}}") {{opr.name}}
-                td(title="'Id'") {{opr.id}}
+                td(title="'Source'",filter="{ source: 'text'}",sortable="'source'") {{opr.source}}
+                td(title="'Target'",filter="{ target: 'text'}",sortable="'target'") {{opr.target}}
+                td(title="'Immediate'",filter="{ 'customAttributes.immediate': 'text'}",
+                sortable="'customAttributes.immediate'") {{opr.customAttributes.immediate | TrueOrFalse}}
