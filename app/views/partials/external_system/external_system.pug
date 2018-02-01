@@ -1,7 +1,10 @@
 .row.top-buffer
     .col-lg-6.col-lg-offset-3
         ul.breadcrumb
-            li External Systems
+            li
+                a(ng-href="/external-systems/") External Systems
+            li {{external_system.name}}
+
 .row(ng-init="init()")
     .col-lg-6
         form(name="ExternalSystemForm", role="form", id="ExternalSystemForm")
@@ -16,6 +19,10 @@
                 select.form-control(id="system_type", ng-model="external_system.customAttributes.system_id",
                 ng-options="system.id  as system.name for system in system_types")
             include amazon_credentials
+            div.form-group
+                label(for="system_type") HELPERS
+                select.form-control(id="helper", ng-model="external_system.customAttributes.helper.id",
+                ng-options="helper.id  as helper.name for helper in helpers")
             div.btn-group
                 button.btn.btn-default(type="submit", ng-click="updateExternalSystem(external_system)") APPLY
                 button.btn.btn-danger(type="submit", ng-click="deleteExternalSystem(external_system.id)", ng-disabled="!external_system.id") DELETE
@@ -26,7 +33,7 @@
                 label(for="entity_types") Add Entity Type
                 select.form-control(id="entity_types", ng-model="selected_entity_type",
                 ng-options="entity_type.name for entity_type in entity_types",
-                ng-change="createEntityTypeEntry(selected_entity_type)")
+                ng-change="createEntityTypeEntry(selected_entity_type, helpers, external_system.customAttributes.helper.id)")
 .row.top-buffer
     .col-lg-6
         h5.text-info Allowed  Entity Types

@@ -12,26 +12,28 @@ pimsApp.controller('ExternalSystemController', ['$scope', '$route', '$routeParam
 
         $scope.triggers = ["ON_DEMAND", "CRON", "AUTOMATIC", "NEVER"];
         $scope.system_types = [
-            {name: 'REST', id:0},
+            {name: 'REST', id: 0},
             {name: 'XML-RPC', id: 1},
             {name: 'AMAZON', id: 2}
         ];
         $rootScope.message = MessageService.prepareMessage();
-            $scope.init = function () {
-                var id = $routeParams.id;
-                if (id === "new") {
-                    $scope.external_system = {
-                        customAttributes: {}
-                    }
-                } else {
-                    ExternalSystemModel.findOne(id).then(function (external_system) {
-                        $scope.external_system = external_system;
-                    })
+        $scope.init = function () {
+            var id = $routeParams.id;
+            if (id === "new") {
+                $scope.external_system = {
+                    customAttributes: {}
                 }
-                EntityTypeModel.findAll().then(function (entity_types) {
-                    $scope.entity_types = entity_types;
+            } else {
+                ExternalSystemModel.findOne(id).then(function (external_system) {
+                    $scope.external_system = external_system;
                 })
-            };
+            }
+            EntityTypeModel.findAll().then(function (entity_types) {
+                $scope.entity_types = entity_types;
+            })
+        };
+
+        $scope.helpers = EntityTypeResolver.createHelpers();
 
         $scope.updateExternalSystem = function (external_system) {
             if (external_system.id) {
@@ -41,7 +43,7 @@ pimsApp.controller('ExternalSystemController', ['$scope', '$route', '$routeParam
                 })
             } else {
                 return ExternalSystemModel.save(external_system).then(function (response) {
-                    MessageService.setSuccessMessage($rootScope.message, "External System Created")
+                    MessageService.setSuccessMessage($rootScope.message, "External System Created");
                     return response
                 })
             }
@@ -52,8 +54,8 @@ pimsApp.controller('ExternalSystemController', ['$scope', '$route', '$routeParam
             })
         };
 
-        $scope.createEntityTypeEntry = function (entityType) {
-            $scope.item = EntityTypeResolver.initItem(entityType);
+        $scope.createEntityTypeEntry = function (entityType, helpers, helper_id) {
+            $scope.item = EntityTypeResolver.initItem(entityType,helpers, helper_id);
             $scope.item_key = entityType.uuid;
 
         };
