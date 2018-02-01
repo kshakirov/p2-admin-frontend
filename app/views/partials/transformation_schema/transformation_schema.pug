@@ -15,7 +15,8 @@ uib-tabset(active="active", ng-init="init()")
                     div.form-group
                         label Entity Type
                         select.form-control(id="entities", ng-model="schema.customAttributes.entity.uuid",
-                        ng-options="entity.uuid as entity.name for entity in entity_types")
+                        ng-options="entity.uuid as entity.name for entity in entity_types",
+                        ng-change="selectEntityType(schema.customAttributes.entity.uuid, '{{schema.customAttributes.entity.uuid}}')")
                     div.form-group
                         label Import
                         input.form-control(id="export",type="checkbox",data-ng-model="schema.customAttributes.export")
@@ -35,7 +36,7 @@ uib-tabset(active="active", ng-init="init()")
                             a(ng-href="transformation-schemata/{{schema.id}}") {{schema.in}}
                         td(title="'OUT'",filter="{ out: 'text'}",sortable="'out'") {{schema.out}}
 
-    uib-tab(heading="Schema" )
+    uib-tab(heading="Schema", ng-if="schema.customAttributes.entity.uuid" )
         .row.top-buffer
             .col-lg-2
                 form(role="form")
@@ -59,7 +60,7 @@ uib-tabset(active="active", ng-init="init()")
                 h4.text-center OUT
         include transformation_schema_import
         include transformation_schema_export
-    uib-tab(heading="Preprocessing" )
+    uib-tab(heading="Preprocessing",ng-if="schema.customAttributes.entity.uuid" )
         .row.top-buffer
             .col-lg-2
                 form(role="form")

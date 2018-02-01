@@ -160,18 +160,22 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
             transformation_schema.schema.schema = schema;
         } else if (schema.hasOwnProperty("schema")) {
             var schema = transformation_schema.schema.schema.map(function (s) {
-                var inn = s.in.map(function (i) {
+                if(s.in) {
+                    var inn = s.in.map(function (i) {
+                        return {
+                            uuid: parseInt(i.uuid),
+                            root: get_root(i),
+                            path: selectPath(i)
+                        }
+                    });
                     return {
-                        uuid: parseInt(i.uuid),
-                        root: get_root(i),
-                        path: selectPath(i)
+                        in: inn,
+                        converters: s.converters,
+                        out: s.out,
+                        default: s.in.default
                     }
-                });
-                return {
-                    in: inn,
-                    converters: s.converters,
-                    out: s.out,
-                    default: s.in.default
+                }else{
+                    schema = [];
                 }
             });
             transformation_schema.schema.schema = schema;
