@@ -1,7 +1,9 @@
 .row.top-buffer
     .col-lg-6.col-lg-offset-3
         ul.breadcrumb
-            li Converters
+            li
+                a(ng-href="/converters")    Converters
+            li {{converter.name}}
 .row(ng-init="init()")
     .col-lg-8
         form(name="ConverterForm", role="form", id="ConverterForm")
