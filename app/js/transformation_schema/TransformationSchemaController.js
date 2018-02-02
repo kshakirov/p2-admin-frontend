@@ -2,7 +2,7 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
     '$location', '$http', '$rootScope', 'TransformationSchemaModel',
     'TransformationSchemaService', 'EntityTypeModel', 'AttributeModel',
     'ConverterModel', 'MessageService', '$q', '$uibModal', '$timeout',
-    '$ngConfirm',
+    '$ngConfirm', 'ngNotify',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -16,7 +16,8 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
               $q,
               $uibModal,
               $timeout,
-              $ngConfirm) {
+              $ngConfirm,
+              ngNotify) {
 
         $rootScope.message = MessageService.prepareMessage();
 
@@ -63,6 +64,9 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
                 };
                 $scope.transformation_schema = [];
                 $scope.preproc_schema = [];
+                ConverterModel.findAll().then(function (converters) {
+                    $scope.converters = converters;
+                })
             } else {
                 TransformationSchemaModel.findOne(id).then(function (schema) {
 
@@ -122,13 +126,13 @@ pimsApp.controller('TransformationSchemaController', ['$scope', '$route', '$rout
             };
             if (schema.id)
                 TransformationSchemaModel.update(schema).then(function () {
-                    MessageService.setSuccessMessage($rootScope.message, "Schema Updated");
+                    ngNotify.set("Schema Updated Successfully", 'success');
                 }, function (error) {
-                    MessageService.setDangerMessage($rootScope.message, "Failed: " + error.data.status.message);
+                    ngNotify.set("Schema Unpdating Failed", 'error');
                 });
             else
                 TransformationSchemaModel.save(schema).then(function () {
-                    MessageService.setSuccessMessage($rootScope.message, "Schema  Created");
+                    ngNotify.set("Schema Created Successfully", 'success');
                 });
             console.log($scope.schema.schema)
         };
