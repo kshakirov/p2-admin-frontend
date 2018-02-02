@@ -49,6 +49,15 @@ pimsServices.service('CustomSyncOperationService', [
 
             }
         }
+        this.getQueues = function () {
+            return [
+                {id: "decisionBatch", name: "Export Batch Queue"},
+                {id: "fileQueue", name:  "Import From File Queue"},
+                {id: "openerpBatch", name:  "Import From OpenErp"},
+                {id: "amazonBatch", name:  "Import From Amazon"}
+
+            ]
+        }
 
     }]);
 

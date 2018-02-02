@@ -24,8 +24,8 @@
                 select.form-control(id="helper", ng-model="external_system.customAttributes.helper.id",
                 ng-options="helper.id  as helper.name for helper in helpers")
             div.btn-group
-                button.btn.btn-default(type="submit", ng-click="updateExternalSystem(external_system)") APPLY
-                button.btn.btn-danger(type="submit", ng-click="deleteExternalSystem(external_system.id)", ng-disabled="!external_system.id") DELETE
+                button.btn.btn-primary(type="submit", ng-click="updateExternalSystem(external_system)") APPLY
+                button.btn.btn-danger(type="submit", ng-click="deleteExternalSystem(external_system.id)", ng-disabled="true") DELETE
                 button.btn.btn-default(type="submit", ng-click="cancel()") CANCEL
     .col-lg-6(ng-init="initEntityTypes()")
         form(role="form",name="helpForm")

@@ -29,7 +29,7 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
             FilterModel.findAll()
         ];
         $scope.date =  $filter('date')(Date.now(),'yyyy-MM-dd HH:mm:ss');
-
+        $scope.queues = CustomSyncOperationService.getQueues();
         $scope.init = function () {
             var id = $routeParams.id;
             $q.all(loads).then(function (promises) {

@@ -15,7 +15,10 @@ uib-tabset(active="active", ng-init="init()")
                         input.form-control(type="text", data-ng-model="custom_sync_operation.name")
                     div.form-group
                         label QueuePrefix
-                        input.form-control(type="text", data-ng-model="custom_sync_operation.customAttributes.queuePrefix")
+                        //input.form-control(type="text", data-ng-model="custom_sync_operation.customAttributes.queuePrefix")
+                        select.form-control(id="queue",
+                        ng-model="custom_sync_operation.customAttributes.queuePrefix",
+                        ng-options="queue.id  as queue.name  for queue in queues")
                     div.form-group
                         label Pipe
                         select.form-control(id="pipe",
