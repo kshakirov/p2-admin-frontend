@@ -69,6 +69,13 @@ pimsApp.controller('OperationLogController', ['$scope', 'OperationLogModel',
             })
         };
 
+
+        $scope.$watch('pageSize', function () {
+            $scope.search_query.size = $scope.pageSize || 10;
+            $scope.search_query.from = 0;
+            $scope.init();
+        });
+
         $scope.search = function () {
             $scope.search_query.from = 0;
             $scope.search_query.query = prep_search_params($scope.search_params);
