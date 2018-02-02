@@ -1,6 +1,6 @@
 pimsApp.controller('ExternalSystemController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'ExternalSystemModel',
-    'EntityTypeResolver', 'EntityTypeModel', 'MessageService',
+    'EntityTypeResolver', 'EntityTypeModel', 'MessageService', 'ngNotify',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -8,7 +8,8 @@ pimsApp.controller('ExternalSystemController', ['$scope', '$route', '$routeParam
               ExternalSystemModel,
               EntityTypeResolver,
               EntityTypeModel,
-              MessageService) {
+              MessageService,
+              ngNotify) {
 
         $scope.triggers = ["ON_DEMAND", "CRON", "AUTOMATIC", "NEVER"];
         $scope.system_types = [
@@ -38,12 +39,12 @@ pimsApp.controller('ExternalSystemController', ['$scope', '$route', '$routeParam
         $scope.updateExternalSystem = function (external_system) {
             if (external_system.id) {
                 return ExternalSystemModel.update(external_system).then(function (response) {
-                    MessageService.setSuccessMessage($rootScope.message, "External System Updated");
+                    ngNotify.set("External System Saved Successfully", 'success');
                     return response
                 })
             } else {
                 return ExternalSystemModel.save(external_system).then(function (response) {
-                    MessageService.setSuccessMessage($rootScope.message, "External System Created");
+                    ngNotify.set("External System Created Successfully", 'success');
                     return response
                 })
             }

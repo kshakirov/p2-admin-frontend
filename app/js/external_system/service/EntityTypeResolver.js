@@ -17,7 +17,7 @@ pimsServices.service('EntityTypeResolver', [function () {
         item[entityType.uuid] = {
             name: entityType.name,
             write: {
-                url: "/entity-types/" + entityType.uuid + "entities",
+                url: "/entity-types/" + entityType.uuid + "/entities/bulk/import",
                 method: 'POST'
             },
             read: {
@@ -49,7 +49,7 @@ pimsServices.service('EntityTypeResolver', [function () {
         item[entityType.uuid] = {
             name: entityType.name,
             write: {
-                url: "/",
+                url: "/pims-staging/" + entityType.uuid,
                 method: 'PUT'
             },
             read: {
