@@ -2,6 +2,7 @@ let elasticsearch = require('elasticsearch'),
     config = require('config'),
     pimsConfig = config.get('config'),
     operatiionLogType = "operations",
+    individualLogType = "individual",
     elastic_index = pimsConfig.elasticSearch.indexName;
 
 let client = new elasticsearch.Client({
@@ -82,8 +83,33 @@ function addLogEntry(id,body) {
     });
 }
 
+function addIndividualLogEntry(id,body) {
+    return client.index({
+        index: elastic_index,
+        type: individualLogType,
+        id: id,
+        body
+    }, function (error, response) {
+        console.log("response")
+    });
+}
+
+function updateIndividualLogEntry(id,body) {
+    return client.update({
+        index: elastic_index,
+        type: individualLogType,
+        id: id,
+        body
+    }, function (error, response) {
+        console.log(error);
+        console.log(response)
+    });
+}
+
 exports.findAll = findAll;
 exports.multiGet = multiGet;
 exports.multiSearch = multiSearch;
 exports.makeSortable = makeSortable;
 exports.addLogEntry = addLogEntry;
+exports.addIndividualLogEntry = addIndividualLogEntry;
+exports.updateIndividualLogEntry = updateIndividualLogEntry;

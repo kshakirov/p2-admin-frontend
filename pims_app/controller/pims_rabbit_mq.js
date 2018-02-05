@@ -2,20 +2,22 @@ let amqp = require('amqplib/callback_api'),
     config = require('config'),
     csvProcessor = require('./csv_reader_redis'),
     excelProcessor = require('./excell_reader_redis'),
+    operationLog = require('./operation_log'),
     amqpConn = null;
 pimsConfig = config.get('config');
 
 
 function notify(req, res, queue_name) {
+    let ex = pimsConfig.rabbitMq.pimsExchange,
+        message = JSON.stringify(req.body.message);
+    operationLog.individualTaskStart(message);
     amqp.connect(`amqp://${pimsConfig.rabbitMq.url}`, function (err, conn) {
         conn.createChannel(function (err, ch) {
             if (err) {
                 console.log(err)
             }
-            let ex = pimsConfig.rabbitMq.pimsExchange,
-                msg = JSON.stringify(req.body.message);
-            ch.publish(ex, queue_name, new Buffer(msg));
-            console.log(" [x] Sent %s", msg);
+            ch.publish(ex, queue_name, new Buffer(message));
+            console.log(" [x] Sent %s", message);
             res.json({success: true})
         });
     });
@@ -66,9 +68,11 @@ function startListener(websocket_io) {
         ch.assertQueue(pimsConfig.rabbitMq.individualTopologyResultQueue, {durable: false}, function (err, _ok) {
             if (closeOnErr(err)) return;
             ch.consume(pimsConfig.rabbitMq.individualTopologyResultQueue, function (msg) {
-                console.log(msg.content.toString());
+                let message = msg.content.toString();
+                console.log(message);
+                operationLog.individualTaskFinish(message);
                 if (websocket_io) {
-                    websocket_io.emit('individual', JSON.parse(msg.content.toString()))
+                    websocket_io.emit('individual', JSON.parse(message))
                 }
             }, {noAck: true});
             console.log("Listener is started");

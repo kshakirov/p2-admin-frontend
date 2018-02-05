@@ -1,13 +1,21 @@
 pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
     'EntityTypeModel', '$cookies', '$location', '$routeParams', '$window',
     '$uibModal', 'MessageService', 'CustomSyncNotificationService','socket',
-    'ngNotify',
+    'ngNotify', 'ExternalSystemModel',
     function ($scope, $rootScope, $http, EntityTypeModel,
-              $cookies, $location, $routeParams, $window, $uibModal,
-              MessageService, CustomSyncNotificationService,socket,ngNotify) {
+              $cookies,
+              $location,
+              $routeParams,
+              $window,
+              $uibModal,
+              MessageService,
+              CustomSyncNotificationService,
+              socket,
+              ngNotify,
+              ExternalSystemModel) {
 
         $rootScope.message = {};
-
+        var systems = [];
 
         $scope.init = function () {
             var currentEntity = $cookies.getObject("currentEntity");
@@ -26,6 +34,10 @@ pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
                     }
                 };
             }
+
+            ExternalSystemModel.findAll().then(function (external_systems) {
+                systems = external_systems;
+            })
         };
 
         $scope.initialize = function () {
@@ -99,8 +111,13 @@ pimsApp.controller('EntityTypeController', ["$scope", "$rootScope", "$http",
         });
 
         socket.on('individual', function (data) {
-
-            ngNotify.set('Entity [' + data.pimsId + "] synced To External System [" + data.extSysId + "]");
+           var systemName = systems.find(function (s) {
+               if(s.id==data.extSysId)
+                   return true
+           }) ;
+           if(systemName.hasOwnProperty('name'))
+               systemName = systemName.name;
+            ngNotify.set('Entity [' + data.pimsId + "] synced To External System [" + systemName + "]");
         });
 
         socket.on('connection', function (data) {

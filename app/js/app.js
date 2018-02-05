@@ -3,7 +3,8 @@
 var pimsApp = angular.module('PimsApp', ['ngRoute', 'ui.sortable',
     'PimsApp.services', 'ngTable', 'chart.js', 'ui.bootstrap',
     'angularSpinner','ngCookies','ui.ace','ngFileUpload','btorfs.multiselect',
-    'ngFileSaver','btford.socket-io','ngNotify','720kb.datepicker','cp.ngConfirm']);
+    'ngFileSaver','btford.socket-io','ngNotify','720kb.datepicker','cp.ngConfirm',
+    'uuid']);
 
 
 

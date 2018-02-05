@@ -17,7 +17,7 @@ pimsServices.service('EntityTypeResolver', [function () {
         item[entityType.uuid] = {
             name: entityType.name,
             write: {
-                url: "/entity-types/" + entityType.uuid + "/entities/bulk/import",
+                url: "/entity-types/" + entityType.uuid + "/entities/import/bulk",
                 method: 'POST'
             },
             read: {

@@ -1,4 +1,4 @@
-pimsServices.service('EntityService', ['$http', '$rootScope', function ($http, $rootScope) {
+pimsServices.service('EntityService', ['$http', '$rootScope', 'uuid4', function ($http, $rootScope,uuid4) {
     this.filterSimpleAttributes = function (attributes) {
         var keys = Object.keys(attributes),
             attrs = [];
@@ -51,6 +51,7 @@ pimsServices.service('EntityService', ['$http', '$rootScope', function ($http, $
     this.prepMsg = function (msg, entity, entityTypeId) {
         msg.pimsId = entity.uuid;
         msg.entity_type_id = entityTypeId;
+        msg.requestId = uuid4.generate();
     };
 
     this.getReferenceArrayAttributes = function (tabs) {
