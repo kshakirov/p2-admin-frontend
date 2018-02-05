@@ -50,7 +50,7 @@ uib-tabset(active="active", ng-init="init()")
                                 div.form-group
                                     select.form-control(id="mapping{{item}})",
                                     ng-model="item.mapping.id",
-                                    ng-options="mapping.id as mapping.name  for mapping in transformation_schemata")
+                                    ng-options="mapping.id as mapping.name  for mapping in filterByEntityTypeId(transformation_schemata, key)")
                         td(align="right")
                             form(role="form")
                                 .form-group

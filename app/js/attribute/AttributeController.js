@@ -57,7 +57,7 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
               $ngConfirm) {
 
         $scope.valueTypes = ["STRING", "ARRAY", "DECIMAL", "INTEGER", "BOOLEAN",
-            "REFERENCE", "ENUM"];
+            "REFERENCE", "ENUM","BINARY_BASE64","BINARY_URL"];
         $scope.frontendTypes = ["text", "number", "email", "password",
             "date", "select", "multiselect", "checkbox", "radio", "table", "file", "preview",
             "image_url", "download"];
@@ -117,7 +117,6 @@ pimsApp.controller('AttributeController', ['$scope', '$route', '$routeParams',
         };
 
         $scope.deleteAttribute = function (uuid, attribute) {
-            //var decision = $ngConfirm('Content here', 'Title here', $scope);
             $ngConfirm({
                 title: 'Are You Sure?',
                 content: '',

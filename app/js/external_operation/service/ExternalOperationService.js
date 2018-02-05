@@ -40,7 +40,7 @@ pimsServices.service('ExternalOperationService', ['AttributeModel',
         this.dto_external_systems = function (external_operation) {
             external_operation.sourceSystem.id = external_operation.sourceSystem.frontendInfo.selected.id;
             external_operation.targetSystem.id = external_operation.targetSystem.frontendInfo.selected.id;
-        }
+        };
 
         this.dto_entityTypes = function (external_operation) {
             external_operation.entityTypeIds  =  Object.keys(external_operation.transformationSchemata)

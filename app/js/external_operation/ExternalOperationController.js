@@ -2,7 +2,7 @@ pimsApp.controller('ExternalOperationController', ['$scope', '$route', '$routePa
     '$location', '$http', '$rootScope', 'ExternalOperationModel',
     'ExternalOperationService', 'EntityTypeModel', 'ConverterModel',
     'NgTableParams', 'TransformationSchemaModel', 'MessageService',
-    'ExternalSystemModel',
+    'ExternalSystemModel', 'ngNotify',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -14,40 +14,41 @@ pimsApp.controller('ExternalOperationController', ['$scope', '$route', '$routePa
               NgTableParams,
               TransformationSchemaModel,
               MessageService,
-              ExternalSystemModel) {
+              ExternalSystemModel,
+              ngNotify) {
 
         $rootScope.message = MessageService.prepareMessage();
         $scope.init = function () {
             var id = $routeParams.id;
             if (id === "new") {
                 ExternalSystemModel.findAll().then(function (external_systems) {
-                ExternalOperationModel.createPipeline().then(function (external_operation) {
+                    ExternalOperationModel.createPipeline().then(function (external_operation) {
 
-                    $scope.external_operation = external_operation;
-                    $scope.external_operation.sourceSystem = {
-                        frontendInfo: {
-                            options: external_systems,
-                            type: "select",
-                            selected: {}
-                        }
-                    };
-                    $scope.external_operation.targetSystem = {
-                        frontendInfo: {
-                            options: external_systems,
-                            type: "select",
-                            selected: {}
-                        }
-                    };
-                    $scope.external_operation.transformationSchemata = {};
-                    TransformationSchemaModel.findAll().then(function (schemata) {
-                        $scope.transformation_schemata = schemata;
-                        EntityTypeModel.findAll().then(function (entity_types) {
-                            $scope.entity_types = entity_types;
-                            ExternalOperationService.dto_transformation_schemata(external_operation, schemata,
-                                entity_types)
+                        $scope.external_operation = external_operation;
+                        $scope.external_operation.sourceSystem = {
+                            frontendInfo: {
+                                options: external_systems,
+                                type: "select",
+                                selected: {}
+                            }
+                        };
+                        $scope.external_operation.targetSystem = {
+                            frontendInfo: {
+                                options: external_systems,
+                                type: "select",
+                                selected: {}
+                            }
+                        };
+                        $scope.external_operation.transformationSchemata = {};
+                        TransformationSchemaModel.findAll().then(function (schemata) {
+                            $scope.transformation_schemata = schemata;
+                            EntityTypeModel.findAll().then(function (entity_types) {
+                                $scope.entity_types = entity_types;
+                                ExternalOperationService.dto_transformation_schemata(external_operation, schemata,
+                                    entity_types)
+                            });
                         });
                     });
-                });
                 });
 
             } else {
@@ -79,17 +80,17 @@ pimsApp.controller('ExternalOperationController', ['$scope', '$route', '$routePa
             ExternalOperationService.dto_entityTypes(eo);
             if (external_operation.hasOwnProperty("id")) {
                 ExternalOperationModel.save(eo.id, eo).then(function (response) {
-                    MessageService.setSuccessMessage($rootScope.message, "Pipe Updated");
+                    ngNotify.set("Pipe Updated Successfully", 'success');
                 })
             } else {
                 ExternalOperationModel.create(eo).then(function (response) {
-                    MessageService.setSuccessMessage($rootScope.message, "Pipe Created");
+                    ngNotify.set("Pipe Created Successfully", 'success');
                 })
             }
         };
         $scope.deleteExternalOperation = function (id) {
             ExternalOperationModel.delete(id).then(function (response) {
-                MessageService.setSuccessMessage($rootScope.message, "Pipe  Deleted");
+                ngNotify.set("Pipe Deleted Successfully", 'success');
             })
         };
 
@@ -100,5 +101,16 @@ pimsApp.controller('ExternalOperationController', ['$scope', '$route', '$routePa
 
         $scope.cancel = function () {
             $location.path("/external-operations");
+        };
+
+        $scope.filterByEntityTypeId = function (transformation_schemata, entity_type_id) {
+            if(transformation_schemata) {
+                return transformation_schemata.filter(function (s) {
+                    if (s.customAttributes.entity.uuid == entity_type_id)
+                        return true;
+                })
+            }else{
+                return []
+            }
         }
     }]);
