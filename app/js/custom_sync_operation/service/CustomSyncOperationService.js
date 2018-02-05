@@ -119,7 +119,7 @@ pimsServices.service('CustomSyncNotificationService', [
         };
 
         this.addDate = function (m, date) {
-            m.CustomOperation.args.lastModifiedAfter = date || message.CustomOperation.args.lastModifiedAfter;
+            m.CustomOperation.args.lastModifiedAfter = message.lastRun || date;
             return m;
         }
 

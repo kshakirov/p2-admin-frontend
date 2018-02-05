@@ -2,7 +2,7 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
     '$location', '$http', '$rootScope', 'CustomSyncOperationModel', 'NotificationModel',
     '$q', 'ExternalOperationModel', 'TransformationSchemaModel', 'EntityTypeModel',
     'ExternalSystemModel', 'Upload', 'FileSaver', 'CustomSyncOperationService',
-    'ngNotify', 'CustomSyncNotificationService', 'uibDateParser','$filter','FilterModel',
+    'ngNotify', 'CustomSyncNotificationService', 'uibDateParser', '$filter', 'FilterModel',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -19,7 +19,7 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
               CustomSyncOperationService,
               ngNotify,
               CustomSyncNotificationService,
-              uibDateParser, $filter,FilterModel ) {
+              uibDateParser, $filter, FilterModel) {
 
         var loads = [
             ExternalOperationModel.findAll(),
@@ -28,7 +28,7 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
             ExternalSystemModel.findAll(),
             FilterModel.findAll()
         ];
-        $scope.date =  $filter('date')(Date.now(),'yyyy-MM-dd HH:mm:ss');
+        $scope.date = $filter('date')(Date.now(), 'yyyy-MM-dd HH:mm:ss');
         $scope.queues = CustomSyncOperationService.getQueues();
         $scope.init = function () {
             var id = $routeParams.id;
@@ -100,6 +100,12 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
 
         }
 
+        function timestamp_to_pims_date(lastRun) {
+            if (lastRun)
+                return $filter("date")(lastRun,"yyyy-MM-dd HH:mm:ss");
+            return "1970-01-01 00:00:00"
+        }
+
         $scope.runFull = function (custom_sync_operation) {
             var message = CustomSyncNotificationService.prepMessage(custom_sync_operation),
                 queue_prefix = custom_sync_operation.customAttributes.queuePrefix;
@@ -110,8 +116,8 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
         $scope.runIncremental = function (custom_sync_operation, date) {
             var message = CustomSyncNotificationService.prepMessage(custom_sync_operation),
                 queue_prefix = custom_sync_operation.customAttributes.queuePrefix;
-            console.log(date);
-            message = CustomSyncNotificationService.addDate(message,date);
+            console.log(timestamp_to_pims_date(custom_sync_operation.lastRun));
+            message = CustomSyncNotificationService.addDate(message, timestamp_to_pims_date(custom_sync_operation.lastRun));
             runCustomSyncOperation(message, queue_prefix, $scope.downloadFilename)
         };
 

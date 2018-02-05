@@ -38,7 +38,7 @@ uib-tabset(active="active", ng-init="init()")
                     div.form-group
                         label Date
                         datepicker(date-format="yyyy-MM-dd HH:mm:ss")
-                            input.form-control(type="text", ng-model="date")
+                            input.form-control(type="text", ng-model="custom_sync_operation.lastRun | date : 'yyyy-MM-dd HH:mm:ss'")
                     div.form-group
                         label Filter
                         multiselect(ng-model="custom_sync_operation.customAttributes.filters", options="filters" id-prop="id" display-prop="name" show-search="true")
