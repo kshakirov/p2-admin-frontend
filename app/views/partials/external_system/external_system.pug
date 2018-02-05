@@ -19,6 +19,7 @@
                 select.form-control(id="system_type", ng-model="external_system.customAttributes.system_id",
                 ng-options="system.id  as system.name for system in system_types")
             include amazon_credentials
+            include rpc_xml_credentials
             div.form-group
                 label(for="system_type") HELPERS
                 select.form-control(id="helper", ng-model="external_system.customAttributes.helper.id",
