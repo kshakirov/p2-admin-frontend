@@ -141,6 +141,10 @@ pimsApp.config(["$routeProvider", "$locationProvider", "ChartJsProvider",
                 templateUrl: 'partial/operation_log/operation_log',
                 controller: 'OperationLogController'
             })
+            .when('/audits', {
+                templateUrl: 'partial/audit/audit',
+                controller: 'AuditListController'
+            })
             .when('/', {
                 templateUrl: 'partial/dashboard/dashboard',
                 controller: 'DashboardController'

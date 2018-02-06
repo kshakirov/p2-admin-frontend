@@ -1,0 +1,66 @@
+.div(ng-controller="AuditListController", ng-init="init()")
+    .row.top-buffer
+        .col-lg-2
+            button.top-pagination.btn.btn-info(type="submit", ng-click="search()") SEARCH
+        .col-lg-6
+            include audit_pagination
+        .col-lg-1
+            button.top-pagination.btn.btn-warning(type="submit",ng-click="clear(search_params)") CLEAR
+        .col-lg-1
+            button.btn-sm.btn-info.top-pagination.span.glyphicon.glyphicon-refresh(ng-click="init()")
+        .col-lg-2
+            select.top-pagination.form-control(ng-model="pageSize",
+            ng-options="size as size for size in pageSizes")
+    .row.top-buffer
+        .col-lg-11
+            table.table
+                thead
+                    tr
+                        th Started
+                        th Id
+                        th Entyty Type
+                        th Operation
+                        th Processed
+                        th System Id
+                        th Finished
+                        th Diff
+                    tr
+                        td
+                        td
+                            form(role="form")
+                                input.form-control(type="number",
+                                ng-keypress="($event.which === 13)?search():0",
+                                data-ng-model="search_params.entityId")
+                        td
+                            form(role="form")
+                                input.form-control(type="number",
+                                ng-keypress="($event.which === 13)?search():0",
+                                data-ng-model="search_params.entityTypeId")
+                        td
+                            form(role="form")
+                                input.form-control(type="text",
+                                ng-keypress="($event.which === 13)?search():0",
+                                data-ng-model="search_params.syncOperationType")
+                        td
+                        td
+                        td
+                        td
+                        td
+                tbody
+                    tr(ng-repeat="op in operations")
+                        td {{op.startedAt | date:'yyyy-MM-dd HH:mm:ss Z'}}
+                        td {{op.entityId}}
+                        td {{op.entityTypeId}}
+                        td {{op.syncOperationType}}
+                        td {{op.processed}}
+                        td {{op.externalSysttemId}}
+                        td {{op.finishedAt | date:'yyyy-MM-dd HH:mm:ss Z'}}
+                        td(ng-if="op.diff")
+                            a(ng-click="", ng-href="") MORE
+                        td(ng-if="!op.diff || op.diff.length==0") NO CHANGES
+    .row
+        .col-lg-6.col-lg-offset-2
+            include audit_pagination
+        .col-lg-2
+            select.top-pagination.form-control(ng-model="pageSize",
+            ng-options="size as size for size in pageSizes")

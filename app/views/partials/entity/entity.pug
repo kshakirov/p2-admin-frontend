@@ -56,6 +56,8 @@ uib-tabset(active="active", ng-init="init()")
                                     button.btn.btn-secondary(type="button", ng-click="uploadFromUrl(entity.attributes[attr.uuid].value, entity.uuid)") GO
             .col-lg-4.col-lg.col-lg-offset-2
                 form( role="form")
+    uib-tab(heading="{{audit}}", ng-if="audit" )
+        include  audit
 .row.top-buffer
     form(role="form")
         div.btn-group

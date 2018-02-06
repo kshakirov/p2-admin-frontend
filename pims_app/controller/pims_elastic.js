@@ -131,7 +131,7 @@ function compact_query(query) {
         let keys = Object.keys(query),
             parsed_query = {};
         keys = keys.filter((k) => {
-            if (query[k].length > 0) {
+            if (query[k].length > 0 || query[k] > 0) {
                 return k
             }
         });
@@ -332,6 +332,8 @@ function findOperations(req, res) {
         res.sendStatus(400, error)
     })
 }
+
+
 
 exports.findAll = findAll;
 exports.makeSortable = makeSortable;

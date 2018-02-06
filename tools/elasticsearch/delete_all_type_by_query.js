@@ -21,7 +21,7 @@ if (!type) {
             }
         }
     }, (e,r) => {
-        console.log(r)
+        console.log(r);
         console.log(e)
     });
 }

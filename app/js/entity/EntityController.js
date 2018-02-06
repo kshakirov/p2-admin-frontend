@@ -29,6 +29,7 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
                 "syncOperationType": "UPDATE"
             };
 
+        var old_entity = {};
 
         $rootScope.message = MessageService.prepareMessage();
 
@@ -39,7 +40,7 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
         }
 
         function order_tabs(tabs) {
-            var t = tabs.sort(compare_tabs)
+            var t = tabs.sort(compare_tabs);
             return t;
         }
 
@@ -67,6 +68,9 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
                         var reference_array_attributes = EntityService.getReferenceArrayAttributes(tabs);
                         $scope.tabs = order_tabs(tabs);
                         $scope.entity = template;
+                        $scope.audit = "Audit";
+                        $scope.active = 0;
+                        usSpinnerService.stop('spinner-entity');
                     })
                 })
 
@@ -85,7 +89,10 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
                                 $scope.reference_tables = promises;
                                 $scope.tabs = order_tabs(tabs);
                                 $scope.entity = entity;
+                                $scope.audit = "Audit";
+                                $scope.active = 0;
                                 usSpinnerService.stop('spinner-entity');
+                                angular.copy(entity, old_entity);
                             })
 
                         });
@@ -106,7 +113,8 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
                 if (validation.result) {
                     if (entity.uuid) {
                         EntityModel.update(entity_type_uuid, entity_copy).then(function (response) {
-                            EntityService.prepMsg(msg, entity, entity_type_uuid);
+                            EntityService.prepDiffMsg(msg, entity, entity_type_uuid,
+                                entity_copy.attributes, EntityService.prepAttributesDto(old_entity.attributes) );
                             NotificationModel.notifyEntity(msg).then(function () {
                                 ngNotify.set("Entity Updated", 'success');
                             })
@@ -115,8 +123,11 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
                         })
                     } else {
                         EntityModel.create(entity_type_uuid, entity_copy).then(function (response) {
-                            EntityService.prepMsg(msg, entity, entity_type_uuid);
+                            EntityService.prepCreateMsg(msg, response, entity_type_uuid);
                             ngNotify.set("Entity Created", 'success');
+                            NotificationModel.notifyEntity(msg).then(function () {
+                                ngNotify.set("Entity Updated", 'success');
+                            })
                         }, function (error) {
                             ngNotify.set("Entity Is Not Created" + error.msg, 'error');
                         });

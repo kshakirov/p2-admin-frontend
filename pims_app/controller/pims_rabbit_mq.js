@@ -3,14 +3,20 @@ let amqp = require('amqplib/callback_api'),
     csvProcessor = require('./csv_reader_redis'),
     excelProcessor = require('./excell_reader_redis'),
     operationLog = require('./operation_log'),
-    amqpConn = null;
-pimsConfig = config.get('config');
+    token_tools = require('../proxy/tokenTools'),
+    amqpConn = null,
+    pimsConfig = config.get('config');
 
+function get_userr(req) {
+    let token = token_tools.getToken(req.headers),
+        user = token_tools.verifyToken(token);
+    return user.name;
+}
 
 function notify(req, res, queue_name) {
     let ex = pimsConfig.rabbitMq.pimsExchange,
         message = JSON.stringify(req.body.message);
-    operationLog.individualTaskStart(message);
+    operationLog.individualTaskStart(message, get_userr(req));
     amqp.connect(`amqp://${pimsConfig.rabbitMq.url}`, function (err, conn) {
         conn.createChannel(function (err, ch) {
             if (err) {

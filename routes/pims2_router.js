@@ -36,6 +36,10 @@ router.post('/operations', function (req, res) {
     elastic_controller.findOperations(req, res);
 });
 
+router.post('/audits', function (req, res) {
+    elastic_controller.findOperations(req, res);
+});
+
 router.post('/search/make_sortable/', function (req, res) {
     elastic_controller.makeSortable(req, res);
 });

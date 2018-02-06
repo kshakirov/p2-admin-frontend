@@ -1,4 +1,4 @@
-pimsServices.service('EntityService', ['$http', '$rootScope', 'uuid4', function ($http, $rootScope,uuid4) {
+pimsServices.service('EntityService', ['$http', '$rootScope', 'uuid4', function ($http, $rootScope, uuid4) {
     this.filterSimpleAttributes = function (attributes) {
         var keys = Object.keys(attributes),
             attrs = [];
@@ -48,11 +48,27 @@ pimsServices.service('EntityService', ['$http', '$rootScope', 'uuid4', function 
         return entity.entityType.uuid;
     };
 
-    this.prepMsg = function (msg, entity, entityTypeId) {
+    function _prep_msg(msg, entity, entityTypeId) {
         msg.pimsId = entity.uuid;
         msg.entity_type_id = entityTypeId;
         msg.requestId = uuid4.generate();
+    }
+
+    this.prepMsg = function (msg, entity, entityTypeId) {
+        _prep_msg(msg, entity, entityTypeId)
     };
+
+    this.prepDiffMsg = function (msg, entity, entityTypeId, new_attributes, old_attributes) {
+        _prep_msg(msg, entity, entityTypeId);
+        msg.newAttributes = new_attributes;
+        msg.oldAttributes = old_attributes
+    };
+
+    this.prepCreateMsg = function (msg, entity, entityTypeId) {
+        _prep_msg(msg, entity, entityTypeId);
+        msg.syncOperationType = "CREATE";
+    };
+
 
     this.getReferenceArrayAttributes = function (tabs) {
         var attrs = tabs.map(function (tab) {
