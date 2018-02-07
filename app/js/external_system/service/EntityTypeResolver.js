@@ -23,6 +23,10 @@ pimsServices.service('EntityTypeResolver', [function () {
             read: {
                 url: "/entity-types/" + entityType.uuid + "/entities/uuids",
                 method: "GET"
+            },
+            filter: {
+                url: "/entity-types/" + entityType.uuid + "/entities/getIdsByFilters",
+                method: "POST"
             }
         };
         return item

@@ -15,6 +15,13 @@ form(role="form",name="helpForm", ng-if="external_system.customAttributes.system
         label(for="read.method") Read HTTP METHOD
         input.form-control(type="text",id="read.method", data-ng-model="item[item_key].read.method")
     div.form-group
+        label(for="read.url") Filter Relative Url
+        input.form-control(type="text",id="filter.url", data-ng-model="item[item_key].filter.url")
+    div.form-group
+        label(for="read.method") Filter HTTP METHOD
+        input.form-control(type="text",id="filter.method", data-ng-model="item[item_key].filter.method")
+    div.form-group
+    div.form-group
         label Trigger Type
         select.form-control(id="trigger", ng-model="item[item_key].trigger",
         ng-options="trigger for trigger in triggers")
