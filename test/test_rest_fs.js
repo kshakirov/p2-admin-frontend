@@ -1,145 +1,28 @@
 let restClient = require('node-rest-client-promise').Client(),
     metadata_base_url = "http://10.1.3.23:8080",
     waterfall = require("promise-waterfall"),
+    pipe_relative_url = "/sync-module/external-operations/",
     flatten = require('flatten'),
     sync_base_url = "http://10.1.2.117:4567";
 
 let content = {
     "CustomOperation": {
-        "name": "Import Excel Test Entity",
-        "id": 45,
-        "pipelineId": 24,
-        "entityTypeId": 19,
+        "name": "Export 2 Csv Product Brand",
+        "id": 48,
+        "pipelineId": 75,
+        "entityTypeId": 14,
         "batchSize": 1500,
         "args": {
             "incremental": false,
-            "lastModifiedAfter": "1970-01-01 15:45:20",
-            "filename": "file-1516700587910.xlsx"
+            "lastModifiedAfter": "1970-01-01 15:45:20"
         }
     },
-    "EntityInfo": {"id": null, "entityTypeId": 19},
-    "PipelineInfo": {
-        "transformationSchemata": [{
-            "id": 92,
-            "name": "Csv 2 Pims Test Entity (Array)",
-            "schema": {
-                "entityTypeId": 19,
-                "outputAttributes": [99, 100, 98, 95, 97, 96],
-                "schema": [{
-                    "out": "attributes.99",
-                    "converters": [{
-                        "id": 16,
-                        "name": "str_to_int",
-                        "language": "javascript",
-                        "code": "function str_to_int(value) {\n    return parseInt(value)\n}",
-                        "customAttributes": {"type": "Converter"}
-                    }],
-                    "in": [{"path": "id"}]
-                }, {"out": "attributes.100", "in": [{"path": "description"}]}, {
-                    "out": "attributes.98",
-                    "in": [{"path": "items"}]
-                }, {
-                    "out": "uuid",
-                    "in": [{
-                        "ref": {
-                            "name": "Test Entity > pimsId",
-                            "isEntityKey": false,
-                            "projection": ["uuid"],
-                            "entityTypeId": 19,
-                            "key": {"99": {"path": "id", "type": "INTEGER"}},
-                            "projections": ["uuid"]
-                        }
-                    }]
-                }, {"out": "attributes.95", "in": [{"path": "name"}]}, {
-                    "out": "name",
-                    "in": [{"path": "name"}]
-                }, {
-                    "out": "attributes.97",
-                    "in": [{
-                        "ref": {
-                            "name": "Product Brand > pimsId",
-                            "isEntityKey": false,
-                            "projection": ["uuid"],
-                            "entityTypeId": 14,
-                            "key": {"78": {"path": "brands[*].b_external_id", "type": "INTEGER"}},
-                            "projections": ["uuid"]
-                        }
-                    }]
-                }, {
-                    "out": "attributes.96",
-                    "in": [{
-                        "ref": {
-                            "name": "Product > pimsId",
-                            "isEntityKey": false,
-                            "projection": ["uuid"],
-                            "entityTypeId": 4,
-                            "key": {"43": {"path": "products[*].p_internal_reference", "type": "STRING"}},
-                            "projections": ["uuid"]
-                        }
-                    }]
-                }]
-            },
-            "customAttributes": {"entity": {"uuid": 19}, "export": true}
-        }, {
-            "id": 98,
-            "name": "Csv 2 Pims Test Entity (Brand Array)",
-            "schema": {
-                "entityTypeId": 14,
-                "outputAttributes": [70, 78, 72],
-                "preprocSchema": [{"out": "14", "in": [{"path": "brands"}]}],
-                "schema": [{"out": "attributes.70", "in": [{"path": "brand_name"}]}, {
-                    "out": "attributes.78",
-                    "converters": [{
-                        "id": 16,
-                        "name": "str_to_int",
-                        "language": "javascript",
-                        "code": "function str_to_int(value) {\n    return parseInt(value)\n}",
-                        "customAttributes": {"type": "Converter"}
-                    }],
-                    "in": [{"path": "b_external_id"}]
-                }, {"out": "attributes.72", "in": [{"path": "b_description"}]}, {
-                    "out": "uuid",
-                    "in": [{
-                        "ref": {
-                            "name": "Product Brand > pimsId",
-                            "isEntityKey": false,
-                            "projection": ["uuid"],
-                            "entityTypeId": 14,
-                            "key": {"78": {"path": "b_external_id", "type": "STRING"}},
-                            "projections": ["uuid"]
-                        }
-                    }]
-                }]
-            },
-            "customAttributes": {"entity": {"uuid": 14}, "export": true}
-        }, {
-            "id": 99,
-            "name": "Csv 2 Pims Test Entity (Product Array)",
-            "schema": {
-                "entityTypeId": 4,
-                "outputAttributes": [42, 43],
-                "preprocSchema": [{"out": "4", "in": [{"path": "products"}]}],
-                "schema": [{"out": "attributes.42", "in": [{"path": "p_name"}]}, {
-                    "out": "attributes.43",
-                    "in": [{"path": "p_internal_reference"}]
-                }, {
-                    "out": "uuid",
-                    "in": [{
-                        "ref": {
-                            "name": "Product > pimsId",
-                            "isEntityKey": false,
-                            "projection": ["uuid"],
-                            "entityTypeId": 4,
-                            "key": {"43": {"path": "p_internal_reference", "type": "STRING"}},
-                            "projections": ["uuid"]
-                        }
-                    }]
-                }]
-            },
-            "customAttributes": {"entity": {"uuid": 4}, "export": true}
-        }]
-    }
-};
+    "EntityInfo": {
+        "id": null,
+        "entityTypeId": 14
+    },
+    "PipelineInfo": {}
+}
 
 
 let attributes_regex = /.*attributes\.\d+/;
@@ -310,17 +193,17 @@ function run2(c) {
 
 
 function get_headers(schemata, entity_type_id) {
-    let attrs = flatten( schemata.map(s=>{
-            return s.schema.schema.map(ss=>{
+    let attrs = flatten(schemata.map(s => {
+            return s.schema.schema.map(ss => {
                 return ss;
             })
-    }).map(s=>{
-            return s.map(ss=>{
-                    return ss.in[0].path
+        }).map(s => {
+            return s.map(ss => {
+                return ss.in[0].path
             })
         })
-    ).filter(s=>{
-        if(s)
+    ).filter(s => {
+        if (s)
             return s;
     });
 
@@ -333,4 +216,61 @@ function run(c) {
     get_referenced_entity_attr_ids(schemata, entity_type_id)
 }
 
-run(content);
+
+let check_pipe_schemata = function (pipeline_id, entity_type_id) {
+    let url = sync_base_url + pipe_relative_url + pipeline_id;
+    let result = {
+        success: false,
+
+    };
+    return restClient.getPromise(url).then((data) => {
+        let pipe = data.data;
+        if (check_schemata(pipe, entity_type_id)) {
+            let s_system = pipe.externalOperation.sourceSystem,
+                t_system = pipe.externalOperation.targetSystem;
+            if (check_external_system(s_system, entity_type_id)) {
+                if (check_external_system(t_system, entity_type_id)) {
+                    result.success = true;
+                } else {
+                    result.error = "The Target System Does Not Contain Any End Point  For This Entity Type. Go to External Systems and Create the End Point for This Entity Type"
+                }
+            } else {
+                result.error = "The Source System Does Not Contain Any End Point  For This Entity Type. Go to External Systems and Create the End Point for This Entity Type"
+            }
+
+        } else {
+            console.log("TS Doesn't  Exist");
+            result.error = "The Pipe Does Not Contain Any Schemata For This Entity Type. Either Create Schemata or Add an Entry for This Entity Type in the Pipe"
+        }
+        return result;
+
+    }, (e) => {
+        console.log(e)
+    })
+};
+
+
+let check_schemata = function (pipe, entity_type_id) {
+    let schemata = pipe.externalOperation.transformationSchemata,
+        ids = Object.keys(schemata);
+    let schema_id = ids.find(i => {
+        return i === entity_type_id.toString()
+    });
+    if (schema_id && schemata[schema_id])
+        return true;
+    return false;
+};
+
+let check_external_system = function (system, entity_type_id) {
+    let entities = Object.keys(system.customAttributes.entities);
+    system_id = entities.find(i => {
+        return i === entity_type_id.toString()
+    });
+    if (system_id)
+        return true;
+    return false
+};
+
+check_pipe_schemata(74, 14).then(r => {
+    console.log(r)
+});

@@ -5,6 +5,7 @@ let amqp = require('amqplib/callback_api'),
     operationLog = require('./operation_log'),
     token_tools = require('../proxy/tokenTools'),
     amqpConn = null,
+    sync_module_tools = require('./sync_module_tools'),
     pimsConfig = config.get('config');
 
 function get_userr(req) {
@@ -139,8 +140,25 @@ function startFileReaderQueueListener() {
 
 
 function notifyBatch(req, res) {
-    let queuePrefix = req.params.queuePrefix;
-    notify(req, res, queuePrefix)
+    let queuePrefix = req.params.queuePrefix,
+        pipe_id = req.body.message.CustomOperation.pipelineId,
+        entity_type_id = req.body.message.CustomOperation.entityTypeId;
+
+    sync_module_tools.checkOperationSettings(pipe_id, entity_type_id).then(r => {
+        if (r.success) {
+            console.log("checked");
+            notify(req, res, queuePrefix)
+        } else {
+            res.statusCode = 400;
+            res.json(r)
+        }
+
+    }, e => {
+        res.statusCode = 400;
+        res.json({error: "Something with Settings"})
+    })
+
+
 }
 
 function notifyEntity(req, res) {

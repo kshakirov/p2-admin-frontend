@@ -94,15 +94,22 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
                 })
             }
             console.log(message);
-            NotificationModel.notifyBatch(message, queue_prefix).then(function (response) {
-                ngNotify.set('Your Operation Has Just Scheduled for Run');
-            })
+            return NotificationModel.notifyBatch(message, queue_prefix).then(
+                function (response) {
+                    ngNotify.set('Your Operation Has Just Scheduled for Run');
+                }, function (error) {
+                    ngNotify.set(error.data.error, {
+                        position: 'top',
+                        type: 'error',
+                        sticky: true
+                    });
+                })
 
         }
 
         function timestamp_to_pims_date(lastRun) {
             if (lastRun)
-                return $filter("date")(lastRun,"yyyy-MM-dd HH:mm:ss");
+                return $filter("date")(lastRun, "yyyy-MM-dd HH:mm:ss");
             return "1970-01-01 00:00:00"
         }
 

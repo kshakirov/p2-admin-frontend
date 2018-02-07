@@ -231,5 +231,61 @@ function resolveArrayAttributesBySchemata(content) {
 
 }
 
+let checkOperationSettings = function (pipe_id, entity_type_id) {
+    let url = sync_base_url + pipe_relative_url + pipe_id;
+    let result = {
+        success: false,
+
+    };
+    return restClient.getPromise(url).then((data) => {
+        let pipe = data.data;
+        if (check_schemata(pipe, entity_type_id)) {
+            let s_system = pipe.externalOperation.sourceSystem,
+                t_system = pipe.externalOperation.targetSystem;
+            if (check_external_system(s_system, entity_type_id)) {
+                if (check_external_system(t_system, entity_type_id)) {
+                    result.success = true;
+                } else {
+                    result.error = "The Target System Does Not Contain Any End Point  For This Entity Type. Go to External Systems and Create the End Point for This Entity Type"
+                }
+            } else {
+                result.error = "The Source System Does Not Contain Any End Point  For This Entity Type. Go to External Systems and Create the End Point for This Entity Type"
+            }
+
+        } else {
+            console.log("TS Doesn't  Exist");
+            result.error = "The Pipe Does Not Contain Any Schemata For This Entity Type. Either Create Schemata or Add an Entry for This Entity Type in the Pipe"
+        }
+        return result;
+
+    }, (e) => {
+        console.log(e)
+    })
+};
+
+
+let check_schemata = function (pipe, entity_type_id) {
+    let schemata = pipe.externalOperation.transformationSchemata,
+        ids = Object.keys(schemata);
+    let schema_id = ids.find(i => {
+        return i === entity_type_id.toString()
+    });
+    if (schema_id && schemata[schema_id])
+        return true;
+    return false;
+};
+
+let check_external_system = function (system, entity_type_id) {
+    let entities = Object.keys(system.customAttributes.entities);
+    system_id = entities.find(i => {
+        return i === entity_type_id.toString()
+    });
+    if (system_id)
+        return true;
+    return false
+};
+
+
+exports.checkOperationSettings = checkOperationSettings;
 exports.resolveArrayAttributes = resolveArrayAttributes;
 exports.resolveArrayAttributesBySchemata = resolveArrayAttributesBySchemata;
