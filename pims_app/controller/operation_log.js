@@ -23,10 +23,10 @@ function syncLog() {
 
 
 function get_diff(newObj, oldObj) {
-    let result = changesets.diff(oldObj,newObj);
-    if(result && result.length > 0){
+    let result = changesets.diff(oldObj, newObj);
+    if (result && result.length > 0) {
         return result
-    }else{
+    } else {
         []
     }
 }
@@ -34,28 +34,28 @@ function get_diff(newObj, oldObj) {
 
 function individualTaskStart(message, user_login) {
     let body = {};
-    let msg = JSON.parse(message),
-        id = msg.requestId;
+    let msg = JSON.parse(message);
     body.entityId = msg.pimsId;
     body.startedAt = Date.now();
     body.syncOperationType = msg.syncOperationType;
     body.entityTypeId = msg.entity_type_id;
     body.user = user_login;
-    body.diff = get_diff(msg.newAttributes,msg.oldAttributes);
-    elasticModel.addIndividualLogEntry(id, body)
+    body.operationId = msg.requestId;
+    body.diff = get_diff(msg.newAttributes, msg.oldAttributes);
+    elasticModel.addIndividualLogEntry(body)
 }
 
 function individualTaskFinish(message) {
-    let body = {
-        doc: {}
-    };
-    let msg = JSON.parse(message),
-        id = msg.requestId;
-    body.doc.processed = true;
-    body.doc.externalSysttemId = msg.extSysId;
-    body.doc.finishedAt = msg.syncTime;
+    let body = {};
+    let msg = JSON.parse(message);
+    body.processed = true;
+    body.entityId = msg.pimsId;
+    body.operationId = msg.requestId;
+    body.syncOperationType = "SYNC";
+    body.externalSysttemId = msg.extSysId;
+    body.finishedAt = msg.syncTime;
 
-    elasticModel.updateIndividualLogEntry(id, body)
+    elasticModel.addIndividualLogEntry(body)
 }
 
 exports.syncLog = syncLog;

@@ -12,7 +12,8 @@ pimsApp.controller('AuditListController', ['$scope', 'AuditModel',
             from: 0,
             type: "individual",
             query: null,
-            sort: [{'startedAt': {"order": "desc", "mode": "avg"}}]
+            sort: [{'operationId': {"order": "asc", "mode": "avg"}},
+                {'startedAt': {"order": "desc", "mode": "avg"}}]
         };
 
         $scope.inputs = [

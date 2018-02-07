@@ -16,15 +16,20 @@
             table.table
                 thead
                     tr
-                        th Started
+                        th Id
+                        th Started At
                         th Id
                         th Entyty Type
                         th Operation
-                        th Processed
-                        th System Id
-                        th Finished
+                        th System
+                        th Synced At
                         th Diff
                     tr
+                        td
+                            form(role="form")
+                                input.form-control(type="text",
+                                ng-keypress="($event.which === 13)?search():0",
+                                data-ng-model="search_params.operationId")
                         td
                         td
                             form(role="form")
@@ -42,17 +47,20 @@
                                 ng-keypress="($event.which === 13)?search():0",
                                 data-ng-model="search_params.syncOperationType")
                         td
-                        td
+                            form(role="form")
+                                input.form-control(type="number",
+                                ng-keypress="($event.which === 13)?search():0",
+                                data-ng-model="search_params.externalSysttemId")
                         td
                         td
                         td
                 tbody
                     tr(ng-repeat="op in operations")
+                        td {{op.operationId}}
                         td {{op.startedAt | date:'yyyy-MM-dd HH:mm:ss Z'}}
                         td {{op.entityId}}
                         td {{op.entityTypeId}}
                         td {{op.syncOperationType}}
-                        td {{op.processed}}
                         td {{op.externalSysttemId}}
                         td {{op.finishedAt | date:'yyyy-MM-dd HH:mm:ss Z'}}
                         td(ng-if="op.diff")

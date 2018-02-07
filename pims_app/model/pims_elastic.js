@@ -83,11 +83,10 @@ function addLogEntry(id,body) {
     });
 }
 
-function addIndividualLogEntry(id,body) {
+function addIndividualLogEntry(body) {
     return client.index({
         index: elastic_index,
         type: individualLogType,
-        id: id,
         body
     }, function (error, response) {
         console.log("response")
