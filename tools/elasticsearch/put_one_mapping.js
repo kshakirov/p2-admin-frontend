@@ -20,10 +20,16 @@ if(args.length < 2){
 let type =args[0].toString(),
     attribute=args[1].toString(),
     body ={ properties: { }};
-    body.properties[attribute] ={
-        type: "string",
-        analyzer: "pims_analyzer"
-    } ;
+body.properties[attribute] = {
+    type: "text",
+    "fields": {
+        "raw": {
+            "type": "string",
+            "analyzer": "lowercase_keyword",
+            "fielddata": true
+        }
+    }
+};
 let indexParams = {
     index: elastic_index,
 };
