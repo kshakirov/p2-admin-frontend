@@ -49,6 +49,7 @@ function individualTaskFinish(message) {
     let body = {};
     let msg = JSON.parse(message);
     body.processed = true;
+    body.startedAt = msg.syncTime;
     body.entityId = msg.pimsId;
     body.operationId = msg.requestId;
     body.syncOperationType = "SYNC";
