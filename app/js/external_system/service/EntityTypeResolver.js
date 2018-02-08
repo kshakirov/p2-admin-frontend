@@ -48,6 +48,26 @@ pimsServices.service('EntityTypeResolver', [function () {
         return item
     };
 
+    var fill_up_pims_batch_dto = function (entityType) {
+        var item = {};
+        item[entityType.uuid] = {
+            name: entityType.name,
+            write: {
+                url: "/entity-types/" + entityType.uuid + "/entities/import/bulk",
+                method: 'POST'
+            },
+            read: {
+                url: "/entity-types/" + entityType.uuid + "/entities/uuids/dto",
+                method: "POST"
+            },
+            filter: {
+                url: "/entity-types/" + entityType.uuid + "/entities/getIdsByFilters",
+                method: "POST"
+            }
+        };
+        return item
+    };
+
     var fill_up_pims_elastic = function (entityType) {
         var item = {};
         item[entityType.uuid] = {
@@ -81,6 +101,11 @@ pimsServices.service('EntityTypeResolver', [function () {
                 name: "Pims (Individual)",
                 id: 3,
                 fill_up: fill_up_pims_individual
+            },
+            {
+                name: "Pims (DTO)",
+                id: 4,
+                fill_up: fill_up_pims_batch_dto
             }
         ]
     }
