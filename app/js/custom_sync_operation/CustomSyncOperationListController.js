@@ -46,7 +46,7 @@ pimsApp.controller('CustomSyncOperationListController', ['$scope', '$route', '$r
             var operations = custom_sync_operations;
             operations.map(function (op) {
                 var entity_type = entity_types.find(function (et) {
-                    if (et.uuid === op.customAttributes.entityTypeId.uuid)
+                    if (et && et.uuid === op.customAttributes.entityTypeId.uuid)
                         return true
                 });
                 op.entityTypeName = entity_type.name
@@ -59,7 +59,7 @@ pimsApp.controller('CustomSyncOperationListController', ['$scope', '$route', '$r
             var operations = custom_sync_operations;
             operations.map(function (op) {
                 var pipe = pipes.find(function (p) {
-                    if (p.id === op.customAttributes.pipe.id)
+                    if (p && p.id === op.customAttributes.pipe.id)
                         return true
                 });
                 op.pipeName = pipe.name
