@@ -378,4 +378,7 @@ function bit_rol(num, cnt)
     return (num << cnt) | (num >>> (32 - cnt));
 }
 
-console.log(b64_md5("1232fdfdf"));
+function base64_2_md5(data) {
+    return b64_md5(data)
+}
+console.log(base64_2_md5("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSK0vf19bKk0CNWEfWPDkHlEpGR75xgWiU7reLw-HwvvQTuuNe8"))

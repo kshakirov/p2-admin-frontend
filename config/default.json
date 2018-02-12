@@ -39,6 +39,22 @@
     },
     "redis":{
       "url": "redis://10.1.3.23"
+    },
+    "postgres":{
+      "syncModule":{
+        "host": "10.1.2.117",
+        "database": "pimms_sync_development",
+        "port": 5432,
+        "user": "postgres",
+        "password":"test"
+      },
+      "metadata":{
+        "host": "10.1.2.117",
+        "database": "pims2",
+        "port": 5432,
+        "user": "postgres",
+        "password":"test"
+      }
     }
   }
 }
