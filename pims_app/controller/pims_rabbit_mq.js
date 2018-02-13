@@ -165,7 +165,27 @@ function notifyEntity(req, res) {
     notify(req, res, pimsConfig.rabbitMq.entityRoutingKey)
 }
 
+function checkImmediatePipeline(req, res) {
+    let entity_type_ids = req.body.entityTypeIds,
+        external_system_ids = req.body.externalSystemIds;
+    sync_module_tools.checkImmediatePipeConfig(entity_type_ids, external_system_ids).then(errs=>{
+        if(errs.length > 0){
+            res.statusCode = 400;
+            res.json({
+                error: errs
+            })
+        }else{
+            res.send(200)
+        }
+    }, error =>{
+        console.log(error);
+        res.send(500)
+    })
+
+}
+
 
 exports.notifyBatch = notifyBatch;
 exports.notifyEntity = notifyEntity;
 exports.startConnenction = startConnenction;
+exports.checkImmediatePipeline = checkImmediatePipeline;

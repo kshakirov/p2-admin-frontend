@@ -3,6 +3,7 @@ let restClient = require('node-rest-client-promise').Client(),
     pimsConfig = config.get('config'),
     pipe_relative_url = "/sync-module/external-operations/",
     attribute_relative_url = "/rest/entity-types/1/attributes/",
+    external_systems_relative_url = "/sync-module/external-systems/",
     metadata_base_url = pimsConfig.metadataServer.url,
     flatten = require('flatten'),
     sync_base_url = pimsConfig.syncModule.url;
@@ -285,7 +286,50 @@ let check_external_system = function (system, entity_type_id) {
     return false
 };
 
+function external_system_lacks_entity_entries(entity_type_ids, external_system) {
+    let missed_entities  = entity_type_ids.filter(eti=>{
+        if(!external_system.customAttributes.entities.hasOwnProperty(eti))
+            return true;
+    });
+    if(missed_entities.length>0){
+        return missed_entities.join(',');
+    }
+    return false;
+}
+
+
+function checkImmediatePipeConfig(entity_type_ids, external_system_ids) {
+    let url = sync_base_url + external_systems_relative_url;
+    let result = {
+        success: false,
+
+    };
+    let ext_syss = external_system_ids.map(id=>{
+        return restClient.getPromise(url + "/" + id)
+    });
+
+
+
+    return Promise.all(ext_syss).then(r=>{
+        let wrong_external_systems = r.map(rr=>{
+            return {
+                name: rr.data.name,
+                missedEntities: external_system_lacks_entity_entries(entity_type_ids,rr.data)
+            }
+        });
+        return wrong_external_systems.filter(wes=>{
+            if(wes.missedEntities)
+                return wes
+        });
+
+    },e=>{
+
+    })
+
+}
+
 
 exports.checkOperationSettings = checkOperationSettings;
 exports.resolveArrayAttributes = resolveArrayAttributes;
 exports.resolveArrayAttributesBySchemata = resolveArrayAttributesBySchemata;
+exports.checkImmediatePipeConfig = checkImmediatePipeConfig;

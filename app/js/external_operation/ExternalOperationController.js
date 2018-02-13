@@ -75,18 +75,33 @@ pimsApp.controller('ExternalOperationController', ['$scope', '$route', '$routePa
         };
 
         $scope.updateExternalOperation = function (external_operation) {
+            if (ExternalOperationService.areSchemata_missed(external_operation)) {
+                var missed = ExternalOperationService.areSchemata_missed(external_operation);
+                ngNotify.set("Schemata Missed For [" + missed.join(',') + "]", 'error');
+                return
+            }
             var eo = ExternalOperationService.update_transformation_schemata(external_operation);
             ExternalOperationService.dto_external_systems(eo);
             ExternalOperationService.dto_entityTypes(eo);
-            if (external_operation.hasOwnProperty("id")) {
-                ExternalOperationModel.save(eo.id, eo).then(function (response) {
-                    ngNotify.set("Pipe Updated Successfully", 'success');
-                })
-            } else {
-                ExternalOperationModel.create(eo).then(function (response) {
-                    ngNotify.set("Pipe Created Successfully", 'success');
-                })
-            }
+            ExternalOperationService.hasNotConfiguredImmediatePipeline(external_operation).then(function (ok) {
+                if (external_operation.hasOwnProperty("id")) {
+                    ExternalOperationModel.save(eo.id, eo).then(function (response) {
+                        ngNotify.set("Pipe Updated Successfully", 'success');
+                    })
+                } else {
+                    ExternalOperationModel.create(eo).then(function (response) {
+                        ngNotify.set("Pipe Created Successfully", 'success');
+                    })
+                }
+            }, function (error) {
+                var message = ExternalOperationService.prepErrorMessage(error);
+                ngNotify.set("Not Properly Configured External Systems For Types" + message, {
+                    position: 'top',
+                    type: 'error',
+                    sticky: true
+                });
+            });
+
         };
         $scope.deleteExternalOperation = function (id) {
             ExternalOperationModel.delete(id).then(function (response) {
@@ -104,12 +119,12 @@ pimsApp.controller('ExternalOperationController', ['$scope', '$route', '$routePa
         };
 
         $scope.filterByEntityTypeId = function (transformation_schemata, entity_type_id) {
-            if(transformation_schemata) {
+            if (transformation_schemata) {
                 return transformation_schemata.filter(function (s) {
                     if (s.customAttributes.entity.uuid == entity_type_id)
                         return true;
                 })
-            }else{
+            } else {
                 return []
             }
         }

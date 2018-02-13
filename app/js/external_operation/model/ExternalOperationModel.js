@@ -33,4 +33,11 @@ pimsServices.service('ExternalOperationModel', ['$http', '$rootScope', function 
             })
     }
 
-}])
+    this.checkImmediatePipelin = function (payload) {
+        return $http.post("/control/notify/pipeline/immediate/check", payload)
+            .then(function (response) {
+                return response.data.externalOperations
+            })
+    };
+
+}]);

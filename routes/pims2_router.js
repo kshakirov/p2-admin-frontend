@@ -52,6 +52,10 @@ router.post('/notify/entity', function (req, res) {
     rabbit_mq_controller.notifyEntity(req, res);
 });
 
+router.post('/notify/pipeline/immediate/check', function (req, res) {
+    rabbit_mq_controller.checkImmediatePipeline(req, res);
+});
+
 
 router.put('/csv/write/:filename/:uuid', function (req, res) {
     csv_writer.writeCsv(req, res);
