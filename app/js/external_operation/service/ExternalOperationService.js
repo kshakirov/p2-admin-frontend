@@ -69,8 +69,9 @@ pimsServices.service('ExternalOperationService', ['AttributeModel','ExternalOper
         };
         this.hasNotConfiguredImmediatePipeline = function (external_operation) {
             if(external_operation.customAttributes && external_operation.customAttributes.immediate) {
+                var entityTypeIds  =  Object.keys(external_operation.transformationSchemata);
                 var payload = {
-                    entityTypeIds: external_operation.entityTypeIds,
+                    entityTypeIds: entityTypeIds,
                     externalSystemIds: [
                         external_operation.sourceSystem.id,
                         external_operation.targetSystem.id
