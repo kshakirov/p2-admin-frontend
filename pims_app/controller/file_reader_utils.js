@@ -45,15 +45,16 @@ function create_objs_from_cols(row, attributes_data) {
     let current_row = JSON.parse(JSON.stringify(row));
     let binding = attributes_data.binding;
     Object.keys(binding).map(bb => {
-        let t_objs = current_row[binding[bb][0]].map((cr, i) => {
-            let t_obj = {};
-            binding[bb].map(b => {
-                t_obj[b] = current_row[b][i]
+        if (binding[bb]) {
+            let t_objs = current_row[binding[bb][0]].map((cr, i) => {
+                let t_obj = {};
+                binding[bb].map(b => {
+                    t_obj[b] = current_row[b][i]
+                });
+                return t_obj;
             });
-            return t_obj;
-        });
-
-        current_row[bb] = t_objs;
+            current_row[bb] = t_objs;
+        }
     });
     return current_row;
 }

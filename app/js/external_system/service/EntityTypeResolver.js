@@ -85,6 +85,27 @@ pimsServices.service('EntityTypeResolver', [function () {
     };
 
 
+    var fill_up_pims_binary = function (entityType) {
+        var item = {};
+        item[entityType.uuid] = {
+            name: entityType.name,
+            write: {
+                url: "/entity-types/" + entityType.uuid + "/entities/import/bulk?joinArrays=true",
+                method: 'POST'
+            },
+            read: {
+                url: "/entity-types/" + entityType.uuid + "/entities/uuids",
+                method: "GET"
+            },
+            filter: {
+                url: "/entity-types/" + entityType.uuid + "/entities/getIdsByFilters",
+                method: "POST"
+            }
+        };
+        return item
+    };
+
+
     this.createHelpers = function () {
         return [
             {
@@ -106,7 +127,12 @@ pimsServices.service('EntityTypeResolver', [function () {
                 name: "Pims (DTO)",
                 id: 4,
                 fill_up: fill_up_pims_batch_dto
-            }
+            },
+            {
+                name: "Pims (Binary)",
+                id: 5,
+                fill_up: fill_up_pims_binary
+            },
         ]
     }
 
