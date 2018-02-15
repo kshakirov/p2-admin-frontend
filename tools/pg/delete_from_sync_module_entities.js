@@ -1,19 +1,8 @@
-const pgp = require('pg-promise')();
-let config = require('config'),
-    pimsConfig = config.get('config'),
-    syncDb = pimsConfig.postgres.syncModule;
+let syncConnection = require('./sync_connection');
 
-const cn = {
-    host: syncDb.host,
-    port: syncDb.port,
-    database: syncDb.database,
-    user: syncDb.user,
-    password: syncDb.password
-};
+const db = syncConnection.connectSync();
 
-const db = pgp(cn);
-
-let entity_type_id = 14,
+let entity_type_id = process.argv[2].toString(),
     tables = ['golden_source_audit_journal', 'amazon_audit_journal', 'openerp_audit_journal'];
 
 

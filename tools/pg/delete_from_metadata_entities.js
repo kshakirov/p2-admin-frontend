@@ -1,19 +1,8 @@
-const pgp = require('pg-promise')();
-let config = require('config'),
-    pimsConfig = config.get('config'),
-    metadataDb = pimsConfig.postgres.metadata;
+let metadataConnection = require('./metadata_connection');
 
-const cn = {
-    host: metadataDb.host,
-    port: metadataDb.port,
-    database: metadataDb.database,
-    user: metadataDb.user,
-    password: metadataDb.password
-};
+const db = metadataConnection.connectMetadata();
 
-const db = pgp(cn);
-
-let entity_type_id = 14,
+let entity_type_id = process.argv[2].toString(),
     tables = ['entity'];
 
 
@@ -31,6 +20,5 @@ Promise.all(queries).then(rs => {
 }, e => {
     console.log(e)
 });
-
 
 
