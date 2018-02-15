@@ -23,16 +23,32 @@
       "secret": "pims_resurrected",
       "tokenExpiration": "1d"
     },
-    "rabbitMq":{
-      "url":"localhost",
+    "rabbitMq": {
+      "url": "localhost",
       "pimsExchange": "",
-      "batchRoutingKey":"batchQueue",
-      "importOpenerpRoutingKey":"openerpBatch",
-      "entityRoutingKey":"entityQueue",
-      "pipelineRoutingKey":"pipelineResponseQueue"
+      "batchRoutingKey": "batchQueue",
+      "importOpenerpRoutingKey": "openerpBatch",
+      "entityRoutingKey": "entityQueue",
+      "pipelineRoutingKey": "pipelineResponseQueue"
     },
-    "redis":{
+    "redis": {
       "url": "redis://172.31.20.97"
+    },
+    "postgres": {
+      "syncModule": {
+        "host": "10.1.2.117",
+        "database": "pimms_sync_development",
+        "port": 5432,
+        "user": "postgres",
+        "password": "test"
+      },
+      "metadata": {
+        "host": "10.1.2.117",
+        "database": "pims2",
+        "port": 5432,
+        "user": "postgres",
+        "password": "test"
+      }
     }
   }
 }
