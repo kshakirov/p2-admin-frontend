@@ -17,7 +17,9 @@ function get_userr(req) {
 
 function addUserLogin(msg, user_login) {
     var message = msg;
-    message.CustomOperation.userLogin=user_login;
+    if(message.hasOwnProperty('CustomOperation')) {
+        message.CustomOperation.userLogin = user_login;
+    }
     return JSON.stringify(message);
 }
 
