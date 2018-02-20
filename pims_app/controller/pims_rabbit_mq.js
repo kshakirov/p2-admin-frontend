@@ -14,10 +14,19 @@ function get_userr(req) {
     return user.name;
 }
 
+
+function addUserLogin(msg, user_login) {
+    var message = msg;
+    message.CustomOperation.userLogin=user_login;
+    return JSON.stringify(message);
+}
+
+
 function notify(req, res, queue_name) {
     let ex = pimsConfig.rabbitMq.pimsExchange,
-        message = JSON.stringify(req.body.message);
-    operationLog.individualTaskStart(message, get_userr(req));
+        user_login = get_userr(req);
+    let message = addUserLogin(req.body.message,user_login);
+    operationLog.individualTaskStart(message, user_login);
     amqp.connect(`amqp://${pimsConfig.rabbitMq.url}`, function (err, conn) {
         conn.createChannel(function (err, ch) {
             if (err) {

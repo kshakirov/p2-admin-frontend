@@ -40,6 +40,7 @@ function read_csv(content, attributes_data) {
                 batch = fileReaderUtils.releaseCcurrentRow(batch, attributes_data);
                 fileReaderUtils.pushBatchToRedis(batch, content);
                 batch = [];
+                fileReaderUtils.pushBatchToRedis(batch, content);
             });
 
     } else {
