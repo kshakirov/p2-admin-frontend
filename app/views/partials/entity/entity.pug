@@ -13,7 +13,7 @@ uib-tabset(active="active", ng-init="init()")
                     div.form-group(ng-repeat="attr in tab.attributes")
                         div(ng-if="attr.properties.frontendType !='multiselect' && attr.properties.frontendType !='select' && attr.properties.frontendType !='table' && attr.properties.frontendType !='file' && attr.properties.frontendType !='preview' && attr.properties.frontendType !='image_url' && attr.properties.frontendType !='download'" )
                             label {{attr.name}}
-                            input.form-control(type="{{attr.properties.frontendType}}", data-ng-model="entity.attributes[attr.uuid].value")
+                            input.form-control(type="{{attr.properties.frontendType}}", data-ng-model="entity.attributes[attr.uuid].value", ng-disabled="attr.properties.readonly")
                         div(ng-if="attr.properties.frontendType =='multiselect'")
                             label {{attr.name}}
                             .input-group

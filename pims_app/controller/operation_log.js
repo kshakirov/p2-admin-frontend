@@ -41,7 +41,8 @@ function individualTaskStart(message, user_login) {
     body.entityTypeId = msg.entity_type_id;
     body.user = user_login;
     body.operationId = msg.requestId;
-    body.diff = get_diff(msg.newAttributes, msg.oldAttributes);
+    body.diff = msg.diff;
+    body.version = msg.version;
     elasticModel.addIndividualLogEntry(body)
 }
 

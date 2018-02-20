@@ -48,9 +48,9 @@ pimsServices.service('EntityService', ['$http', '$rootScope', 'uuid4', function 
         return entity.entityType.uuid;
     };
 
-    function _prep_msg(msg, entity, entityTypeId) {
+    function _prep_msg(msg, entity) {
         msg.pimsId = entity.uuid;
-        msg.entity_type_id = entityTypeId;
+        msg.entity_type_id = entity.entityTypeId;
         msg.requestId = uuid4.generate();
     }
 
@@ -58,10 +58,10 @@ pimsServices.service('EntityService', ['$http', '$rootScope', 'uuid4', function 
         _prep_msg(msg, entity, entityTypeId)
     };
 
-    this.prepDiffMsg = function (msg, entity, entityTypeId, new_attributes, old_attributes) {
-        _prep_msg(msg, entity, entityTypeId);
-        msg.newAttributes = new_attributes;
-        msg.oldAttributes = old_attributes
+    this.prepDiffMsg = function (msg,response) {
+        _prep_msg(msg, response.entity);
+        msg.diff = response.diff;
+        msg.version = response.entity.version;
     };
 
     this.prepCreateMsg = function (msg, entity, entityTypeId) {

@@ -31,6 +31,9 @@ uib-tabset(active="active", ng-init="init()")
                     div.form-group
                         label(for="indexed") Indexed
                         input.form-control(type="checkbox",id="indexed", data-ng-model="attribute.properties.indexed")
+                    div.form-group
+                        label(for="indexed") Read Only
+                        input.form-control(type="checkbox",id="readonly", data-ng-model="attribute.properties.readonly")
                     div.btn-group
                         button.btn.btn-default(type="submit", ng-click="updateAttribute(attribute)") APPLY
                         button.btn.btn-danger(type="submit", ng-if="!attribute.deleted", ng-click="deleteAttribute(attribute.uuid, attribute)", ng-disabled="!attribute.uuid") DELETE

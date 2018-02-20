@@ -44,6 +44,10 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
             return t;
         }
 
+        function is_entity_changed(response) {
+            return response.status!=304
+        }
+
         function create_q_functions(reference_array_attributes, reference_attributes) {
             var q_functions = {},
                 params_string = "propertyName=role&propertyValues=table";
@@ -113,11 +117,14 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
                 if (validation.result) {
                     if (entity.uuid) {
                         EntityModel.update(entity_type_uuid, entity_copy).then(function (response) {
-                            EntityService.prepDiffMsg(msg, entity, entity_type_uuid,
-                                entity_copy.attributes, EntityService.prepAttributesDto(old_entity.attributes) );
-                            NotificationModel.notifyEntity(msg).then(function () {
-                                ngNotify.set("Entity Updated", 'success');
-                            })
+                            if(is_entity_changed(response)) {
+                                EntityService.prepDiffMsg(msg, response);
+                                NotificationModel.notifyEntity(msg).then(function () {
+                                    ngNotify.set("Entity Updated", 'success');
+                                })
+                            }else {
+                                ngNotify.set("Entity Not Changed", 'warning');
+                            }
                         }, function (error) {
                             ngNotify.set("Entity Is Not Updated" + error.msg, 'error');
                         })

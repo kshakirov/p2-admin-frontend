@@ -22,6 +22,7 @@
                         th System Id
                         th Finished At
                         th User
+                        th Version
                         th Diff
                 tbody
                     tr(ng-repeat="op in operations")
@@ -31,8 +32,9 @@
                         td {{op.externalSysttemId}}
                         td {{op.finishedAt | date:'yyyy-MM-dd HH:mm:ss Z'}}
                         td {{op.user}}
+                        td {{op.version}}
                         td(ng-if="op.diff")
-                            a(ng-click="", ng-href="") MORE
+                            a(ng-click="visualizeDiff(op)", ng-href="") MORE
                         td(ng-if="!op.diff || op.diff.length==0") NO CHANGES
     .row
         .col-lg-6.col-lg-offset-2

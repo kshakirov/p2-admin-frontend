@@ -1,0 +1,32 @@
+.modal-header(ng-init="init()")
+    h3.modal-title  DIFF
+    .modal-body
+        .row
+            .col-lg-12
+                table.table
+                    thead
+                        tr
+                            th Action
+                            th Path
+                            th Old Value
+                            th New Value
+                    tbody
+                        tr(ng-repeat="op in diff")
+                            td
+                                b {{op.op}}
+                            td {{op.path}}
+                            td
+                                p.text-danger {{op.fromValue}}
+
+                            td
+                                p.text-success {{op.value}}
+
+
+
+
+
+
+
+    .modal-footer
+        button.btn.btn-primary(ng-click="ok()") OK
+        button.btn.btn-warning(ng-click="cancel()") Cancel
