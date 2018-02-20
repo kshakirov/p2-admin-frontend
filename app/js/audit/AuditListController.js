@@ -1,8 +1,9 @@
 pimsApp.controller('AuditListController', ['$scope', 'AuditModel',
-    'usSpinnerService',
+    'usSpinnerService','$uibModal',
     function ($scope,
               AuditModel,
-              usSpinnerService) {
+              usSpinnerService,
+              $uibModal) {
 
         $scope.search_params = {};
         $scope.pageSize = 5;
@@ -105,4 +106,23 @@ pimsApp.controller('AuditListController', ['$scope', 'AuditModel',
             });
             $scope.search();
         }
+
+        $scope.visualizeDiff = function (item) {
+            // var item = item;
+            var $uibModalInstance = modalInstance = $uibModal.open({
+                templateUrl: 'partial/entity/audit_diff_modal',
+                controller: createDiffController(item),
+                resolve: {
+                    user: function () {
+                        return "Return";
+                    }
+                }
+            });
+            $uibModalInstance.result.then(function (reference) {
+                console.log(reference);
+
+            }, function () {
+            });
+
+        };
     }]);
