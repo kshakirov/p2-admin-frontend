@@ -296,7 +296,7 @@ pimsServices.service('TransformationSchemaService', ['$http', '$rootScope', func
 
                         return {
                             uuid: i.uuid,
-                            path: i.root + "." + i.uuid  + ".value." + schema.reference.uuid + ".value"
+                            path: i.root + "." + i.uuid  + ".value." + "attributes." + schema.reference.uuid + ".value"
                         }
                     } else {
                         return {
