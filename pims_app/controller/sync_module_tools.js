@@ -133,7 +133,7 @@ function get_out_attributes(c) {
 
 function get_main_entity_rules(schemata, entity_type_id) {
     let main_schema = schemata.find(s => {
-        if (s.schema.entityTypeId == entity_type_id) {
+        if (s.schema.entityTypeId === entity_type_id) {
             console.log(`Main entity ${s.name} of entity type ${s.schema.entityTypeId}`);
             return s;
         }
@@ -148,13 +148,13 @@ function bind_array_cols_2_new_cols(attributes, new_csv_cols) {
         binding[n] = attributes[i];
         i = i + 1;
     });
-    return binding;
+    return verify_binding(binding);
 }
 
 
 function get_referenced_entity_rules(schemata, entity_type_id) {
     let rows = flatten(schemata.filter(s => {
-        if (s.schema.entityTypeId != entity_type_id) {
+        if (s.schema.entityTypeId !== entity_type_id) {
             console.log(`Referenced entity ${s.name} of entity type ${s.schema.entityTypeId}`);
             return s;
         }
@@ -203,6 +203,24 @@ function remove_duplicates(attributes, names) {
     })
 }
 
+function verify_binding(binding) {
+    let b = JSON.parse(JSON.stringify(binding));
+    if(binding.hasOwnProperty("undefined")){
+        delete b['undefined']
+    }
+    return b;
+}
+
+function verify_attributes(attributes,binding) {
+    let keys = Object.keys(binding);
+    let verified_attrs = attributes.filter(a=>{
+        keys.find(key=>{
+            binding[key] == a
+        })
+    });
+    return verified_attrs;
+}
+
 function resolveArrayAttributesBySchemata(content) {
     let schemata = content.PipelineInfo.transformationSchemata,
         entity_type_id = content.CustomOperation.entityTypeId,
@@ -211,7 +229,7 @@ function resolveArrayAttributesBySchemata(content) {
         excel_headers = get_headers(schemata),
         binding = bind_array_cols_2_new_cols(attributes, new_csv_cols);
 
-
+    attributes = verify_attributes(attributes,binding);
     //let attributes = get_schema_rows(schemata,entity_type_id);
     let obj_ids = get_main_entity_rules(schemata, entity_type_id);
     let ids = obj_ids.map(io => {
