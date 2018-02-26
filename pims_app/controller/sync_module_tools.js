@@ -112,11 +112,13 @@ function get_schema_rows(schemata, entity_type_id) {
     });
     rows = flatten(rows);
     return flatten(rows.map(r => {
-            return r.schema.preprocSchema.map(p => {
-                return p.in.map(pi => {
-                    return pi.path
+            if(r.schema.hasOwnProperty("preprocSchema")) {
+                return r.schema.preprocSchema.map(p => {
+                    return p.in.map(pi => {
+                        return pi.path
+                    })
                 })
-            })
+            }
         }), 1
     )
 }
