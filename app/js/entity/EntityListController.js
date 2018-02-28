@@ -1,6 +1,6 @@
 pimsApp.controller('EntityListController', ['$scope', '$route', '$routeParams',
     '$location', '$http', '$rootScope', 'EntityModel', 'NgTableParams', 'usSpinnerService',
-    'MessageService', 'AttributeSetModel', 'ngNotify',
+    'MessageService', 'AttributeSetModel', 'ngNotify', 'EntityListService',
     function ($scope, $route, $routeParams,
               $location,
               $http,
@@ -10,7 +10,8 @@ pimsApp.controller('EntityListController', ['$scope', '$route', '$routeParams',
               usSpinnerService,
               MessageService,
               AttributeSetModel,
-              ngNotify) {
+              ngNotify,
+              EntityListService) {
 
         var entity_type_uuid = $rootScope.pims.entities.current.uuid,
             pageSize = 10,
@@ -19,34 +20,6 @@ pimsApp.controller('EntityListController', ['$scope', '$route', '$routeParams',
         $scope.search_params = {};
         $scope.pageSize = 10;
         $scope.pageSizes = [10, 25, 50, 100];
-
-        var body = {
-            "attributeId": 8,
-            "direction": "asc",
-            "id": 0,
-            "size": 10,
-            "forward": true,
-            "value": {}
-        };
-
-        function create_body() {
-            return {
-                "attributeId": 8,
-                "direction": "asc",
-                "id": 0,
-                "size": 10,
-                "forward": true,
-                "value": {}
-            }
-        }
-
-        function update_body(body, pagination) {
-            var p_c = pagination.content,
-                last = p_c.length - 1;
-            body.id = p_c[last].uuid;
-            body.value = p_c[last].attributes[body.attributeId];
-            return body;
-        }
 
         function PaginationObject(response) {
             return {
@@ -60,17 +33,20 @@ pimsApp.controller('EntityListController', ['$scope', '$route', '$routeParams',
             }
         }
 
-        function paginate_entites(body, query) {
-            if (query) {
-                return EntityModel.search(entity_type_uuid, query, page, size).then(function (response) {
-                    return response;
-                })
-            } else {
-                return EntityModel.getPage(entity_type_uuid, body).then(function (response) {
-                    return response;
-                })
-            }
+        function paginate_entites(body) {
+            return EntityModel.getPage(entity_type_uuid, body).then(function (response) {
+                return response;
+            })
         }
+
+
+        function paginate_entites_query(page, size, query) {
+            return EntityModel.search(entity_type_uuid, query, page, size).then(function (response) {
+                return response;
+
+            })
+        }
+
 
         function prepare_params(search_params) {
             var keys = Object.keys(search_params);
@@ -82,7 +58,7 @@ pimsApp.controller('EntityListController', ['$scope', '$route', '$routeParams',
                 return "attributeId=" + k + "&attributeValue=" + "%25" + search_params[k] + "%25";
             });
             if (keys.length == 0)
-                return false
+                return false;
             else
                 return keys.join("&");
         }
@@ -99,17 +75,19 @@ pimsApp.controller('EntityListController', ['$scope', '$route', '$routeParams',
             AttributeSetModel.search(entity_type_uuid, query).then(function (attribute_set) {
                 if (has_attribute_set(attribute_set)) {
                     $scope.layout = attribute_set[0].attributes;
-                    return paginate_entites(create_body()).then(function (response) {
-                        $scope.entities = response.content;
-                        $scope.pagination = new PaginationObject(response);
-                        usSpinnerService.stop('spinner-1');
+                    EntityListService.setSortAttribute($scope.layout);
+                    return paginate_entites(EntityListService.createBody($scope.pageSize))
+                        .then(function (response) {
+                            $scope.entities = response.content;
+                            $scope.pagination = new PaginationObject(response);
+                            usSpinnerService.stop('spinner-1');
 
-                    }, function (error) {
-                        MessageService.setDangerMessage($rootScope.message,
-                            "You are not authorized");
-                        usSpinnerService.stop('spinner-1');
-                        console.log(error);
-                    })
+                        }, function (error) {
+                            MessageService.setDangerMessage($rootScope.message,
+                                "You are not authorized");
+                            usSpinnerService.stop('spinner-1');
+                            console.log(error);
+                        })
                 } else {
                     usSpinnerService.stop('spinner-1');
                     ngNotify.set("No Fields To Render. Please, Create Attribute Set with Role 'base_search'" +
@@ -127,74 +105,76 @@ pimsApp.controller('EntityListController', ['$scope', '$route', '$routeParams',
             $location.path("/entities/new");
         };
 
-        $scope.getPage = function (page) {
+        $scope.getFirstPage = function (page) {
+            var body = EntityListService.getFirstPage();
+            getPage(body,page)
+        };
+
+
+        $scope.getLastPage = function (page) {
+            var body = EntityListService.getLastPage();
+            getPage(body,page)
+        };
+
+        $scope.getNextPage = function (page) {
+            var body = EntityListService.getNextPage($scope.pagination);
+            getPage(body,page)
+        };
+
+        $scope.getPrevPage = function (page) {
+            var body = EntityListService.getPrevPage($scope.pagination);
+            getPage(body,page)
+        };
+
+        function process_response(response) {
+            $scope.entities = response.content;
+            $scope.pagination = new PaginationObject(response);
+            usSpinnerService.stop('spinner-1');
+
+        }
+        var errorHandler = function process_error(error) {
+            console.log(error);
+            console.log("The promise is not resolved")
+        };
+
+        function getPage(body, page) {
             usSpinnerService.spin('spinner-1');
             AttributeSetModel.search(entity_type_uuid, query).then(function (attribute_set) {
                 $scope.layout = attribute_set[0].attributes;
                 var query = prepare_params($scope.search_params);
-                return paginate_entites(update_body(body, $scope.pagination), query).then(function (response) {
-                    $scope.entities = response.content;
-                    $scope.pagination = new PaginationObject(response);
-                    usSpinnerService.stop('spinner-1');
-
-                }, function (error) {
-                    console.log(error);
-                })
-            })
-        };
-
-        $scope.getFirstPage = function () {
-            var b = {};
-            angular.copy(body, b);
-            b.id = 0;
-            b.forward = true;
-            getPage(b)
-        };
-
-
-        $scope.getLastPage = function () {
-            var b = {};
-            angular.copy(body, b);
-            b.id = 0;
-            b.forward = false;
-            getPage(b)
-        };
-
-        function getPage(body) {
-            usSpinnerService.spin('spinner-1');
-            AttributeSetModel.search(entity_type_uuid, query).then(function (attribute_set) {
-                $scope.layout = attribute_set[0].attributes;
-                var query = prepare_params($scope.search_params);
-                return paginate_entites(body, query).then(function (response) {
-                    $scope.entities = response.content;
-                    $scope.pagination = new PaginationObject(response);
-                    usSpinnerService.stop('spinner-1');
-
-                }, function (error) {
-                    console.log(error);
-                })
+                if (query) {
+                    return paginate_entites_query(page, pageSize, query).then(function (response) {
+                        process_response(response)
+                    },errorHandler)
+                } else {
+                    return paginate_entites(body, query).then(function (response) {
+                        process_response(response)
+                    }, errorHandler)
+                }
             })
         }
+
+        $scope.clearQuery = function () {
+            $scope.search_params = {};
+            $scope.getFirstPage();
+        };
 
         $scope.search = function (page) {
             usSpinnerService.spin('spinner-1');
             AttributeSetModel.search(entity_type_uuid, query).then(function (attribute_set) {
                 $scope.layout = attribute_set[0].attributes;
                 var query = prepare_params($scope.search_params);
-                return paginate_entites(0, pageSize, query).then(function (response) {
-                    $scope.entities = response.content;
-                    $scope.pagination = new PaginationObject(response);
-                    usSpinnerService.stop('spinner-1');
-
-                }, function (error) {
-                    console.log(error);
-                })
+                return paginate_entites_query(0, pageSize, query).then(function (response) {
+                  process_response(response)
+                },errorHandler)
             })
-        }
+        };
 
         $scope.$watch('pageSize', function () {
             pageSize = $scope.pageSize || 10;
             $scope.init();
         })
 
-    }]);
+    }
+
+]);

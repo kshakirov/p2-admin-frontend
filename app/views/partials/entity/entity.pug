@@ -1,7 +1,9 @@
 .row.top-buffer
     .col-lg-6.col-lg-offset-3
         ul.breadcrumb
-            li Entities
+            li
+                a(ng-href="/entities/")       Entities
+            li {{entity.uuid}}
     .col-lg-6
         span
             us-spinner(spinner-key="spinner-entity", spinner-start-active="true")

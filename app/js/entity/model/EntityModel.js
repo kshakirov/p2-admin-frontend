@@ -41,7 +41,7 @@ pimsServices.service('EntityModel', ['$http', '$rootScope', function ($http, $ro
             return entities.data
         })
     };
-    this.search = function (et_uuid, params, page, size) {
+    this.search = function (et_uuid, params, page) {
         return $http.get("/rest/entity-types/" + et_uuid
             + "/entities/findByAttributeLike/page/" + page + "?" + params).then(function (entities) {
             return entities.data
