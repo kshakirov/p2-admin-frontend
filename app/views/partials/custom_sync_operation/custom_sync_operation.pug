@@ -78,3 +78,16 @@ uib-tabset(active="active", ng-init="init()")
                     div.form-group
                         label Description
                         textarea.form-control(type="text", data-ng-model="custom_sync_operation.customAttributes.description")
+    uib-tab(heading="Schedule" )
+        .row.top-buffer
+            .col-lg-6
+                form(name="CustomSyncOperationForm", role="form")
+                    div.form-group
+                        label Cron
+                        textarea.form-control(type="text", data-ng-model="custom_sync_operation.customAttributes.schedule.cron")
+                    div.form-group
+                        label Incremental
+                        input.form-control(type="checkbox", data-ng-model="custom_sync_operation.customAttributes.schedule.incremental")
+                    div.btn-group
+                        button.btn.btn-default(type="submit", ng-disabled="custom_sync_operation.customAttributes.schedule.scheduled", ng-click="scheduleCustomSyncOperation(custom_sync_operation)") SCHEDULE
+                        button.btn.btn-danger(type="submit", ng-click="unscheduleCustomSyncOperation(custom_sync_operation)", ng-disabled="!custom_sync_operation.customAttributes.schedule.scheduled") UNSCHEDULE

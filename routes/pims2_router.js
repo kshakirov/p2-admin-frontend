@@ -11,6 +11,7 @@ let express = require('express'),
 	sseExpress = require('sse-express'),
     fs = require('fs'),
     elastic_controller = require("../pims_app/controller/pims_elastic"),
+    pims_scheduler = require("../pims_app/controller/scheduler"),
     multer = require('multer');
 
 
@@ -80,6 +81,16 @@ router.get('/login', function (req, res) {
 router.post('/authenticate', function (req, res) {
     auth_controller.authenticate(req, res);
 });
+
+router.post('/schedule', function (req, res) {
+    pims_scheduler.scheduleOperation(req, res);
+});
+
+
+router.delete('/unschedule/:operationId', function (req, res) {
+    pims_scheduler.unscheduleOperation(req, res);
+});
+
 
 router.post('/file-upload', upload, (req, res) => {
     if (req.file && req.file.filename) {

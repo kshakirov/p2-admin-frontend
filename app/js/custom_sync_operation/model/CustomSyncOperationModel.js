@@ -41,7 +41,21 @@ pimsServices.service('CustomSyncOperationModel', ['$http', '$rootScope', '$timeo
                 .then(function (response) {
                     return response.data
                 })
-        }
+        };
+
+        this.schedule = function (custom_sync_operaton) {
+            return $http.post("/control/schedule", custom_sync_operaton)
+                .then(function (response) {
+                    return response.data
+                })
+        };
+
+        this.unschedule = function (id) {
+            return $http.delete("/control/unschedule/" + id)
+                .then(function (response) {
+                    return response.data
+                })
+        };
 
 
 

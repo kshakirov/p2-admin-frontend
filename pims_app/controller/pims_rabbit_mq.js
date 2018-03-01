@@ -41,6 +41,23 @@ function notify(req, res, queue_name) {
     });
 }
 
+function sendMessage(message, custom_operation, user_login) {
+    let ex = pimsConfig.rabbitMq.pimsExchange,
+        queue_name = custom_operation.customAttributes.queuePrefix;
+
+    message = addUserLogin(message,user_login);
+    operationLog.individualTaskStart(message, user_login);
+    amqp.connect(`amqp://${pimsConfig.rabbitMq.url}`, function (err, conn) {
+        conn.createChannel(function (err, ch) {
+            if (err) {
+                console.log(err)
+            }
+            ch.publish(ex, queue_name, new Buffer(message));
+            console.log(" [x] Sent %s", message);
+        });
+    });
+}
+
 
 function startConnenction(websocket_io) {
 
@@ -198,5 +215,6 @@ function checkImmediatePipeline(req, res) {
 
 exports.notifyBatch = notifyBatch;
 exports.notifyEntity = notifyEntity;
+exports.sendMessage = sendMessage;
 exports.startConnenction = startConnenction;
 exports.checkImmediatePipeline = checkImmediatePipeline;

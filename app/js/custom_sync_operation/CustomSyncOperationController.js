@@ -120,10 +120,10 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
             message = CustomSyncNotificationService.addFile(message, $scope.custom_sync_operation.customAttributes.filename);
             runCustomSyncOperation(message, queue_prefix, $scope.downloadFilename)
         };
+
         $scope.runIncremental = function (custom_sync_operation, date) {
             var message = CustomSyncNotificationService.prepMessage(custom_sync_operation),
                 queue_prefix = custom_sync_operation.customAttributes.queuePrefix;
-            console.log(timestamp_to_pims_date(custom_sync_operation.lastRun));
             message = CustomSyncNotificationService.addDate(message, timestamp_to_pims_date(custom_sync_operation.lastRun));
             runCustomSyncOperation(message, queue_prefix, $scope.downloadFilename)
         };
@@ -168,6 +168,37 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
                 }
 
             });
+        };
+
+
+
+        $scope.scheduleCustomSyncOperation = function (custom_sync_operation) {
+            var message = CustomSyncNotificationService.prepMessage(custom_sync_operation),
+                queue_prefix = custom_sync_operation.customAttributes.queuePrefix;
+            message = CustomSyncNotificationService.makeFull(message);
+            message = CustomSyncNotificationService.addFile(message, $scope.custom_sync_operation.customAttributes.filename);
+            var operationData = {
+                operation: custom_sync_operation,
+                message: message
+            };
+            CustomSyncOperationModel.schedule(operationData).then(function (response) {
+                ngNotify.set('Your Operation Has Succcessfully Scheduled');
+                custom_sync_operation.customAttributes.schedule.scheduled = true;
+                $scope.saveCustomSyncOperation(custom_sync_operation);
+            }, function (error) {
+                    console.log(error)
+            })
+        }
+
+
+        $scope.unscheduleCustomSyncOperation = function (custom_sync_operation) {
+            CustomSyncOperationModel.unschedule(custom_sync_operation.id).then(function (response) {
+                ngNotify.set('Your Operation Has Succcessfully Unscheduled');
+                custom_sync_operation.customAttributes.schedule.scheduled = false;
+                $scope.saveCustomSyncOperation(custom_sync_operation);
+            }, function (error) {
+                console.log(error)
+            })
         }
 
 

@@ -17,6 +17,7 @@ uib-tabset(active="active", ng-init="init()")
                         td(title="'Entity Type'",filter="{'entityTypeName' : 'text'}",sortable="'entityTypeName'") {{cso.entityTypeName}}
                         td(title="'Import'",filter="{'customAttributes.import': 'text'}",sortable="'customAttributes.import'") {{cso.customAttributes.import | TrueOrFalse}}
                         td(title="'Date'",sortable="'lastRun'", width="15%") {{cso.lastRun | date : format : timezone}}
+                        td(title="'Scheduled'",filter="{'customAttributes.schedule.scheduled': 'text'}",sortable="'customAttributes.schedule.scheduled'") {{cso.customAttributes.schedule.scheduled | TrueOrFalse}}
     uib-tab(heading="ONLINE LOG" )
         .row
             .col-lg-10
