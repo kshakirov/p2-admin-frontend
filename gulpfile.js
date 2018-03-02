@@ -68,6 +68,8 @@ gulp.task('scripts', function() {
         'app/bower_components/angular-confirm/js/angular-confirm.js',
         'app/bower_components/angular-uuid/uuid.js',
         'app/bower_components/angular-loading-bar/src/loading-bar.js',
+        'app/bower_components/moment/moment.js',
+        'app/bower_components/angular-moment/angular-moment.js',
         'app/js/app.js',
         'app/js/services.js',
         'app/js/**/*.js'

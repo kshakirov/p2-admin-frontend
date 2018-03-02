@@ -1,5 +1,5 @@
-pimsServices.service('CustomSyncOperationService', [
-    function () {
+pimsServices.service('CustomSyncOperationService', ['$filter',
+    function ($filter) {
         this.guessFileFormat = function (custom_operation) {
             var file_types = ['csv', 'excel'];
             var is_file = file_types.filter(function (ft) {
@@ -12,6 +12,20 @@ pimsServices.service('CustomSyncOperationService', [
         this.guessImport = function (custom_operation) {
             var search_word = 'import';
             return custom_operation.name.toLowerCase().search(search_word) >= 0;
+        };
+
+        this.formatTime = function (custom_operation) {
+            var timestamp = custom_operation.lastRun;
+            if(timestamp) {
+                timestamp = new Date(timestamp);
+                return $filter("date")(timestamp, "yyyy-MM-dd HH:mm:ss");
+            }
+        };
+
+        this.unformatTime = function (custom_operation) {
+            var timestamp = custom_operation.lastRun || "01 Jan 1970 00:00:00 GMT";
+            moment(timestamp).format('yyyy-MM-dd HH:mm:ss');
+            return  moment(timestamp).valueOf();
         };
 
         this.guessCsvExport = function (custom_operation) {

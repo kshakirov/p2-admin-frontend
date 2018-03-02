@@ -43,6 +43,8 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
                 } else {
                     CustomSyncOperationModel.findOne(id).then(function (custom_sync_operation) {
                         $scope.custom_sync_operation = custom_sync_operation;
+                        $scope.custom_sync_operation.lastRun = CustomSyncOperationService
+                            .formatTime(custom_sync_operation);
                         if (angular.isUndefined(custom_sync_operation.import)) {
                             $scope.custom_sync_operation.customAttributes.import = CustomSyncOperationService
                                 .guessImport(custom_sync_operation);
@@ -63,7 +65,10 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
 
         };
 
-        $scope.saveCustomSyncOperation = function (custom_sync_operaton) {
+        $scope.saveCustomSyncOperation = function (operaton) {
+            var custom_sync_operaton = {};
+            angular.copy(operaton, custom_sync_operaton);
+            custom_sync_operaton.lastRun = CustomSyncOperationService.unformatTime(custom_sync_operaton);
             if (custom_sync_operaton.id) {
                 CustomSyncOperationModel.update(custom_sync_operaton).then(function (promise) {
                     ngNotify.set('Your Custom Operation Saved!', 'success');

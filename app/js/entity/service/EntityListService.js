@@ -19,6 +19,8 @@ pimsServices.service('EntityListService', ['$http', function ($http) {
             "attributeId": 56,
             "direction": "desc",
             "id": 0,
+            "currentPage": 0,
+            "totalElements": 0,
             "size": pageSize,
             "forward": true,
             "value": {}
@@ -33,6 +35,8 @@ pimsServices.service('EntityListService', ['$http', function ($http) {
             actual = (body.forward) ? p_c.length - 1 : 0;
         body.id = p_c[actual].uuid;
         body.value = p_c[actual].attributes[body.attributeId];
+        body.currentPage = pagination.currentPage;
+        body.totalElements = pagination.totalRecords;
         return body;
     };
 
