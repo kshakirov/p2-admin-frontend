@@ -18,13 +18,13 @@ pimsServices.service('CustomSyncOperationService', ['$filter',
             var timestamp = custom_operation.lastRun;
             if(timestamp) {
                 timestamp = new Date(timestamp);
-                return $filter("date")(timestamp, "yyyy-MM-dd HH:mm:ss");
+                return $filter("date")(timestamp, "yyyy-MM-dd HH:mm:ss.sss");
             }
         };
 
         this.unformatTime = function (custom_operation) {
-            var timestamp = custom_operation.lastRun || "01 Jan 1970 00:00:00 GMT";
-            moment(timestamp).format('yyyy-MM-dd HH:mm:ss');
+            var timestamp = custom_operation.lastRun || "01 Jan 1970 00:00:00.000 GMT";
+            moment(timestamp).format('yyyy-MM-dd HH:mm:ss.sss');
             return  moment(timestamp).valueOf();
         };
 

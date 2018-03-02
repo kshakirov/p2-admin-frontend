@@ -113,9 +113,11 @@ pimsApp.controller('CustomSyncOperationController', ['$scope', '$route', '$route
         }
 
         function timestamp_to_pims_date(lastRun) {
-            if (lastRun)
-                return $filter("date")(lastRun, "yyyy-MM-dd HH:mm:ss");
-            return "1970-01-01 00:00:00"
+            if (lastRun) {
+                var d = $filter("date")(lastRun, "yyyy-MM-dd HH:mm:ss.sss");
+                return  d;
+            }
+            return "1970-01-01 00:00:00.000"
         }
 
         $scope.runFull = function (custom_sync_operation) {
