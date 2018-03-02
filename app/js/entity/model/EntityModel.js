@@ -1,10 +1,12 @@
 pimsServices.service('EntityModel', ['$http', '$rootScope', function ($http, $rootScope) {
-    this.findAll = function (et_uuid, page, size) {
-        return $http.get("/rest/entity-types/" + et_uuid
-            + "/entities/page/" + page + "?size=" + size).then(function (entities) {
+
+    this.getPage = function (et_uuid, body) {
+        return $http.post("/rest/entity-types/" + et_uuid
+            + "/entities/page/",body ).then(function (entities) {
             return entities.data
         })
     };
+
 
     this.findOne = function (et_uuid, uuid) {
         return $http.get("/rest/entity-types/" + et_uuid
@@ -39,7 +41,7 @@ pimsServices.service('EntityModel', ['$http', '$rootScope', function ($http, $ro
             return entities.data
         })
     };
-    this.search = function (et_uuid, params, page, size) {
+    this.search = function (et_uuid, params, page) {
         return $http.get("/rest/entity-types/" + et_uuid
             + "/entities/findByAttributeLike/page/" + page + "?" + params).then(function (entities) {
             return entities.data

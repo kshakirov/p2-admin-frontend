@@ -4,13 +4,16 @@
             li Entities
 div(ng-init="init()")
     .row
-        .col-lg-2
-            button.top-pagination.btn.btn-info(type="submit",ng-click="createEntity()") ADD ENTITY
+        .col-lg-1
+            button.top-pagination.btn.btn-primary(type="submit",ng-click="createEntity()") NEW
+        .col-lg-1
+            button.top-pagination.btn.btn-info(type="submit",ng-click="search()") SEARCH
         .col-lg-6
             include pagination
-        .col-lg-2
-            select.top-pagination.form-control(id="frontendType",
-            ng-model="pageSize",
+        .col-lg-1
+            button.top-pagination.btn.btn-warning(type="submit",ng-click="clearQuery()") CLEAR
+        .col-lg-1
+            select.top-pagination.form-control(ng-model="pageSize",
             ng-options="size as size for size in pageSizes")
     .row
         .col-lg-12
