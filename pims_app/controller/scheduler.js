@@ -16,9 +16,9 @@ function get_last_run(op) {
     let last_run = op.lastRun;
     if (last_run) {
         last_run = new Date(last_run);
-        return dateFormat(last_run, "yyyy-mm-dd HH:MM:ss")
+        return dateFormat(last_run, "yyyy-mm-dd HH:MM:ss.NNNNNN")
     }
-    return "1970-01-01 00:00:00"
+    return "1970-01-01 00:00:00.0"
 }
 
 function add_last_run_2_message(message, last_run) {
