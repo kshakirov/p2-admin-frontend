@@ -1,5 +1,12 @@
 pimsServices.service('EntityModel', ['$http', '$rootScope', function ($http, $rootScope) {
 
+    this.findAll = function (et_uuid, page, size) {
+        return $http.get("/rest/entity-types/" + et_uuid
+            + "/entities/page/" + page + "?size=" + size).then(function (entities) {
+            return entities.data
+        })
+    };
+
     this.getPage = function (et_uuid, body) {
         return $http.post("/rest/entity-types/" + et_uuid
             + "/entities/page/",body ).then(function (entities) {

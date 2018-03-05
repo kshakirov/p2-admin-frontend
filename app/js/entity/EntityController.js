@@ -70,11 +70,15 @@ pimsApp.controller('EntityController', ['$scope', '$route', '$routeParams',
                 EntityModel.createTemplate(entity_type_uuid).then(function (template) {
                     AttributeSetModel.search(entity_type_uuid, params_string).then(function (tabs) {
                         var reference_array_attributes = EntityService.getReferenceArrayAttributes(tabs);
-                        $scope.tabs = order_tabs(tabs);
-                        $scope.entity = template;
-                        $scope.audit = "Audit";
-                        $scope.active = 0;
-                        usSpinnerService.stop('spinner-entity');
+                        var reference_attributes = EntityService.getReferenceAttributes(tabs);
+                        $q.all(create_q_functions(reference_array_attributes, reference_attributes)).then(function (promises) {
+                            $scope.reference_tables = promises;
+                            $scope.tabs = order_tabs(tabs);
+                            $scope.entity = template;
+                            $scope.audit = "Audit";
+                            $scope.active = 0;
+                            usSpinnerService.stop('spinner-entity');
+                        })
                     })
                 })
 
