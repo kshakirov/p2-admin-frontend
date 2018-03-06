@@ -46,7 +46,7 @@ function sendMessage(message, custom_operation, user_login) {
         queue_name = custom_operation.customAttributes.queuePrefix;
 
     message = addUserLogin(message,user_login);
-    operationLog.individualTaskStart(message, user_login);
+    //operationLog.individualTaskStart(message, user_login);
     amqp.connect(`amqp://${pimsConfig.rabbitMq.url}`, function (err, conn) {
         conn.createChannel(function (err, ch) {
             if (err) {
