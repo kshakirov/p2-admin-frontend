@@ -19,11 +19,10 @@
                         th Id
                         th Started At
                         th Id
-                        th Entyty Type
+                        th Entity Type
                         th Operation
-                        th System
-                        th Finished At
                         th Diff
+                        th User
                     tr
                         td
                             form(role="form")
@@ -47,13 +46,12 @@
                                 ng-keypress="($event.which === 13)?search():0",
                                 data-ng-model="search_params.syncOperationType")
                         td
+                        td
                             form(role="form")
-                                input.form-control(type="number",
+                                input.form-control(type="text",
                                 ng-keypress="($event.which === 13)?search():0",
-                                data-ng-model="search_params.externalSysttemId")
-                        td
-                        td
-                        td
+                                data-ng-model="search_params.user")
+
                 tbody
                     tr(ng-repeat="op in operations")
                         td {{op.operationId}}
@@ -61,11 +59,10 @@
                         td {{op.entityId}}
                         td {{op.entityTypeId}}
                         td {{op.syncOperationType}}
-                        td {{op.externalSysttemId}}
-                        td {{op.finishedAt | date:'yyyy-MM-dd HH:mm:ss Z'}}
                         td(ng-if="op.diff")
                             a(ng-click="visualizeDiff(op)", ng-href="") MORE
                         td(ng-if="!op.diff || op.diff.length==0") NO CHANGES
+                        td {{op.user}}
     .row
         .col-lg-6.col-lg-offset-2
             include audit_pagination

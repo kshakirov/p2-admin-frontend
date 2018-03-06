@@ -17,16 +17,22 @@
         table.table
             thead
                 tr
+                    th Id
                     th Started
                     th Name
                     th Entyty Type
                     th Submitted
                     th Processed
                     th Failed
-                    th LastUpdated
                     th Completed
+                    th User
             tbody
                 tr
+                    td
+                        form(role="form")
+                            input.form-control(type="text",
+                            ng-keypress="($event.which === 13)?search():0",
+                            data-ng-model="search_params.operationId")
                     td
                     td
                         form(role="form")
@@ -34,19 +40,29 @@
                             ng-keypress="($event.which === 13)?search():0",
                             data-ng-model="search_params.customOperationName")
                     td
+                        form(role="form")
+                            input.form-control(type="number",
+                            ng-keypress="($event.which === 13)?search():0",
+                            data-ng-model="search_params.entityTypeId")
                     td
                     td
                     td
                     td
+                    td
+                        form(role="form")
+                            input.form-control(type="text",
+                            ng-keypress="($event.which === 13)?search():0",
+                            data-ng-model="search_params.user")
                 tr(ng-repeat="op in operations")
+                    td {{op.operationId}}
                     td {{op.startedAt | date:'yyyy-MM-dd HH:mm:ss Z'}}
                     td {{op.customOperationName}}
                     td {{op.entityTypeId}}
                     td {{op.submittedEntities}}
                     td {{op.processedEntities}}
                     td {{op.failedEntities}}
-                    td {{op.lastUpdatedAt | date:'yyyy-MM-dd HH:mm:ss Z'}}
                     td {{op.completedAt | date:'yyyy-MM-dd HH:mm:ss Z'}}
+                    td {{op.user}}
 .row
     .col-lg-6.col-lg-offset-2
         include pagination
