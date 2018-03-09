@@ -83,9 +83,9 @@ pimsServices.service('AdvancedSearchService', ['$http', function ($http) {
                 var query_string = search_params[key];
                 if (is_not_empty(query_string)) {
                     if (is_phrase(query_string))
-                        search_params[key] = prep_phrase(remove_dashes(query_string));
+                        search_params[key] = prep_phrase(query_string);
                     else
-                        search_params[key] = prep_wildcard(remove_dashes(query_string))
+                        search_params[key] = prep_wildcard(query_string)
                 }
             }
         });
