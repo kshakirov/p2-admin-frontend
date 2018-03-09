@@ -62,6 +62,10 @@ pimsServices.service('AdvancedSearchService', ['$http', function ($http) {
         return false;
     }
 
+    function remove_dashes(query_string) {
+        return query_string.replace("-"," ")
+    }
+
     this.prepSearchParams = function (s_p, layout) {
         var search_params = {};
         angular.copy(s_p, search_params);
@@ -79,9 +83,9 @@ pimsServices.service('AdvancedSearchService', ['$http', function ($http) {
                 var query_string = search_params[key];
                 if (is_not_empty(query_string)) {
                     if (is_phrase(query_string))
-                        search_params[key] = prep_phrase(query_string);
+                        search_params[key] = prep_phrase(remove_dashes(query_string));
                     else
-                        search_params[key] = prep_wildcard(query_string)
+                        search_params[key] = prep_wildcard(remove_dashes(query_string))
                 }
             }
         });
