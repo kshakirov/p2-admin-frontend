@@ -16,11 +16,11 @@ pimsApp.controller('ExternalOperationListController', ['$scope', '$route', '$rou
         function add_external_systems(externalOperations, externalSystems) {
             return externalOperations.map(function (eop) {
                 var ss = externalSystems.find(function (ess) {
-                    if (ess.id === eop.targetSystem.frontendInfo.selected.id)
+                    if (ess.id === eop.sourceSystem.frontendInfo.selected.id)
                         return true
                 });
                 var ts = externalSystems.find(function (ess) {
-                    if (ess.id === eop.sourceSystem.frontendInfo.selected.id)
+                    if (ess.id === eop.targetSystem.frontendInfo.selected.id)
                         return true
                 });
                 eop.source = ss.name;
