@@ -10,4 +10,7 @@
             tr(ng-repeat="sys in $data")
                 td(title="'Name'", filter="{ name: 'text'}",sortable="'name'")
                     a(ng-href="external-systems/{{sys.id}}") {{sys.name}}
-                td(title="'Id'") {{sys.id}}
+                td(title="'Id'",filter="{ id: 'number'}",sortable="'id'") {{sys.id}}
+                td(title="'Base Path'",filter="{ 'customAttributes.basePath': 'text'}",sortable="'customAttributes.basePath'") {{sys.customAttributes.basePath}}
+                td(title="'System Type'",filter="{ 'systemType': 'text'}",sortable="'systemType'") {{sys.systemType}}
+                td(title="'Batch Size'",filter="{ 'batchSize': 'text'}",sortable="'batchSize'") {{sys.batchSize}}
