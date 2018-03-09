@@ -113,3 +113,4 @@ gulp.task('connect', function () {
 // Default Task
 gulp.task('default', ['lint',  'watch', 'connect']);
 gulp.task('dist', ['lint', 'sass', 'minify-css',  'scripts', 'connect']);
+gulp.task('build', ['lint', 'sass', 'minify-css',  'scripts']);
