@@ -35,6 +35,8 @@ function notify(req, res, queue_name) {
                 console.log(err)
             }
             ch.publish(ex, queue_name, new Buffer(message));
+            ch.close();
+            conn.close();
             console.log(" [x] Sent %s", message);
             res.json({success: true})
         });
@@ -54,6 +56,8 @@ function sendMessage(message, custom_operation, user_login) {
             }
             ch.publish(ex, queue_name, new Buffer(message));
             console.log(" [x] Sent %s", message);
+            ch.close();
+            conn.close();
         });
     });
 }
