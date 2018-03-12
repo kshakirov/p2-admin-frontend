@@ -35,10 +35,19 @@ function notify(req, res, queue_name) {
                 console.log(err)
             }
             ch.publish(ex, queue_name, new Buffer(message));
-            ch.close();
-            conn.close();
-            console.log(" [x] Sent %s", message);
-            res.json({success: true})
+            ch.close(function (err) {
+                if(err){
+                    conn.close();
+                    console.log("Connection Is Not Closed Properly");
+                    res.json({success: false})
+                }else{
+                    conn.close();
+                    console.log(" [x] Sent %s", message);
+                    console.log("Connection Closed Properly");
+                    res.json({success: true})
+                }
+            });
+
         });
     });
 }
@@ -55,9 +64,16 @@ function sendMessage(message, custom_operation, user_login) {
                 console.log(err)
             }
             ch.publish(ex, queue_name, new Buffer(message));
-            console.log(" [x] Sent %s", message);
-            ch.close();
-            conn.close();
+            ch.close(function (err) {
+                if(err){
+                    conn.close();
+                    console.log("Connection Is Not Closed Properly");
+                }else{
+                    conn.close();
+                    console.log(" [x] Sent %s", message);
+                    console.log("Connection Closed Properly");
+                }
+            });
         });
     });
 }
