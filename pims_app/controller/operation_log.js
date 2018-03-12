@@ -10,13 +10,25 @@ redisClient.on("error", function (err) {
 });
 
 
+async function deleteOperation(key){
+    return redisClient.hdel("operations", key, function (err, reply) {
+        console.log(`Deleted ${key} From Redis`)
+    })
+}
+
+async function addLogs (keys, reply) {
+    for (const key of keys ){
+         let data = JSON.parse(reply[key]);
+        await elasticModel.addLogEntry(key, data);
+        await deleteOperation(key, reply)
+    }
+}
+
 function syncLog() {
     redisClient.hgetall("operations", function (err, reply) {
         if (reply) {
-            Object.keys(reply).map(e => {
-                let data = JSON.parse(reply[e]);
-                elasticModel.addLogEntry(e, data);
-            });
+            let keys =  Object.keys(reply);
+            addLogs(keys, reply);
         }
     });
 }

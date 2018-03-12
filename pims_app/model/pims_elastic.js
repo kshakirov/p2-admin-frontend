@@ -80,6 +80,7 @@ function addLogEntry(id,body) {
          body
     }, function (error, response) {
         //console.log("response")
+        return true;
     });
 }
 
