@@ -1,5 +1,7 @@
 pimsServices.service('AdvancedSearchService', ['$http', function ($http) {
-    var empty_space_regexp = /\s+/;
+    var empty_space_regexp = /\s+/,
+        dash_regexp = /-+/;
+
     this.getReferences = function (attributes) {
         var keys = Object.keys(attributes);
         var references = keys.filter(function (key) {
@@ -48,8 +50,18 @@ pimsServices.service('AdvancedSearchService', ['$http', function ($http) {
         return match !== null;
     }
 
+    function has_dash(query_string) {
+        var match = query_string.match(dash_regexp);
+        return match !== null;
+    }
+
     function prep_phrase(query_string) {
-        return "\"" + query_string + "\"";
+        var q = query_string.replace(dash_regexp," ");
+        var parts = q.split(empty_space_regexp);
+        var last = parts.length - 1;
+        parts[0] = '*' + parts[0];
+        parts[last] = parts[last] + '*';
+        return parts.join(' AND ');
     }
 
     function prep_wildcard(query_string) {
@@ -83,6 +95,8 @@ pimsServices.service('AdvancedSearchService', ['$http', function ($http) {
                 var query_string = search_params[key];
                 if (is_not_empty(query_string)) {
                     if (is_phrase(query_string))
+                        search_params[key] = prep_phrase(query_string);
+                    else if(has_dash(query_string))
                         search_params[key] = prep_phrase(query_string);
                     else
                         search_params[key] = prep_wildcard(query_string)
