@@ -1,34 +1,91 @@
-var elasticsearch = require('elasticsearch');
-var client = new elasticsearch.Client({
-    host: '10.1.3.15:9200',
-    log: 'trace'
-});
+let elasticsearch = require('elasticsearch'),
+    client = new elasticsearch.Client({
+        host: '10.1.3.15:9200',
+        log: 'trace'
+    }),
+    index = 'pims-staging';
 
-client.ping({
-    // ping usually has a 3000ms timeout
-    requestTimeout: 1000
-}, function (error) {
-    if (error) {
-        console.trace('elasticsearch cluster is down!');
-    } else {
-        console.log('All is well');
+
+let fields = [
+    {
+        field: 'SyncOperationType',
+        type: 'terms'
+    },
+    {
+        field: 'SyncOperationId',
+        type: 'terms'
+    },
+    {
+        field: 'startedAt',
+        type: 'min'
+    },
+    {
+        field: 'startedAt',
+        type: 'max'
+    },
+    {
+        field: 'finishedAt',
+        type: 'min'
+    },
+    {
+        field: 'finishedAt',
+        type: 'max'
     }
-});
+];
 
-client.msearch({
-    body: [
+function create_agg_body(fields) {
+    let aggs = {};
+    fields.map(function (f) {
+        let aggs_item_name = f.type + "____" + f.field;
+        aggs[aggs_item_name] = {};
+        aggs[aggs_item_name][f.type] = {
+            field: f.field
+        }
+    });
+    return aggs
+}
 
-        { index: 'pims-staging', type: '7' },
-        { query: { bool: { must: {match: {
-            "33": "79"
-        }}} } }
-    ]
+let aggs_body = create_agg_body(fields);
+
+client.search({
+        index: index,
+        type: 'individual',
+        body: {aggs: aggs_body}
     }
 ).then(function (resp) {
-    resp.responses.map(resp =>{
-        let hits = resp.hits.hits;
-    })
+    console.log(resp.aggregations)
 
 }, function (err) {
     console.trace(err.message);
 });
+
+
+let t = {
+    aggs: {
+        operationTypes: {
+            terms: {
+                field: 'syncOperationType'
+            }
+        },
+        operationIds: {
+            terms: {
+                field: 'syncOperationId'
+            }
+        },
+        minStartedAt: {
+            min: {field: "startedAt"}
+        }
+        ,
+        maxStartedAt: {
+            max: {field: "startedAt"}
+        },
+
+        minFinishedAt: {
+            min: {field: "finishedAt"}
+        }
+        ,
+        maxFinishedAt: {
+            max: {field: "finishedAt"}
+        }
+    }
+}

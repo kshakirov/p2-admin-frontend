@@ -148,7 +148,7 @@ pimsApp.controller('AdvancedSearchController', ['$scope', '$route', '$routeParam
             var keys = Object.keys(search_params);
             keys.map(function (key) {
                 search_params[key] = "";
-            })
+            });
             $scope.search();
         }
     }]);

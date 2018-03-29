@@ -16,7 +16,8 @@
             table.table
                 thead
                     tr
-                        th Id
+                        th Request Id
+                        th Operation
                         th Started At
                         th Id
                         th Entity Type
@@ -30,31 +31,39 @@
                                 ng-keypress="($event.which === 13)?search():0",
                                 data-ng-model="search_params.operationId")
                         td
+                            form(role="form", ng-if="aggregationsReady")
+                                multiselect(ng-model="selects.syncOperationId", options="aggregations.syncOperationId"
+                                     id-prop="key" display-prop="name" show-search="true")
+                        td
                         td
                             form(role="form")
                                 input.form-control(type="number",
                                 ng-keypress="($event.which === 13)?search():0",
                                 data-ng-model="search_params.entityId")
                         td
-                            form(role="form")
-                                input.form-control(type="number",
-                                ng-keypress="($event.which === 13)?search():0",
-                                data-ng-model="search_params.entityTypeId")
+                            form(role="form", ng-if="aggregationsReady")
+                                multiselect(ng-model="selects.entityTypeId",
+                                options="aggregations.entityTypeId",
+                                selection-limit="1",
+                                id-prop="key" display-prop="name" show-search="true")
                         td
-                            form(role="form")
-                                input.form-control(type="text",
-                                ng-keypress="($event.which === 13)?search():0",
-                                data-ng-model="search_params.syncOperationType")
+                            form(role="form", ng-if="aggregationsReady")
+                                multiselect(ng-model="selects.syncOperationType",
+                                options="aggregations.syncOperationType",
+                                selection-limit="1",
+                                 id-prop="key" display-prop="name" show-search="true")
                         td
                         td
-                            form(role="form")
-                                input.form-control(type="text",
-                                ng-keypress="($event.which === 13)?search():0",
-                                data-ng-model="search_params.user")
+                            form(role="form", ng-if="aggregationsReady")
+                                multiselect(ng-model="selects.user",
+                                options="aggregations.user",
+                                selection-limit="1",
+                                id-prop="key" display-prop="name" show-search="true")
 
                 tbody
                     tr(ng-repeat="op in operations")
                         td {{op.operationId}}
+                        td {{op.syncOperationId}}
                         td {{op.startedAt | date:'yyyy-MM-dd HH:mm:ss Z'}}
                         td {{op.entityId}}
                         td {{op.entityTypeId}}

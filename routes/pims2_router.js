@@ -10,6 +10,7 @@ let express = require('express'),
     path = require('path'),
 	sseExpress = require('sse-express'),
     fs = require('fs'),
+    operations_elastic_controller = require("../pims_app/controller/operations_elastic"),
     elastic_controller = require("../pims_app/controller/pims_elastic"),
     pims_scheduler = require("../pims_app/controller/scheduler"),
     multer = require('multer');
@@ -33,12 +34,16 @@ router.post('/search', function (req, res) {
     elastic_controller.findAll(req, res);
 });
 
+router.post('/search/aggregations', function (req, res) {
+    operations_elastic_controller.findAggregations(req, res);
+});
+
 router.post('/operations', function (req, res) {
-    elastic_controller.findOperations(req, res);
+    operations_elastic_controller.findOperations(req, res);
 });
 
 router.post('/audits', function (req, res) {
-    elastic_controller.findOperations(req, res);
+    operations_elastic_controller.findOperations(req, res);
 });
 
 router.post('/search/make_sortable/', function (req, res) {

@@ -79,7 +79,6 @@ function addLogEntry(id,body) {
         id: id,
          body
     }, function (error, response) {
-        //console.log("response")
         return true;
     });
 }
@@ -106,6 +105,25 @@ function updateIndividualLogEntry(id,body) {
     });
 }
 
+function findAggregations(type, aggs_body, query_body) {
+    return client.search({
+            index: elastic_index,
+            type: type,
+            body: {
+                query: query_body,
+                aggs: aggs_body
+            }
+        }
+    ).then(r=> {
+        console.log(r);
+        return r
+
+    },e=>{
+        console.log(e);
+        return e;
+    });
+
+}
 exports.findAll = findAll;
 exports.multiGet = multiGet;
 exports.multiSearch = multiSearch;
@@ -113,3 +131,4 @@ exports.makeSortable = makeSortable;
 exports.addLogEntry = addLogEntry;
 exports.addIndividualLogEntry = addIndividualLogEntry;
 exports.updateIndividualLogEntry = updateIndividualLogEntry;
+exports.findAggregations = findAggregations;

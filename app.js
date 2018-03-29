@@ -114,6 +114,6 @@ function intervalFunc() {
 }
 
 setInterval(intervalFunc, 100);
-setInterval(operationLog.syncLog, 5000);
+setInterval(operationLog.syncLog, 50000);
 
 pimsRabbit.startConnenction(io);

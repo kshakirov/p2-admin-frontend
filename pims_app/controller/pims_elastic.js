@@ -89,6 +89,7 @@ function build_query(query) {
     let qs = {
             "query_string": {
                 "fields": [],
+                "lenient": true,
                 "query": ""
             }
         },
@@ -324,6 +325,7 @@ function findOperations(req, res) {
     if(compacted_query){
         query = build_query(compacted_query);
     }
+    //for the time being
     return elastic_model.findAll(type, query, from * size, size, fields, sort).then((r) => {
         let response = prep_response(r,from,size);
         res.json(response)
@@ -333,8 +335,41 @@ function findOperations(req, res) {
     })
 }
 
+function create_agg_body(fields) {
+    let aggs = {};
+    fields.map(function (f) {
+        let aggs_item_name = f.type + "____" + f.field;
+        aggs[aggs_item_name] = {};
+        aggs[aggs_item_name][f.type] = {
+            field: f.field
+        }
+    });
+    return aggs
+}
+
+
+function findAggregations(req, res) {
+    let type = req.body.type,
+        query = {"match_all": {}},
+        compacted_query = false,
+        fields = req.body.fields;
+    if(req.body.query && req.body.query.hasOwnProperty('query')) {
+        compacted_query = compact_query(req.body.query.query);
+        if(compacted_query){
+            query = build_query(compacted_query);
+        }
+    }
+    let body  = create_agg_body(fields);
+    query = query;
+    return elastic_model.findAggregations(type,body, query).then(r=>{
+        res.json(r)
+    }, e=>{
+        res.sendStatus(400,e)
+    })
+}
 
 
 exports.findAll = findAll;
 exports.makeSortable = makeSortable;
 exports.findOperations = findOperations;
+exports.findAggregations = findAggregations;
