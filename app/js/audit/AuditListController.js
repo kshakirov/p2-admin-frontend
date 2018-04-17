@@ -1,6 +1,6 @@
 pimsApp.controller('AuditListController', ['$scope', 'AuditModel',
     'usSpinnerService', '$uibModal', 'AuditAggregatinService', '$q',
-    'CustomSyncOperationModel', 'EntityTypeModel','AuditListService',
+    'CustomSyncOperationModel', 'EntityTypeModel', 'AuditListService',
     function ($scope,
               AuditModel,
               usSpinnerService,
@@ -28,6 +28,7 @@ pimsApp.controller('AuditListController', ['$scope', 'AuditModel',
             {name: 'entityTypeId'},
         ];
 
+        var watchers_hash = {};
 
         function PaginationObject(response) {
             return {
@@ -87,19 +88,21 @@ pimsApp.controller('AuditListController', ['$scope', 'AuditModel',
 
         $scope.init = function () {
             return get_aggregation_data().then(function (promises) {
-            paginate_entites($scope.search_query).then(function (response) {
-                $scope.aggregations = AuditAggregatinService.decorateSelects(promises);
-                $scope.aggregationsReady = true;
-                $scope.entityTypes = promises[1];
-                $scope.customOperations = promises[2];
-                $scope.operations =
-                    AuditListService.dtoAuditRecords(response.content,$scope.entityTypes ,$scope.customOperations );
-                $scope.pagination = new PaginationObject(response);
+                paginate_entites($scope.search_query).then(function (response) {
+                    $scope.aggregations = AuditAggregatinService.decorateSelects(promises);
+                    $scope.aggregationsReady = true;
+                    $scope.entityTypes = promises[1];
+                    $scope.customOperations = promises[2];
+                    $scope.operations =
+                        AuditListService.dtoAuditRecords(response.content, $scope.entityTypes, $scope.customOperations);
+                    $scope.pagination = new PaginationObject(response);
+                    watchers_hash = create_watchers(watchers_hash);
 
-            }, function (error) {
-                console.log(error);
-                usSpinnerService.stop('spinner-2');
-            })
+
+                }, function (error) {
+                    console.log(error);
+                    usSpinnerService.stop('spinner-2');
+                })
             });
 
         };
@@ -109,7 +112,7 @@ pimsApp.controller('AuditListController', ['$scope', 'AuditModel',
             $scope.search_query.from = page;
             return paginate_entites($scope.search_query).then(function (response) {
                 $scope.operations =
-                    AuditListService.dtoAuditRecords(response.content,$scope.entityTypes ,$scope.customOperations );
+                    AuditListService.dtoAuditRecords(response.content, $scope.entityTypes, $scope.customOperations);
                 $scope.pagination = new PaginationObject(response);
             }, function (error) {
                 console.log(error);
@@ -131,11 +134,13 @@ pimsApp.controller('AuditListController', ['$scope', 'AuditModel',
         };
 
         $scope.clear = function (search_params) {
+            remove_watchers(watchers_hash);
             var keys = Object.keys(search_params);
             keys.map(function (key) {
                 search_params[key] = "";
             });
             this.selects = AuditAggregatinService.clearSelects(this.selects);
+            watchers_hash = create_watchers(watchers_hash);
             $scope.search();
         };
 
@@ -155,63 +160,46 @@ pimsApp.controller('AuditListController', ['$scope', 'AuditModel',
 
         };
 
-        $scope.$watch('selects.syncOperationType', function (old, n) {
-            if (n !== old) {
-                if ($scope.selects.syncOperationType && $scope.selects.syncOperationType[0])
-                    $scope.search_query.query.syncOperationType = $scope.selects.syncOperationType[0].key;
-                else
-                    delete $scope.search_query.query.syncOperationType;
-                base_search($scope.search_query)
-            }
-        });
 
-        $scope.$watch('selects.syncOperationId', function (n, old) {
-            if (n !== old) {
-                if (angular.isUndefined(n) || n.length == 0) {
-                    delete $scope.search_query.query.syncOperationId;
-                }
-                else {
-                    $scope.search_query.query.syncOperationId = $scope.selects.syncOperationId[0].key;
-                    AuditAggregatinService.createAggregateFilters($scope.selects, 'syncOperationId')
-                }
-                base_search($scope.search_query)
-            }
-        });
+        function create_watchers(watchers_hash) {
+            watchers_hash.syncOperationType =
+                $scope.$watch('selects.syncOperationType',
+                    AuditListService.watchSyncOperationType(base_search).bind($scope));
+            watchers_hash.syncOperationId =
+                $scope.$watch('selects.syncOperationId',
+                    AuditListService.watchSyncOperationId(base_search).bind($scope));
+            watchers_hash.entityTypeId =
+                $scope.$watch('selects.entityTypeId',
+                    AuditListService.watchEntityTypeId(base_search).bind($scope));
+            watchers_hash.user =
+                $scope.$watch('selects.user',
+                    AuditListService.watchUser(base_search).bind($scope));
+            return watchers_hash;
+        }
 
-        $scope.$watch('selects.entityTypeId', function (old, n) {
-            if (n !== old) {
-                if ($scope.selects.entityTypeId && $scope.selects.entityTypeId[0])
-                    $scope.search_query.query.entityTypeId = $scope.selects.entityTypeId[0].key;
-                else
-                    delete $scope.search_query.query.entityTypeId;
-                base_search($scope.search_query)
-            }
-        })
-        ;
+        function remove_watchers(watchers_hash) {
+            Object.keys(watchers_hash).map(function (key) {
+                console.log("Deregistering watcher " + key);
+                watchers_hash[key]();
+            })
+        }
 
-        $scope.$watch('selects.user', function (old, n) {
-            if (n !== old) {
-                $scope.search_query.query.user = $scope.selects.user[0].key;
-                base_search($scope.search_query)
-            }
-        });
 
         function base_search(search_query) {
             $scope.search_query.from = 0;
             return reget_aggregation_data(search_query).then(function (promises) {
-            paginate_entites(search_query).then(function (response) {
-                $scope.aggregations = AuditAggregatinService.decorateSelects(promises);
-                $scope.aggregationsReady = true;
-                $scope.entityTypes = promises[1];
-                $scope.customOperations = promises[2];
-                $scope.operations =
-                    AuditListService.dtoAuditRecords(response.content,$scope.entityTypes ,$scope.customOperations );
-                $scope.pagination = new PaginationObject(response);
-                reget_aggregation_data(search_query).then(function () {
+                paginate_entites(search_query).then(function (response) {
+                    $scope.aggregations = AuditAggregatinService.decorateSelects(promises);
+                    $scope.aggregationsReady = true;
+                    $scope.entityTypes = promises[1];
+                    $scope.customOperations = promises[2];
+                    $scope.operations =
+                        AuditListService.dtoAuditRecords(response.content, $scope.entityTypes, $scope.customOperations);
+                    $scope.pagination = new PaginationObject(response);
 
+                }, function (error) {
                 })
-            }, function (error) {
-            })});
+            });
         }
 
 

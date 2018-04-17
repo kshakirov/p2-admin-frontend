@@ -93,8 +93,8 @@ pimsServices.service('AuditAggregatinService', ['AuditModel', function (AuditMod
     this.clearSelects = function (selects) {
         var keys = Object.keys(selects);
         keys.forEach(function (k) {
-            selects[k] = [];
-        })
+            selects[k] = undefined;
+        });
         return selects;
     };
 

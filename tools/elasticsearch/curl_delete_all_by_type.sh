@@ -1,8 +1,9 @@
-curl -XDELETE '10.1.3.15:9200/pims-staging/9/_query?pretty' -H 'Content-Type: application/json' -d'
+curl -XPUT 'localhost:9200/pims-staging/_mapping/my_type?update_all_types' -H 'Content-Type: application/json' -d'
 {
-  "query": {
-    "match_all": {
-
+  "properties": {
+    "user": {
+      "type":     "text",
+      "fielddata": true
     }
   }
 }
