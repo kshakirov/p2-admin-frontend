@@ -11,9 +11,13 @@
         .col-lg-2
             select.top-pagination.form-control(ng-model="pageSize",
             ng-options="size as size for size in pageSizes")
+    .row
+        .col-lg-6
+            span
+                us-spinner(spinner-key="spinner-audit", spinner-start-active="true")
     .row.top-buffer
         .col-lg-11
-            table.table
+            table.table(ng-if="ready")
                 thead
                     tr
                         th Request Id

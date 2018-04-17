@@ -96,12 +96,14 @@ pimsApp.controller('AuditListController', ['$scope', 'AuditModel',
                     $scope.operations =
                         AuditListService.dtoAuditRecords(response.content, $scope.entityTypes, $scope.customOperations);
                     $scope.pagination = new PaginationObject(response);
+                    usSpinnerService.stop('spinner-audit');
+                    $scope.ready = true;
                     watchers_hash = create_watchers(watchers_hash);
 
 
                 }, function (error) {
                     console.log(error);
-                    usSpinnerService.stop('spinner-2');
+                    usSpinnerService.stop('spinner-audit');
                 })
             });
 
@@ -134,6 +136,7 @@ pimsApp.controller('AuditListController', ['$scope', 'AuditModel',
         };
 
         $scope.clear = function (search_params) {
+            usSpinnerService.spin('spinner-audit');
             remove_watchers(watchers_hash);
             var keys = Object.keys(search_params);
             keys.map(function (key) {
@@ -196,7 +199,7 @@ pimsApp.controller('AuditListController', ['$scope', 'AuditModel',
                     $scope.operations =
                         AuditListService.dtoAuditRecords(response.content, $scope.entityTypes, $scope.customOperations);
                     $scope.pagination = new PaginationObject(response);
-
+                    usSpinnerService.stop('spinner-audit');
                 }, function (error) {
                 })
             });
