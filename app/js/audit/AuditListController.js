@@ -45,6 +45,10 @@ pimsApp.controller('AuditListController', ['$scope', 'AuditModel',
             return AuditModel.findAll(search_query);
         }
 
+        function replace_dashes(search_phrase) {
+            return search_phrase.replace(/-/g," ")
+        }
+
         function prep_search_params(s_p) {
             var search_params = {};
             angular.copy(s_p, search_params);
@@ -53,7 +57,7 @@ pimsApp.controller('AuditListController', ['$scope', 'AuditModel',
                 if (search_params[key] && angular.isNumber(search_params[key])) {
                     search_params[key] = search_params[key]
                 } else if (search_params[key] && search_params[key].length > 0) {
-                    search_params[key] = "*" + search_params[key] + "*"
+                    search_params[key] = "*" + replace_dashes(search_params[key]) + "*"
                 }
 
             });
