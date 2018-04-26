@@ -13,7 +13,7 @@ let attributes_regex = /.*attributes\.\d+/;
 
 function get_attributes_ids(schemata) {
     let attrbiutes = schemata.schema.filter(s => {
-        if (s.out.match(attributes_regex)) {
+        if (s.out && s.out.match(attributes_regex)) {
             return s;
         }
     });

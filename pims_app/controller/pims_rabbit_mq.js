@@ -1,7 +1,7 @@
 let amqp = require('amqplib/callback_api'),
     config = require('config'),
     csvProcessor = require('./csv_reader_redis'),
-    excelProcessor = require('./excell_reader_redis'),
+    excelProcessor = require('./spreadsheetml_reader_redis'),
     operationLog = require('./operation_log'),
     token_tools = require('../proxy/tokenTools'),
     amqpConn = null,

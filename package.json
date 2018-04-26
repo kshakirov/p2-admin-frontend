@@ -52,7 +52,8 @@
 		"socket.io": "^2.0.4",
 		"sse-express": "^1.0.2",
 		"uuid": "^3.2.1",
-		"xlsx": "^0.11.7"
+		"xls-parser": "^1.1.0",
+		"xlsx": "^0.11.19"
 	},
 	"devDependencies": {
 		"gulp-concat": "^2.6.1",

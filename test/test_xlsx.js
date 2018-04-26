@@ -1,38 +1,11 @@
-const fs = require('fs');
-var ExcelReader = require('node-excel-stream').ExcelReader;
-var ExcelWriter = require('node-excel-stream').ExcelWriter;
-let dataStream = fs.createReadStream('../product_categories.xlsx'),
-    headers = ['Id','name','complete_name','pc_name','pc_id','pc_complete_name'];
+if (typeof require !== 'undefined') XLSX = require('xlsx');
 
-function get_excell_fields(headers) {
-    return headers.map((header) => {
-        return {
-            name: header,
-            key: header,
-        }
-    })
+function test_read_xls(filename) {
+    let workbook = XLSX.readFile(filename);
+    return XLSX.utils.sheet_to_json(workbook.Sheets['Line Items']);
 }
 
-
-
-headers = get_excell_fields(headers);
-
-
-let reader = new ExcelReader(dataStream, {
-    sheets: [{
-        name: 'Sheet1',
-        rows: {
-            headerRow: 1,
-            allowedHeaders: headers
-        }
-    }]
-});
-console.log('starting parse');
-reader.eachRow((rowData, rowNum, sheetSchema) => {
-    console.log(rowNum);
-    //console.log(rowData);
-    return false;
+let rows = test_read_xls('cpo_test.xls');
+rows.forEach(r => {
+    console.log(r);
 })
-    .then(() => {
-        console.log('done parsing');
-    });
